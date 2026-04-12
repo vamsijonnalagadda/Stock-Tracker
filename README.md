@@ -1,6 +1,6 @@
-# Stock Tracker
+# Market Talk
 
-A lightweight stock tracker web app that scrapes financial data directly from Yahoo Finance and GuruFocus webpages, eliminating the need for API keys.
+A lightweight market web app that scrapes financial data directly from Yahoo Finance and GuruFocus webpages, eliminating the need for API keys.
 
 ## What it includes
 
@@ -56,7 +56,7 @@ A lightweight stock tracker web app that scrapes financial data directly from Ya
 ### Quick Start
 
 ```bash
-cd ~/stock-tracker
+cd ~/market-talk
 npm install
 npm start
 ```

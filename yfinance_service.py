@@ -125,12 +125,38 @@ class QuoteHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         # Expect path: /quote/<TICKER>
-        parts = self.path.strip("/").split("/")
-        if len(parts) != 2 or parts[0] != "quote":
-            self._send_json(404, {"error": "Use /quote/<TICKER>"})
+        raw_path = self.path
+        parts = raw_path.strip("/").split("/")
+        if len(parts) < 2:
+            self._send_json(404, {"error": "Use /quote/<TICKER> or /trailing/<TICKER>"})
             return
 
+        route = parts[0]
         ticker = unquote(parts[1]).upper()
+
+        # trailing endpoint: /trailing/<TICKER>?years=N
+        if route == 'trailing':
+            years = 5
+            if '?' in raw_path:
+                try:
+                    qs = raw_path.split('?',1)[1]
+                    for kv in qs.split('&'):
+                        if '=' in kv:
+                            k,v = kv.split('=',1)
+                            if k == 'years': years = int(v)
+                except Exception:
+                    pass
+            result_tr = self.do_GET_trailing(ticker, years=years)
+            if result_tr is None or result_tr.get('error'):
+                self._send_json(404, {"error": f"No trailing data for {ticker}", "details": result_tr})
+                return
+            self._send_json(200, result_tr)
+            return
+
+        if route != 'quote':
+            self._send_json(404, {"error": "Use /quote/<TICKER> or /trailing/<TICKER>"})
+            return
+
         try:
             ticker_obj = yf.Ticker(ticker)
             info = ticker_obj.info
@@ -138,14 +164,40 @@ class QuoteHandler(BaseHTTPRequestHandler):
             # currentPrice is intraday; regularMarketPrice is last close during off-hours
             price = info.get("currentPrice") or info.get("regularMarketPrice")
 
+            # Try to extract PEG Ratio from multiple possible locations in info dict
+            peg = None
+            for key in ["pegRatio", "peg", "trailingPEG", "forwardPEG", "pegRatio2", "pegRatio3"]:
+                if key in info:
+                    peg = info.get(key)
+                    if peg is not None:
+                        break
+            
+            # If still not found, check if we can compute from P/E and earnings growth
+            # (This is a rough estimate and may not match Yahoo's exact PEG)
+            if peg is None:
+                forward_pe = info.get("forwardPE")
+                trailing_pe = info.get("trailingPE")
+                if forward_pe and trailing_pe and forward_pe > 0 and trailing_pe > 0:
+                    # Rough estimate: if trailing P/E > forward P/E, estimate growth
+                    growth_estimate = ((trailing_pe - forward_pe) / forward_pe) * 100
+                    if growth_estimate > 0:
+                        peg = forward_pe / growth_estimate
+
+            
             result = {
                 "symbol": ticker,
                 "shortName": info.get("shortName") or info.get("longName") or ticker,
                 "currency": info.get("currency", "USD"),
+                "quoteType": info.get("quoteType"),
+                "marketState": info.get("marketState"),
                 "regularMarketPrice": price,
                 "regularMarketPreviousClose": info.get("regularMarketPreviousClose") or info.get("previousClose"),
+                "postMarketPrice": info.get("postMarketPrice"),
+                "postMarketChangePercent": info.get("postMarketChangePercent"),
+                "preMarketPrice": info.get("preMarketPrice"),
+                "preMarketChangePercent": info.get("preMarketChangePercent"),
                 "forwardPE": info.get("forwardPE"),
-                "pegRatio": info.get("pegRatio"),
+                "pegRatio": peg,
                 "marketCap": info.get("marketCap"),
                 "enterpriseValue": info.get("enterpriseValue"),
                 "ebitda": info.get("ebitda"),
@@ -154,6 +206,9 @@ class QuoteHandler(BaseHTTPRequestHandler):
                 "freeCashflow": info.get("freeCashflow"),
                 "operatingCashflow": info.get("operatingCashflow"),
                 "debtToEquity": info.get("debtToEquity"),
+                "fiftyTwoWeekHigh": info.get("fiftyTwoWeekHigh"),
+                "fiftyTwoWeekLow": info.get("fiftyTwoWeekLow"),
+                "earningsDate": info.get("earningsTimestamp"),
                 "quoteSource": "yfinance (Yahoo Finance)"
             }
 
@@ -167,6 +222,106 @@ class QuoteHandler(BaseHTTPRequestHandler):
             self._send_json(200, result)
         except Exception as e:
             self._send_json(500, {"error": str(e)})
+
+    def do_GET_trailing(self, ticker, years=5):
+        try:
+            ticker_obj = yf.Ticker(ticker)
+            # historical prices (10y to be safe)
+            hist = ticker_obj.history(period=f"{max(5, years+2)}y", interval='1d')
+            if hist is None or hist.empty:
+                return None
+            # year-end close prices
+            try:
+                hist.index = hist.index.tz_localize(None)
+            except Exception:
+                pass
+            year_ends = hist['Close'].resample('Y').last()
+
+            # financial statements
+            financials = None
+            cashflow = None
+            try:
+                financials = ticker_obj.financials
+            except Exception:
+                financials = None
+            try:
+                cashflow = ticker_obj.cashflow
+            except Exception:
+                cashflow = None
+
+            # helper to extract a metric value for a given column (year)
+            def extract_from_df(df, labels, col):
+                if df is None or col not in df.columns:
+                    return None
+                for label in labels:
+                    if label in df.index:
+                        v = df.at[label, col]
+                        n = _safe_number(v)
+                        if n is not None:
+                            return n
+                return None
+
+            # build lists of per-year metrics
+            years_list = list(year_ends.index.strftime('%Y'))
+            pe_list = []
+            fcf_margin_list = []
+            ev_ebitda_list = []
+            eps_labels = ['Basic EPS', 'Diluted EPS', 'EPS', 'Earnings Per Share', 'EPS (Basic)']
+            fcf_labels = ['Free Cash Flow', 'FreeCashFlow', 'Free Cashflow']
+            revenue_labels = ['Total Revenue', 'Revenue', 'Operating Revenue']
+            ebitda_labels = ['EBITDA']
+
+            # attempt to get marketCap from info
+            info = ticker_obj.info if hasattr(ticker_obj, 'info') else {}
+            marketCap_now = _safe_number(info.get('marketCap'))
+            enterpriseValue_now = _safe_number(info.get('enterpriseValue'))
+
+            for col in financials.columns if financials is not None else []:
+                year = str(col)[:4]
+                if year not in years_list:
+                    continue
+                # price for that year
+                try:
+                    price = float(year_ends[year_ends.index.strftime('%Y') == year].iloc[0])
+                except Exception:
+                    price = None
+                eps = extract_from_df(financials, eps_labels, col)
+                if eps is not None and price is not None and eps != 0:
+                    pe_list.append(price / eps)
+                # free cash flow margin (FCF / Revenue)
+                fcf = extract_from_df(cashflow, fcf_labels, col)
+                revenue = extract_from_df(financials, revenue_labels, col)
+                if fcf is not None and revenue not in (None, 0):
+                    fcf_margin_list.append(fcf / revenue)
+                # ebitda
+                ebitda = extract_from_df(financials, ebitda_labels, col)
+                if ebitda is not None and enterpriseValue_now:
+                    ev_ebitda_list.append(enterpriseValue_now / ebitda)
+
+            def avg(a):
+                return sum(a)/len(a) if a else None
+
+            # most recent entries first
+            pe_list_sorted = pe_list
+            avg3_pe = avg(pe_list_sorted[:3])
+            avg5_pe = avg(pe_list_sorted[:5])
+            avg3_fcf_margin = avg(fcf_margin_list[:3])
+            avg5_fcf_margin = avg(fcf_margin_list[:5])
+            avg3_ev = avg(ev_ebitda_list[:3])
+            avg5_ev = avg(ev_ebitda_list[:5])
+
+            return {
+                'avg3_pe': avg3_pe,
+                'avg5_pe': avg5_pe,
+                'avg3_fcfMargin': avg3_fcf_margin,
+                'avg5_fcfMargin': avg5_fcf_margin,
+                'avg3_evEbitda': avg3_ev,
+                'avg5_evEbitda': avg5_ev
+            }
+        except Exception as e:
+            return {'error': str(e)}
+
+        
 
 
 if __name__ == "__main__":

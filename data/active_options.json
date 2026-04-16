@@ -1,0 +1,10 @@
+{
+  "updatedAt": 0,
+  "expiresAt": 0,
+  "baseSymbols": [],
+  "sourceStatus": {
+    "alphaVantage": "degraded",
+    "yahooFinance": "degraded"
+  },
+  "items": []
+}

@@ -1,9 +1,22 @@
 import stringSimilarity from "string-similarity";
 
 export const PREFERRED_NEWS_SOURCES = [
-  "CNBC", "Reuters", "Yahoo Finance", "Bloomberg",
-  "Financial Times", "The Street", "Forbes",
-  "Wall Street Journal", "Barrons", "MarketWatch", "NDTV Profit"
+  "CNBC",
+  "Reuters",
+  "Reuters Business",
+  "Thomson Reuters",
+  "Dow Jones",
+  "Wall Street Journal",
+  "WSJ",
+  "MarketWatch",
+  "Financial Times",
+  "FT",
+  "Bloomberg",
+  "Yahoo Finance",
+  "The Street",
+  "Forbes",
+  "Barrons",
+  "NDTV Profit"
 ];
 
 export function normalizeNewsTitle(title) {
@@ -45,13 +58,38 @@ export function normalizeSourceForPreference(sourceName) {
   if (normalized.includes("yahoo finance")) {
     return "yahoo finance";
   }
+  if (normalized.includes("wall street journal") || normalized === "wsj" || normalized.startsWith("wsj ")) {
+    return "wall street journal";
+  }
+  if (normalized.includes("financial times") || normalized === "ft") {
+    return "financial times";
+  }
+  if (normalized.includes("marketwatch")) {
+    return "marketwatch";
+  }
+  if (normalized.includes("dow jones")) {
+    return "dow jones";
+  }
+  if (normalized.includes("thomson reuters") || normalized.includes("thomas reuters")) {
+    return "thomson reuters";
+  }
+  if (normalized.includes("reuters")) {
+    return "reuters";
+  }
   return normalized;
 }
 
 export function canonicalizeSourceName(sourceName) {
-  return normalizeSourceForPreference(sourceName) === "yahoo finance"
-    ? "Yahoo Finance"
-    : String(sourceName || "Unknown").trim();
+  const norm = normalizeSourceForPreference(sourceName);
+  if (norm === "yahoo finance") return "Yahoo Finance";
+  if (norm === "financial times") return "Financial Times";
+  if (norm === "wall street journal") return "Wall Street Journal";
+  if (norm === "marketwatch") return "MarketWatch";
+  if (norm === "dow jones") return "Dow Jones";
+  if (norm === "thomson reuters") return "Thomson Reuters";
+  if (norm === "reuters") return "Reuters";
+  if (norm.startsWith("forbes")) return "Forbes";
+  return String(sourceName || "Unknown").trim();
 }
 
 export function isPreferredNewsSource(sourceName) {

@@ -1,0 +1,995 @@
+{
+  "updatedAt": 1776358417973,
+  "days": {
+    "2026-04-13": [
+      {
+        "symbol": "FAST",
+        "hour": "bmo",
+        "epsEst": 0.3054,
+        "revenueEst": 2242792870,
+        "isSp500": true,
+        "impliedMove": null,
+        "avgLast4EarningsMove": 7.61,
+        "lastEarningsMove": -7.61
+      },
+      {
+        "symbol": "GS",
+        "hour": "bmo",
+        "epsEst": 16.9874,
+        "revenueEst": 17479183728,
+        "isSp500": true,
+        "impliedMove": null,
+        "avgLast4EarningsMove": 1.47,
+        "lastEarningsMove": -1.47
+      },
+      {
+        "symbol": "IVDA",
+        "hour": "bmo",
+        "epsEst": 0.2652,
+        "revenueEst": 17340000,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": 3.85,
+        "lastEarningsMove": 3.85
+      },
+      {
+        "symbol": "KUST",
+        "hour": "bmo",
+        "epsEst": -5.967,
+        "revenueEst": 4269720,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": 7.69,
+        "lastEarningsMove": 7.69
+      },
+      {
+        "symbol": "SIFY",
+        "hour": "bmo",
+        "epsEst": 0,
+        "revenueEst": 183804000,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": 5.81,
+        "lastEarningsMove": -5.81
+      },
+      {
+        "symbol": "ABVC",
+        "hour": "amc",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": 3.5,
+        "lastEarningsMove": -3.5
+      },
+      {
+        "symbol": "ADSE",
+        "hour": "amc",
+        "epsEst": 0.0204,
+        "revenueEst": 87822000,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "ALOT",
+        "hour": "amc",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "BMRA",
+        "hour": "amc",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "BOXL",
+        "hour": "amc",
+        "epsEst": -7.4052,
+        "revenueEst": 24476940,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "EVTV",
+        "hour": "amc",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "FBK",
+        "hour": "amc",
+        "epsEst": 1.1253,
+        "revenueEst": 178407410,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "NFE",
+        "hour": "amc",
+        "epsEst": -0.7828,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "OMQS",
+        "hour": "amc",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "OTRK",
+        "hour": "amc",
+        "epsEst": -0.6528,
+        "revenueEst": 3770940,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "KOPN",
+        "hour": "dmh",
+        "epsEst": -0.0143,
+        "revenueEst": 10528440,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "LEXX",
+        "hour": "dmh",
+        "epsEst": -0.0969,
+        "revenueEst": 51000,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "AAME",
+        "hour": "",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "AITX",
+        "hour": "",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "ALTS",
+        "hour": "",
+        "epsEst": -0.1836,
+        "revenueEst": 15933420,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      }
+    ],
+    "2026-04-14": [
+      {
+        "symbol": "BLK",
+        "hour": "bmo",
+        "epsEst": 11.6529,
+        "revenueEst": 6528034909,
+        "isSp500": true,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "C",
+        "hour": "bmo",
+        "epsEst": 2.7008,
+        "revenueEst": 24019502497,
+        "isSp500": true,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "JNJ",
+        "hour": "bmo",
+        "epsEst": 2.6914,
+        "revenueEst": 23865847398,
+        "isSp500": true,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "JPM",
+        "hour": "bmo",
+        "epsEst": 5.5024,
+        "revenueEst": 49660708180,
+        "isSp500": true,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "KMX",
+        "hour": "bmo",
+        "epsEst": 0.2316,
+        "revenueEst": 5758990790,
+        "isSp500": true,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "WFC",
+        "hour": "bmo",
+        "epsEst": 1.5985,
+        "revenueEst": 22015411370,
+        "isSp500": true,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "ACI",
+        "hour": "bmo",
+        "epsEst": 0.435,
+        "revenueEst": 20672436923,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "BKSC",
+        "hour": "bmo",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "BSVN",
+        "hour": "bmo",
+        "epsEst": 1.0329,
+        "revenueEst": 24062310,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "CIBH",
+        "hour": "bmo",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "CREX",
+        "hour": "bmo",
+        "epsEst": -0.0714,
+        "revenueEst": 22707750,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "DSNY",
+        "hour": "bmo",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "DTST",
+        "hour": "bmo",
+        "epsEst": -0.102,
+        "revenueEst": 408000,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "HOVR",
+        "hour": "bmo",
+        "epsEst": -0.0915,
+        "revenueEst": 0,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "LEDS",
+        "hour": "bmo",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "SPRS",
+        "hour": "bmo",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "THCH",
+        "hour": "bmo",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "UNTY",
+        "hour": "bmo",
+        "epsEst": 1.3923,
+        "revenueEst": 34263840,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "BMNR",
+        "hour": "amc",
+        "epsEst": 0,
+        "revenueEst": 18768000,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "CCEL",
+        "hour": "amc",
+        "epsEst": -0.0306,
+        "revenueEst": 7888680,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      }
+    ],
+    "2026-04-15": [
+      {
+        "symbol": "BAC",
+        "hour": "bmo",
+        "epsEst": 1.0219,
+        "revenueEst": 30230741704,
+        "isSp500": true,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "MS",
+        "hour": "bmo",
+        "epsEst": 3.0922,
+        "revenueEst": 20316212267,
+        "isSp500": true,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "MTB",
+        "hour": "bmo",
+        "epsEst": 4.0488,
+        "revenueEst": 2455861793,
+        "isSp500": true,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "PNC",
+        "hour": "bmo",
+        "epsEst": 4.0958,
+        "revenueEst": 6304734221,
+        "isSp500": true,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "JBHT",
+        "hour": "amc",
+        "epsEst": 1.47,
+        "revenueEst": 2998393856,
+        "isSp500": true,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "ARAI",
+        "hour": "bmo",
+        "epsEst": -0.1326,
+        "revenueEst": 0,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "BYOC",
+        "hour": "bmo",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "CHAI",
+        "hour": "bmo",
+        "epsEst": -1.5504,
+        "revenueEst": 4182000,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "FHN",
+        "hour": "bmo",
+        "epsEst": 0.4989,
+        "revenueEst": 877822310,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "GTCH",
+        "hour": "bmo",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "KITT",
+        "hour": "bmo",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "NYC",
+        "hour": "bmo",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "TORO",
+        "hour": "bmo",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "TRIB",
+        "hour": "bmo",
+        "epsEst": -0.1734,
+        "revenueEst": 18360000,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "ADAP",
+        "hour": "amc",
+        "epsEst": -0.0612,
+        "revenueEst": 2040000,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "APLT",
+        "hour": "amc",
+        "epsEst": -0.1173,
+        "revenueEst": 0,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "BPTH",
+        "hour": "amc",
+        "epsEst": -0.408,
+        "revenueEst": 0,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "CARM",
+        "hour": "amc",
+        "epsEst": -0.1224,
+        "revenueEst": 0,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "CLSD",
+        "hour": "amc",
+        "epsEst": -0.612,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "FAT",
+        "hour": "amc",
+        "epsEst": -3.1916,
+        "revenueEst": 139885000,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      }
+    ],
+    "2026-04-16": [
+      {
+        "symbol": "ABT",
+        "hour": "bmo",
+        "epsEst": 1.1552,
+        "revenueEst": 11107537135,
+        "isSp500": true,
+        "impliedMove": "\u00b12.69%",
+        "avgLast4EarningsMove": 1.86,
+        "lastEarningsMove": -4.36
+      },
+      {
+        "symbol": "BK",
+        "hour": "bmo",
+        "epsEst": 1.9866,
+        "revenueEst": 5335252988,
+        "isSp500": true,
+        "impliedMove": "\u00b10.32%",
+        "avgLast4EarningsMove": 2.08,
+        "lastEarningsMove": 2.06
+      },
+      {
+        "symbol": "CFG",
+        "hour": "bmo",
+        "epsEst": 1.0998,
+        "revenueEst": 2184812335,
+        "isSp500": true,
+        "impliedMove": "\u00b11.51%",
+        "avgLast4EarningsMove": 2.33,
+        "lastEarningsMove": -1.83
+      },
+      {
+        "symbol": "KEY",
+        "hour": "bmo",
+        "epsEst": 0.4159,
+        "revenueEst": 1958030773,
+        "isSp500": true,
+        "impliedMove": "\u00b11.56%",
+        "avgLast4EarningsMove": 1.39,
+        "lastEarningsMove": 0.23
+      },
+      {
+        "symbol": "PEP",
+        "hour": "bmo",
+        "epsEst": 1.566,
+        "revenueEst": 19130271125,
+        "isSp500": true,
+        "impliedMove": "\u00b11.56%",
+        "avgLast4EarningsMove": 0.91,
+        "lastEarningsMove": 0.45
+      },
+      {
+        "symbol": "PLD",
+        "hour": "bmo",
+        "epsEst": 0.8181,
+        "revenueEst": 2234336948,
+        "isSp500": true,
+        "impliedMove": "\u00b11.4%",
+        "avgLast4EarningsMove": 1.35,
+        "lastEarningsMove": 2.05
+      },
+      {
+        "symbol": "SCHW",
+        "hour": "bmo",
+        "epsEst": 1.4201,
+        "revenueEst": 6615653771,
+        "isSp500": true,
+        "impliedMove": "\u00b11.64%",
+        "avgLast4EarningsMove": 2.44,
+        "lastEarningsMove": -4.5
+      },
+      {
+        "symbol": "TRV",
+        "hour": "bmo",
+        "epsEst": 7.1488,
+        "revenueEst": 10740666735,
+        "isSp500": true,
+        "impliedMove": "\u00b11.47%",
+        "avgLast4EarningsMove": 0.77,
+        "lastEarningsMove": -1.07
+      },
+      {
+        "symbol": "USB",
+        "hour": "bmo",
+        "epsEst": 1.1557,
+        "revenueEst": 7349970909,
+        "isSp500": true,
+        "impliedMove": "\u00b11.79%",
+        "avgLast4EarningsMove": 2.06,
+        "lastEarningsMove": -1.1
+      },
+      {
+        "symbol": "NFLX",
+        "hour": "amc",
+        "epsEst": 0.7778,
+        "revenueEst": 12422588476,
+        "isSp500": true,
+        "impliedMove": "\u00b15.79%",
+        "avgLast4EarningsMove": 1.21,
+        "lastEarningsMove": -0.78
+      },
+      {
+        "symbol": "HOFT",
+        "hour": "bmo",
+        "epsEst": 0.0714,
+        "revenueEst": 75572310,
+        "isSp500": false,
+        "impliedMove": "\u00b11.32%",
+        "avgLast4EarningsMove": 3.61,
+        "lastEarningsMove": -6.18
+      },
+      {
+        "symbol": "IIIN",
+        "hour": "bmo",
+        "epsEst": 0.6528,
+        "revenueEst": 181797150,
+        "isSp500": false,
+        "impliedMove": "\u00b121.35%",
+        "avgLast4EarningsMove": 5.77,
+        "lastEarningsMove": -18.03
+      },
+      {
+        "symbol": "JKS",
+        "hour": "bmo",
+        "epsEst": -1.4266,
+        "revenueEst": 2349476473,
+        "isSp500": false,
+        "impliedMove": "\u00b13.65%",
+        "avgLast4EarningsMove": 4.26,
+        "lastEarningsMove": -7.76
+      },
+      {
+        "symbol": "MAN",
+        "hour": "bmo",
+        "epsEst": 0.4937,
+        "revenueEst": 4458526072,
+        "isSp500": false,
+        "impliedMove": "\u00b13.58%",
+        "avgLast4EarningsMove": 1.84,
+        "lastEarningsMove": -2.28
+      },
+      {
+        "symbol": "MRSH",
+        "hour": "bmo",
+        "epsEst": 3.2903,
+        "revenueEst": 7557767734,
+        "isSp500": false,
+        "impliedMove": "\u00b16.42%",
+        "avgLast4EarningsMove": 1.19,
+        "lastEarningsMove": 1.88
+      },
+      {
+        "symbol": "XIFR",
+        "hour": "bmo",
+        "epsEst": -0.612,
+        "revenueEst": 324360000,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": 1.56,
+        "lastEarningsMove": -0.19
+      },
+      {
+        "symbol": "AA",
+        "hour": "amc",
+        "epsEst": 1.5385,
+        "revenueEst": 3395904335,
+        "isSp500": false,
+        "impliedMove": "\u00b15.38%",
+        "avgLast4EarningsMove": 1.95,
+        "lastEarningsMove": -0.46
+      },
+      {
+        "symbol": "BALY",
+        "hour": "amc",
+        "epsEst": -1.1852,
+        "revenueEst": 771732000,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": 2.05,
+        "lastEarningsMove": 3.07
+      },
+      {
+        "symbol": "CNS",
+        "hour": "amc",
+        "epsEst": 0.8181,
+        "revenueEst": 144995600,
+        "isSp500": false,
+        "impliedMove": "\u00b15.75%",
+        "avgLast4EarningsMove": 2.27,
+        "lastEarningsMove": 1.74
+      },
+      {
+        "symbol": "FNB",
+        "hour": "amc",
+        "epsEst": 0.387,
+        "revenueEst": 458132162,
+        "isSp500": false,
+        "impliedMove": "\u00b14.09%",
+        "avgLast4EarningsMove": 0.45,
+        "lastEarningsMove": -0.34
+      }
+    ],
+    "2026-04-17": [
+      {
+        "symbol": "FITB",
+        "hour": "bmo",
+        "epsEst": 0.6194,
+        "revenueEst": 2937638617,
+        "isSp500": true,
+        "impliedMove": "\u00b13.3%",
+        "avgLast4EarningsMove": 1.39,
+        "lastEarningsMove": -1.43
+      },
+      {
+        "symbol": "RF",
+        "hour": "bmo",
+        "epsEst": 0.6172,
+        "revenueEst": 1973527246,
+        "isSp500": true,
+        "impliedMove": "\u00b13.42%",
+        "avgLast4EarningsMove": 0.61,
+        "lastEarningsMove": -0.84
+      },
+      {
+        "symbol": "STT",
+        "hour": "bmo",
+        "epsEst": 2.6528,
+        "revenueEst": 3694155800,
+        "isSp500": true,
+        "impliedMove": "\u00b13.52%",
+        "avgLast4EarningsMove": 1.23,
+        "lastEarningsMove": -1.34
+      },
+      {
+        "symbol": "TFC",
+        "hour": "bmo",
+        "epsEst": 1.0046,
+        "revenueEst": 5222280901,
+        "isSp500": true,
+        "impliedMove": "\u00b12.95%",
+        "avgLast4EarningsMove": 0.78,
+        "lastEarningsMove": -0.61
+      },
+      {
+        "symbol": "ALLY",
+        "hour": "bmo",
+        "epsEst": 0.9531,
+        "revenueEst": 2181164940,
+        "isSp500": false,
+        "impliedMove": "\u00b14.53%",
+        "avgLast4EarningsMove": 1.25,
+        "lastEarningsMove": -0.29
+      },
+      {
+        "symbol": "ALV",
+        "hour": "bmo",
+        "epsEst": 1.9116,
+        "revenueEst": 2631120700,
+        "isSp500": false,
+        "impliedMove": "\u00b14.62%",
+        "avgLast4EarningsMove": 0.79,
+        "lastEarningsMove": 0.86
+      },
+      {
+        "symbol": "BMI",
+        "hour": "bmo",
+        "epsEst": 1.2438,
+        "revenueEst": 232749227,
+        "isSp500": false,
+        "impliedMove": "\u00b17.37%",
+        "avgLast4EarningsMove": 0.75,
+        "lastEarningsMove": -1.76
+      },
+      {
+        "symbol": "AIRE",
+        "hour": "",
+        "epsEst": -0.0357,
+        "revenueEst": 1301520,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": 3.8,
+        "lastEarningsMove": -3.45
+      },
+      {
+        "symbol": "AMCI",
+        "hour": "",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "BOTJ",
+        "hour": "",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": 2.83,
+        "lastEarningsMove": 1.93
+      },
+      {
+        "symbol": "CCBC",
+        "hour": "",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": 1.13,
+        "lastEarningsMove": 0
+      },
+      {
+        "symbol": "CIZN",
+        "hour": "",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": 0.76,
+        "lastEarningsMove": 0.76
+      },
+      {
+        "symbol": "MCBS",
+        "hour": "",
+        "epsEst": 0.7344,
+        "revenueEst": 51612000,
+        "isSp500": false,
+        "impliedMove": "\u00b13.62%",
+        "avgLast4EarningsMove": 0.57,
+        "lastEarningsMove": -0.15
+      },
+      {
+        "symbol": "ORBN",
+        "hour": "",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      },
+      {
+        "symbol": "OVLY",
+        "hour": "",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": 0,
+        "lastEarningsMove": 0.56
+      },
+      {
+        "symbol": "PBAM",
+        "hour": "",
+        "epsEst": 1.7741,
+        "revenueEst": 32728403,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": 0.19,
+        "lastEarningsMove": -0.64
+      },
+      {
+        "symbol": "PRK",
+        "hour": "",
+        "epsEst": 2.6257,
+        "revenueEst": 158643225,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": 0.64,
+        "lastEarningsMove": -0.8
+      },
+      {
+        "symbol": "ZBAO",
+        "hour": "",
+        "epsEst": null,
+        "revenueEst": null,
+        "isSp500": false,
+        "impliedMove": null,
+        "avgLast4EarningsMove": null,
+        "lastEarningsMove": null
+      }
+    ]
+  }
+}

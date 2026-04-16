@@ -1,0 +1,34 @@
+{
+  "Technology": {
+    "forwardPE": 36.0,
+    "histForwardPE": 30.5,
+    "peg": 2.1,
+    "evEbitda": 39.9,
+    "fcfYield": 0.03,
+    "netDebtToEbitda": 0.8
+  },
+  "Energy": {
+    "forwardPE": 14.0,
+    "histForwardPE": 13.8,
+    "peg": 1.2,
+    "evEbitda": 8.0,
+    "fcfYield": 0.08,
+    "netDebtToEbitda": 2.5
+  },
+  "Financials": {
+    "forwardPE": 13.5,
+    "histForwardPE": 14.0,
+    "peg": 1.3,
+    "evEbitda": 7.5,
+    "fcfYield": 0.07,
+    "netDebtToEbitda": 2.3
+  },
+  "S&P500": {
+    "forwardPE": 21.2,
+    "histForwardPE": 18.9,
+    "peg": 1.5,
+    "evEbitda": 14.5,
+    "fcfYield": 0.042,
+    "netDebtToEbitda": 1.8
+  }
+}

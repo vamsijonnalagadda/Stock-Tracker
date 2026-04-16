@@ -143,8 +143,36 @@ The backend tries sources in this order:
 - **Frontend**: Vanilla HTML/CSS/JavaScript with client-side API calls
 - **API Endpoints**:
   - `GET /api/ticker/:symbol` — Fetch all metrics for a ticker (uses scraping + fallback APIs)
+  - `GET /api/trending` — Fast cached top-10 trending symbols with live price enrichment
+  - `GET /api/options/active` — Alpha Vantage most-active base symbols + Yahoo nearest expiry contract activity
+  - `GET /api/options/:symbol` — Yahoo nearest expiry options chain snapshot for one ticker
   - `POST /webhook/finnhub` — Receive real-time updates from Finnhub
   - `GET /api/cache/:symbol` — View cached Finnhub trade data
+
+## Trending Poller
+
+The server now runs a background trending refresh loop:
+
+- Polls StockTwits trending symbols every 5 minutes
+- Enriches top 10 with live quote/session data
+- Persists latest snapshot to `data/trending.json`
+- Serves cached data from `GET /api/trending`
+
+### Environment variable
+
+- `TRENDING_POLL_INTERVAL_MS` (optional): polling interval in milliseconds, default `300000`
+
+## Instant Trending Hydration
+
+The root HTML response injects `window.INITIAL_TRENDING_DATA` so social trending chips can render immediately before the first fetch completes.
+
+## Active Options Cache
+
+- Active options strip cache TTL: 1 hour
+- Per-ticker options cache TTL: 1 hour
+- Persisted files:
+  - `data/active_options.json`
+  - `data/options_by_ticker.json`
 
 ## Performance Notes
 

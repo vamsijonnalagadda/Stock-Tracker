@@ -16,6 +16,8 @@ const NEWS_MAX_ITEMS = Number(process.env.NEWS_MAX_ITEMS || 5);
 const NEWS_CACHE_TTL_SECONDS = Number(process.env.NEWS_CACHE_TTL_SECONDS || 600);
 const ONE_HOUR_MS = 60 * 60 * 1000;
 const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
+const DIRECT_FEED_PREFERRED_WINDOW_MS = 6 * 60 * 60 * 1000; // prefer direct-feed articles up to 6 hours
+const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 
 const TICKER_NEWS_SOURCES = [
   { name: "CNBC", url: "https://www.cnbc.com/id/10000664/device/rss/rss.html", type: "direct" },
@@ -27,13 +29,77 @@ const TICKER_NEWS_SOURCES = [
   { name: "BBC Business", url: "https://feeds.bbci.co.uk/news/business/rss.xml", type: "direct" },
   { name: "Fox Business", url: "http://feeds.foxnews.com/foxnews/business", type: "direct" },
   { name: "Forbes Business", url: "https://www.forbes.com/business/feed/", type: "direct" },
+  { name: "FT Global Economy", url: "https://www.ft.com/global-economy?format=rss", type: "direct" },
+  { name: "FT Companies", url: "https://www.ft.com/companies?format=rss", type: "direct" },
+  { name: "FT Markets", url: "https://www.ft.com/markets?format=rss", type: "direct" },
+  { name: "FT Technology", url: "https://www.ft.com/technology?format=rss", type: "direct" },
+  { name: "WSJ US Business", url: "https://feeds.content.dowjones.io/public/rss/WSJcomUSBusiness", type: "direct" },
+  { name: "WSJ Markets (DJ)", url: "https://feeds.content.dowjones.io/public/rss/RSSMarketsMain", type: "direct" },
+  { name: "WSJ - WSJD", url: "https://feeds.content.dowjones.io/public/rss/RSSWSJD", type: "direct" },
+  { name: "MarketWatch Top Stories", url: "https://feeds.content.dowjones.io/public/rss/mw_topstories", type: "direct" },
+  { name: "MarketWatch Realtime", url: "https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines", type: "direct" },
+  { name: "MarketWatch Bulletins", url: "https://feeds.content.dowjones.io/public/rss/mw_bulletins", type: "direct" },
+  { name: "MarketWatch MarketPulse", url: "https://feeds.content.dowjones.io/public/rss/mw_marketpulse", type: "direct" },
+  { name: "Dow Jones - Social Economy", url: "https://feeds.content.dowjones.io/public/rss/socialeconomyfeed", type: "direct" },
+  { name: "Thomson Reuters IR", url: "https://ir.thomsonreuters.com/rss/news-releases.xml?items=15", type: "direct" },
+  { name: "Reuters Business", url: "https://www.reutersagency.com/feed/?best-topics=business-finance&post_type=best", type: "direct" },
   { name: "Reuters", url: "reuters.com", type: "google" },
   { name: "NDTV Profit", url: "ndtvprofit.com", type: "google" },
   { name: "Barrons", url: "barrons.com", type: "google" }
 ];
 
 const rssParser = new Parser({ customFields: { item: ["source"] } });
+const SPOOFED_USER_AGENT = process.env.SPOOFED_USER_AGENT ||
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36";
+const SPOOFED_ACCEPT = "application/rss+xml,application/xml;q=0.9,*/*;q=0.8";
 const newsCache = new Map();
+const GENERIC_COMPANY_TOKENS = new Set([
+  "bank",
+  "group",
+  "holding",
+  "holdings",
+  "capital",
+  "financial",
+  "financials",
+  "technology",
+  "technologies",
+  "international",
+  "global",
+  "energy",
+  "resources",
+  "pharmaceuticals",
+  "therapeutics",
+  "company",
+  "companies",
+  "corporation"
+]);
+
+function needsHeaderSpoof(url) {
+  if (!url) return false;
+  return url.includes("thomsonreuters.com") || url.includes("feeds.content.dowjones.io") || url.includes("feeds.a.dj.com") || url.includes("a.dj.com");
+}
+
+async function fetchFeedWithOptionalHeaders(url) {
+  if (needsHeaderSpoof(url) && typeof fetch === "function") {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    try {
+      const res = await fetch(url, {
+        method: "GET",
+        headers: { "User-Agent": SPOOFED_USER_AGENT, Accept: SPOOFED_ACCEPT },
+        signal: controller.signal
+      });
+      clearTimeout(timeout);
+      if (!res.ok) throw new Error(`fetch failed: ${res.status}`);
+      const text = await res.text();
+      return await rssParser.parseString(text);
+    } catch (e) {
+      clearTimeout(timeout);
+      throw e;
+    }
+  }
+  return await rssParser.parseURL(url);
+}
 
 function sourceKeyFromName(sourceName) {
   return normalizeSourceForPreference(sourceName || "Unknown");
@@ -53,20 +119,34 @@ function compareTickerItems(a, b, nowTs) {
   const ta = tickerTier(a, nowTs);
   const tb = tickerTier(b, nowTs);
   if (ta !== tb) return ta - tb;
+  const aTs = Number(a.publishedTs || 0);
+  const bTs = Number(b.publishedTs || 0);
+  if (aTs !== bTs) return bTs - aTs;
   if (a.preferredPriority !== b.preferredPriority) return a.preferredPriority - b.preferredPriority;
-  return b.publishedTs - a.publishedTs;
+  return 0;
 }
 
-function buildTickerGoogleSourceUrl(domain, ticker, companyName) {
-  const q = companyName
-    ? `site:${domain} ("${ticker}" OR "${companyName}") (stock OR market OR earnings OR guidance) when:24h`
-    : `site:${domain} "${ticker}" (stock OR market OR earnings OR guidance) when:24h`;
+function getPrimaryCompanyAlias(companyName) {
+  return String(companyName || "")
+    .split(/\s+/)
+    .map((token) => token.trim())
+    .find((token) => token.length >= 4 && !GENERIC_COMPANY_TOKENS.has(token.toLowerCase())) || "";
+}
+
+function buildTickerGoogleSourceUrl(domain, ticker, companyName, companyAlias = "") {
+  const searchTerms = [`"${ticker}"`];
+  if (companyName) searchTerms.push(`"${companyName}"`);
+  if (companyAlias && companyAlias.toLowerCase() !== String(companyName || "").toLowerCase()) {
+    searchTerms.push(`"${companyAlias}"`);
+  }
+  const q = `site:${domain} (${searchTerms.join(" OR ")}) (stock OR market OR earnings OR guidance) when:24h`;
   return `${GOOGLE_NEWS_RSS}?q=${encodeURIComponent(q)}&hl=en-US&gl=US&ceid=US:en`;
 }
 
-export async function fetchGoogleTickerNews(ticker, companyName = "") {
+export async function fetchGoogleTickerNews(ticker, companyName = "", options = {}) {
   const normalizedCompanyName = normalizeCompanyNameForNews(companyName);
-  const key = `${String(ticker || "").toUpperCase()}::${normalizedCompanyName.toLowerCase()}`;
+  const maxItems = Math.max(1, Math.min(20, Number(options.maxItems) || NEWS_MAX_ITEMS));
+  const key = `${String(ticker || "").toUpperCase()}::${normalizedCompanyName.toLowerCase()}::${maxItems}`;
   const cached = newsCache.get(key);
   const now = Date.now();
 
@@ -74,7 +154,7 @@ export async function fetchGoogleTickerNews(ticker, companyName = "") {
   if (cached?.promise) return cached.promise;
 
   const promise = (async () => {
-    const data = await fetchGoogleTickerNewsRaw(ticker, normalizedCompanyName);
+    const data = await fetchGoogleTickerNewsRaw(ticker, normalizedCompanyName, { maxItems });
     newsCache.set(key, { data, expiresAt: Date.now() + NEWS_CACHE_TTL_SECONDS * 1000 });
     return data;
   })();
@@ -88,39 +168,75 @@ export async function fetchGoogleTickerNews(ticker, companyName = "") {
   }
 }
 
-export async function fetchGoogleTickerNewsRaw(ticker, companyName = "") {
+export async function fetchGoogleTickerNewsRaw(ticker, companyName = "", options = {}) {
   try {
     const now = Date.now();
+    const maxItems = Math.max(1, Math.min(20, Number(options.maxItems) || NEWS_MAX_ITEMS));
     const tickerLower = String(ticker || "").toLowerCase();
     const companyLower = String(companyName || "").toLowerCase();
+    const companyAlias = getPrimaryCompanyAlias(companyName);
+    const companyAliasLower = companyAlias.toLowerCase();
+    const companyTokens = companyLower.split(/\s+/).filter(Boolean);
+    function escapeRegExp(s) { return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+    const tickerWordRe = new RegExp('\\b' + escapeRegExp(tickerLower) + '\\b', 'i');
     const spamTerms = ["newsletter", "subscribe"];
+    const analystActionTerms = [
+      " keeps ",
+      " maintains ",
+      " raises ",
+      " lowers ",
+      " cuts ",
+      " trims ",
+      " retains ",
+      " initiates ",
+      " upgrades ",
+      " downgrades ",
+      " price target",
+      " rating on ",
+      " rating for ",
+      " coverage on ",
+      " coverage of "
+    ];
 
     let allItems = [];
-    for (const sourceConfig of TICKER_NEWS_SOURCES) {
+    const feedPromises = TICKER_NEWS_SOURCES.map(async (sourceConfig) => {
       const feedUrl = sourceConfig.type === "direct"
         ? sourceConfig.url
-        : buildTickerGoogleSourceUrl(sourceConfig.url, ticker, companyName);
+        : buildTickerGoogleSourceUrl(sourceConfig.url, ticker, companyName, companyAlias);
       try {
-        const feed = await rssParser.parseURL(feedUrl);
+        const feed = await fetchFeedWithOptionalHeaders(feedUrl);
         const items = Array.isArray(feed?.items) ? feed.items : [];
-        allItems.push(...items.map((item) => ({ item, sourceConfig })));
+        return items.map((item) => ({ item, sourceConfig }));
       } catch (e) {
-        // ignore
+        return [];
       }
+    });
+
+    const feedResults = await Promise.all(feedPromises);
+    for (const items of feedResults) allItems.push(...items);
+
+    const exactTerms = [`intitle:"${ticker}"`];
+    if (companyName) exactTerms.push(`intitle:"${companyName}"`);
+    if (companyAlias && companyAlias.toLowerCase() !== companyLower) {
+      exactTerms.push(`intitle:"${companyAlias}"`);
     }
 
-    const exactQuery = companyName
-      ? `intitle:"${ticker}" OR intitle:"${companyName}" when:24h`
-      : `intitle:"${ticker}" when:24h`;
+    const broadTerms = [`"${ticker}"`];
+    if (companyName) broadTerms.push(`"${companyName}"`);
+    if (companyAlias && companyAlias.toLowerCase() !== companyLower) {
+      broadTerms.push(`"${companyAlias}"`);
+    }
 
-    const fallbackQuery = companyName
-      ? `${ticker} ${companyName} stock when:24h`
-      : `${ticker} stock when:24h`;
+    const genericQueries = [
+      `${exactTerms.join(" OR ")} when:24h`,
+      `(${broadTerms.join(" OR ")}) (stock OR market OR earnings OR guidance) when:24h`,
+      companyName ? `"${companyName}" (stock OR market OR earnings OR guidance) when:24h` : null,
+      companyAlias ? `"${companyAlias}" ${ticker} (stock OR market OR earnings OR guidance) when:24h` : null
+    ].filter(Boolean);
 
-    const genericGoogleUrls = [
-      `${GOOGLE_NEWS_RSS}?q=${encodeURIComponent(exactQuery)}&hl=en-US&gl=US&ceid=US:en`,
-      `${GOOGLE_NEWS_RSS}?q=${encodeURIComponent(fallbackQuery)}&hl=en-US&gl=US&ceid=US:en`
-    ];
+    const genericGoogleUrls = [...new Set(genericQueries)].map((query) => (
+      `${GOOGLE_NEWS_RSS}?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`
+    ));
 
     for (const url of genericGoogleUrls) {
       try {
@@ -162,10 +278,18 @@ export async function fetchGoogleTickerNewsRaw(ticker, companyName = "") {
       .filter((n) => {
         if (!n.title || !n.url) return false;
         const headline = n.title.toLowerCase();
-        const hasTicker = headline.includes(tickerLower);
-        const hasCompany = companyLower ? headline.includes(companyLower) : false;
+        // Match ticker as a whole word (avoids partial matches like 'gas' when searching 'gs')
+        const hasTicker = tickerLower ? tickerWordRe.test(headline) : false;
+        // Allow company name variants: match any token (e.g., 'goldman' from 'Goldman Sachs')
+        const hasCompany = companyTokens.length ? companyTokens.some(tok => headline.includes(tok)) : false;
         const isSpam = spamTerms.some((term) => headline.includes(term));
-        return (hasTicker || hasCompany) && !isSpam;
+        const startsWithCompany = (companyLower && headline.startsWith(companyLower))
+          || (companyAliasLower && headline.startsWith(companyAliasLower));
+        const looksLikeAnalystNote = !hasTicker
+          && startsWithCompany
+          && analystActionTerms.some((term) => headline.includes(term));
+        const tooOld = n.publishedTs > 0 ? (now - n.publishedTs) > THREE_DAYS_MS : false;
+        return (hasTicker || hasCompany) && !isSpam && !looksLikeAnalystNote && !tooOld;
       })
       .sort((a, b) => compareTickerItems(a, b, now));
 
@@ -184,8 +308,21 @@ export async function fetchGoogleTickerNewsRaw(ticker, companyName = "") {
       return latestDirectTs <= 0 || item.publishedTs > latestDirectTs;
     });
 
+    // First 6 hours: prefer specific direct sources only.
+    // If none are available, fall back to Google sources.
+    const preferredDirectInWindow = sourcePriorityItems.filter((item) => {
+      if (item.sourceType !== "direct") return false;
+      if (!isPreferredNewsSource(item.source)) return false;
+      const ageMs = now - (item.publishedTs || 0);
+      return ageMs >= 0 && ageMs <= DIRECT_FEED_PREFERRED_WINDOW_MS;
+    });
+
+    const effectiveItems = preferredDirectInWindow.length > 0
+      ? preferredDirectInWindow
+      : sourcePriorityItems.filter((item) => item.sourceType === "google");
+
     const groups = [];
-    for (const article of sourcePriorityItems) {
+    for (const article of effectiveItems) {
       let merged = false;
       for (const group of groups) {
         const similarity = stringSimilarity.compareTwoStrings(article.normalizedTitle, group.normalizedTitle);
@@ -213,6 +350,7 @@ export async function fetchGoogleTickerNewsRaw(ticker, companyName = "") {
           publishedTs: article.publishedTs,
           priority: article.priority,
           preferredPriority: article.preferredPriority,
+          sourceType: article.sourceType,
           normalizedTitle: article.normalizedTitle,
           prefixHash: article.prefixHash,
           primarySource: article.source || "Unknown",
@@ -221,9 +359,35 @@ export async function fetchGoogleTickerNewsRaw(ticker, companyName = "") {
       }
     }
 
-    return groups
+    const sortedGroups = groups
       .sort((a, b) => compareTickerItems(a, b, now))
-      .slice(0, NEWS_MAX_ITEMS)
+
+    // Strong preference: keep direct-feed articles from the first 90 minutes at the top,
+    // then fill remaining slots from other sources.
+    const directPreferredGroups = sortedGroups.filter((g) => (
+      g.sourceType === "direct"
+      && g.publishedTs > 0
+      && (now - g.publishedTs) <= DIRECT_FEED_PREFERRED_WINDOW_MS
+    ));
+    if (directPreferredGroups.length > 0) {
+      const directSet = new Set(directPreferredGroups.map((g) => `${g.url}::${g.publishedTs}`));
+      const others = sortedGroups.filter((g) => !directSet.has(`${g.url}::${g.publishedTs}`));
+      const selected = [...directPreferredGroups, ...others].slice(0, maxItems);
+      return selected.map((g) => ({
+          title: g.title,
+          url: g.url,
+          source: g.primarySource || Array.from(g.sources).join(", "),
+          publishedAt: g.publishedAt,
+          relativeTime: formatRelativeTime(g.publishedAt)
+        }));
+    }
+
+    const recentGroups = sortedGroups.filter((g) => g.publishedTs > 0 && (now - g.publishedTs) <= TWO_HOURS_MS);
+    const selectedGroups = recentGroups.length >= maxItems
+      ? recentGroups.slice(0, maxItems)
+      : sortedGroups.slice(0, maxItems);
+
+    return selectedGroups
       .map((g) => ({
         title: g.title,
         url: g.url,

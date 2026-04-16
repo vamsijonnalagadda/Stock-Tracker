@@ -6,13 +6,14 @@ import {
   firstNWordPrefix,
   formatRelativeTime,
   extractNewsSource,
-  canonicalizeSourceName
+  canonicalizeSourceName,
+  isPreferredNewsSource
 } from "./newsUtils.js";
 import { getKeywordWeight } from "./newsWeight.js";
 
 const GOOGLE_NEWS_RSS = "https://news.google.com/rss/search";
-const OVERALL_NEWS_MAX_ITEMS = Number(process.env.OVERALL_NEWS_MAX_ITEMS || 5);
-const OVERALL_NEWS_MAX_PER_SOURCE = Number(process.env.OVERALL_NEWS_MAX_PER_SOURCE || 1);
+const OVERALL_NEWS_MAX_ITEMS = Number(process.env.OVERALL_NEWS_MAX_ITEMS || 10);
+const OVERALL_NEWS_MAX_PER_SOURCE = Number(process.env.OVERALL_NEWS_MAX_PER_SOURCE || 3);
 const NEWS_CACHE_TTL_SECONDS = Number(process.env.NEWS_CACHE_TTL_SECONDS || 600);
 const HIGH_PRIORITY_WEIGHT_THRESHOLD = Number(process.env.HIGH_PRIORITY_WEIGHT_THRESHOLD || 50);
 
@@ -28,6 +29,20 @@ const CONFIG = {
     { name: "BBC Business", url: "https://feeds.bbci.co.uk/news/business/rss.xml", type: "direct" },
     { name: "Fox Business", url: "http://feeds.foxnews.com/foxnews/business", type: "direct" },
     { name: "Forbes Business", url: "https://www.forbes.com/business/feed/", type: "direct" },
+    { name: "FT Global Economy", url: "https://www.ft.com/global-economy?format=rss", type: "direct" },
+    { name: "FT Companies", url: "https://www.ft.com/companies?format=rss", type: "direct" },
+    { name: "FT Markets", url: "https://www.ft.com/markets?format=rss", type: "direct" },
+    { name: "FT Technology", url: "https://www.ft.com/technology?format=rss", type: "direct" },
+    { name: "WSJ US Business", url: "https://feeds.content.dowjones.io/public/rss/WSJcomUSBusiness", type: "direct" },
+    { name: "WSJ Markets (DJ)", url: "https://feeds.content.dowjones.io/public/rss/RSSMarketsMain", type: "direct" },
+    { name: "WSJ - WSJD", url: "https://feeds.content.dowjones.io/public/rss/RSSWSJD", type: "direct" },
+    { name: "MarketWatch Top Stories", url: "https://feeds.content.dowjones.io/public/rss/mw_topstories", type: "direct" },
+    { name: "MarketWatch Realtime", url: "https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines", type: "direct" },
+    { name: "MarketWatch Bulletins", url: "https://feeds.content.dowjones.io/public/rss/mw_bulletins", type: "direct" },
+    { name: "MarketWatch MarketPulse", url: "https://feeds.content.dowjones.io/public/rss/mw_marketpulse", type: "direct" },
+    { name: "Dow Jones - Social Economy", url: "https://feeds.content.dowjones.io/public/rss/socialeconomyfeed", type: "direct" },
+    { name: "Thomson Reuters IR", url: "https://ir.thomsonreuters.com/rss/news-releases.xml?items=15", type: "direct" },
+    { name: "Reuters Business", url: "https://www.reutersagency.com/feed/?best-topics=business-finance&post_type=best", type: "direct" },
     { name: "Reuters", url: "reuters.com", type: "google" },
     { name: "NDTV Profit", url: "ndtvprofit.com", type: "google" },
     { name: "Barrons", url: "barrons.com", type: "google" }
@@ -35,8 +50,38 @@ const CONFIG = {
 };
 
 const rssParser = new Parser({ customFields: { item: ["source"] } });
+const SPOOFED_USER_AGENT = process.env.SPOOFED_USER_AGENT ||
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36";
+const SPOOFED_ACCEPT = "application/rss+xml,application/xml;q=0.9,*/*;q=0.8";
 let overallNewsCache = null;
 const THREE_HOURS_MS = 3 * 60 * 60 * 1000;
+
+function needsHeaderSpoof(url) {
+  if (!url) return false;
+  return url.includes("thomsonreuters.com") || url.includes("feeds.content.dowjones.io") || url.includes("feeds.a.dj.com") || url.includes("a.dj.com");
+}
+
+async function fetchFeedWithOptionalHeaders(url) {
+  if (needsHeaderSpoof(url) && typeof fetch === "function") {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    try {
+      const res = await fetch(url, {
+        method: "GET",
+        headers: { "User-Agent": SPOOFED_USER_AGENT, Accept: SPOOFED_ACCEPT },
+        signal: controller.signal
+      });
+      clearTimeout(timeout);
+      if (!res.ok) throw new Error(`fetch failed: ${res.status}`);
+      const text = await res.text();
+      return await rssParser.parseString(text);
+    } catch (e) {
+      clearTimeout(timeout);
+      throw e;
+    }
+  }
+  return await rssParser.parseURL(url);
+}
 
 function sourceKeyFromName(sourceName) {
   return normalizeSourceForPreference(sourceName || "Unknown");
@@ -50,15 +95,15 @@ function buildGoogleSourceUrl(domain) {
 function compareLatestItems(a, b, nowTs) {
   if (a.priority !== b.priority) return a.priority - b.priority;
 
+  if (a.preferredPriority !== b.preferredPriority) {
+    return a.preferredPriority - b.preferredPriority;
+  }
+
   const aInLast3h = (nowTs - (a.publishedTs || 0)) <= THREE_HOURS_MS;
   const bInLast3h = (nowTs - (b.publishedTs || 0)) <= THREE_HOURS_MS;
   if (aInLast3h !== bInLast3h) return aInLast3h ? -1 : 1;
 
-  if (aInLast3h && bInLast3h) {
-    if (b.weight !== a.weight) return b.weight - a.weight;
-    return b.publishedTs - a.publishedTs;
-  }
-
+  // Within each priority bucket, always show latest first.
   if (b.publishedTs !== a.publishedTs) return b.publishedTs - a.publishedTs;
   return b.weight - a.weight;
 }
@@ -75,19 +120,22 @@ export async function fetchOverallLatestNews() {
   const promise = (async () => {
     let allItems = [];
 
-    for (const sourceConfig of CONFIG.SOURCES) {
+    const feedPromises = CONFIG.SOURCES.map(async (sourceConfig) => {
       const feedUrl = sourceConfig.type === "direct"
         ? sourceConfig.url
         : buildGoogleSourceUrl(sourceConfig.url);
 
       try {
-        const feed = await rssParser.parseURL(feedUrl);
+        const feed = await fetchFeedWithOptionalHeaders(feedUrl);
         const items = Array.isArray(feed?.items) ? feed.items : [];
-        allItems.push(...items.map((item) => ({ item, sourceConfig })));
+        return items.map((item) => ({ item, sourceConfig }));
       } catch {
-        // Continue with remaining sources.
+        return [];
       }
-    }
+    });
+
+    const feedResults = await Promise.all(feedPromises);
+    for (const items of feedResults) allItems.push(...items);
 
     const normalizedItems = allItems
       .map(({ item, sourceConfig }) => {
@@ -100,6 +148,7 @@ export async function fetchOverallLatestNews() {
         const normalizedTitle = normalizeNewsTitle(cleanedTitle || rawTitle);
         const prefixHash = firstNWordPrefix(cleanedTitle || rawTitle, 5);
         const priority = sourceConfig.type === "direct" ? 0 : 1;
+        const preferredPriority = isPreferredNewsSource(source) ? 0 : 1;
         const weight = getKeywordWeight(cleanedTitle || rawTitle, source);
         return {
           title: cleanedTitle || rawTitle,
@@ -112,6 +161,7 @@ export async function fetchOverallLatestNews() {
           normalizedTitle,
           prefixHash,
           priority,
+          preferredPriority,
           weight
         };
       })
@@ -175,13 +225,8 @@ export async function fetchOverallLatestNews() {
       if (unique.length >= OVERALL_NEWS_MAX_ITEMS) break;
     }
 
-    const hasRecentHighPriority = unique.some(
-      (item) => isInLast3Hours(item, now) && item.weight >= HIGH_PRIORITY_WEIGHT_THRESHOLD
-    );
-
-    const gatedItems = hasRecentHighPriority
-      ? unique.filter((item) => !isInLast3Hours(item, now) || item.weight >= HIGH_PRIORITY_WEIGHT_THRESHOLD)
-      : unique;
+    // Keep list recency-first and do not drop newer items by keyword gate.
+    const gatedItems = unique;
 
     const selected = [];
     const sourceCounts = new Map();

@@ -41,11 +41,25 @@
     .mkt-chg.up   { color: #34d399; }
     .mkt-chg.down { color: #f87171; }
     .mkt-chg.flat { color: #64748b; }
+    .after-hours-badge { font-size: 0.95rem; color: #94a3b8; background: rgba(255,255,255,0.04); padding: 5px 12px; border-radius: 999px; display:inline-flex; align-items:center; gap:5px; border:1px solid rgba(255,255,255,0.07); }
+    .after-hours-value.up { color: #34d399; font-weight:700; }
+    .after-hours-value.down { color: #f87171; font-weight:700; }
+    .after-hours-value.flat { color: #94a3b8; font-weight:700; }
     .mkt-sep { color: #1e293b; font-size: 0.9rem; user-select: none; }
-    .market-groups { display:flex; gap:12px; width:100%; flex-wrap:wrap; align-items:center; }
-    .market-group { display:flex; gap:10px; align-items:center; background:rgba(255,255,255,0.02); padding:6px 10px; border-radius:10px; }
-    .group-label { font-size:0.68rem; color:#94a3b8; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; margin-right:6px; }
-    .group-items { display:flex; gap:8px; align-items:center; }
+    /* ── Market group pill buttons ── */
+    .market-groups { display:flex; gap:8px; flex-wrap:wrap; align-items:center; width:100%; }
+    .market-group-btn { padding:5px 12px; border-radius:999px; border:1.5px solid #1e293b; background:#0f1724; color:#94a3b8; font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:0.07em; cursor:pointer; transition:all .18s; white-space:nowrap; }
+    .market-group-btn:hover { border-color:#4f46e5; color:#c7d2fe; }
+    .market-group-btn.active { background:linear-gradient(135deg,#4f46e5,#06b6d4); border-color:transparent; color:#fff; box-shadow:0 4px 16px rgba(79,70,229,0.3); }
+    /* Shared content area below group buttons */
+    .market-content-area { display:none; margin-top:8px; padding:10px 12px; background:#0b1018; border:1px solid #1e293b; border-radius:12px; }
+    .market-content-area.visible { display:flex; flex-wrap:wrap; gap:6px 20px; }
+    /* Compact row for each index inside content area */
+    .market-row { display:inline-flex; align-items:center; gap:8px; padding:4px 8px; border-radius:8px; transition:background .12s; min-width:140px; }
+    .market-row:hover { background:rgba(255,255,255,0.03); }
+    .market-cell-label { color:#94a3b8; font-weight:700; font-size:0.76rem; min-width:60px; }
+    .market-cell-price { color:#e2e8f0; font-weight:800; font-variant-numeric:tabular-nums; font-size:0.82rem; }
+    .market-cell-chg { font-weight:700; font-size:0.76rem; min-width:70px; text-align:right; }
 
     /* ── Search bar ── */
     .search-wrap { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; }
@@ -77,6 +91,15 @@
     #fetchBtn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
     #fetchBtn:disabled { opacity: 0.45; cursor: not-allowed; }
 
+    /* Sentiment UI */
+    .sent-row { padding:8px 10px; border-radius:8px; background:rgba(255,255,255,0.02); display:flex; justify-content:space-between; gap:8px; align-items:center; }
+    .sent-row strong { font-weight:800; font-size:0.9rem; }
+    .sent-emoji { font-size:1.1rem; margin-left:6px }
+    .sent-subrow { padding:6px 12px; color:#9aa7b9; font-size:0.86rem; border-left:2px solid rgba(255,255,255,0.03); margin:6px 0 6px 0; }
+    .delta-up { color: #34d399; font-weight:700; }
+    .delta-down { color: #f87171; font-weight:700; }
+    .delta-neutral { color: #94a3b8; font-weight:700; }
+
     /* ── Price card ── */
     .price-card {
       background: linear-gradient(145deg, #111827 0%, #0f1629 100%);
@@ -87,9 +110,14 @@
       box-shadow: 0 24px 60px rgba(0,0,0,0.45);
     }
     .company-name {
-      font-size: 0.78rem; font-weight: 700; color: #475569;
-      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px;
+      font-size: 0.82rem; font-weight: 700; color: #7eb8e8;
+      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
     }
+    .company-name .ticker-sym {
+      color: #f0f6ff; font-size: 1rem; font-weight: 900; letter-spacing: 0.05em;
+    }
+    .company-name .name-sep { color: #334155; }
     .price-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
     .price-big { font-size: 56px; font-weight: 900; letter-spacing: -0.045em; line-height: 1; color: #f8fafc; }
     .pct-badge {
@@ -100,7 +128,22 @@
     .pct-positive { color: #34d399; background: rgba(52,211,153,0.12); border: 1px solid rgba(52,211,153,0.2); }
     .pct-negative { color: #f87171; background: rgba(248,113,113,0.12); border: 1px solid rgba(248,113,113,0.18); }
     .pct-neutral  { color: #64748b; background: rgba(100,116,139,0.1); border: 1px solid rgba(100,116,139,0.15); }
-    .price-meta { font-size: 0.8rem; color: #334155; margin-top: 12px; line-height: 1.6; }
+    .price-meta {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-top: 10px;
+    }
+    .meta-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 0.82rem;
+    }
+    .meta-chip .meta-label { color: #7e95b0; font-weight: 600; white-space: nowrap; }
+    .meta-chip .meta-value { color: #e2eaf4; font-weight: 800; white-space: nowrap; }
+    .meta-chip .meta-high  { color: #34d399; font-weight: 800; }
+    .meta-chip .meta-low   { color: #f87171; font-weight: 800; }
 
     /* ── Tab pill buttons ── */
     .tabs-row {
@@ -142,21 +185,7 @@
       transform: translateY(-2px);
     }
 
-    /* ── Accordion panel (smooth expand/collapse) ── */
-    .panel-wrap {
-      display: grid;
-      grid-template-rows: 0fr;
-      opacity: 0;
-      transition: grid-template-rows 0.3s cubic-bezier(0.4,0,0.2,1),
-                  opacity 0.25s ease,
-                  margin-bottom 0.3s ease;
-      margin-bottom: 0;
-    }
-    .panel-wrap.open {
-      grid-template-rows: 1fr;
-      opacity: 1;
-      margin-bottom: 10px;
-    }
+    /* ── Tab content area ── */
     .panel-inner-overflow { overflow: hidden; }
     .panel-inner {
       background: #111827;
@@ -249,9 +278,11 @@
       gap: 28px;
       white-space: nowrap;
       padding-left: 100%;
-      animation: headline-scroll 56s linear infinite;
+      animation: headline-scroll 191.25s linear infinite;
       will-change: transform;
     }
+    /* Controls and unified grid */
+
     .headline-bar:hover .headline-track { animation-play-state: paused; }
     .headline-item {
       color: #cbd5e1;
@@ -268,6 +299,182 @@
       letter-spacing: 0.01em;
     }
     .headline-time { color: #64748b; }
+
+    .social-trending-strip {
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #0a1324 0%, #101a30 55%, #0f2232 100%);
+      margin-bottom: 14px;
+      padding: 12px 14px;
+    }
+    .social-trending-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .social-trending-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .social-trending-title .social-chevron { font-size: 0.6rem; transition: transform .2s; display: inline-block; }
+    .social-trending-strip.hidden .social-chevron { transform: rotate(-90deg); }
+    .social-trending-list {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .social-trending-strip.hidden .social-trending-list { display: none; }
+    .social-trending-strip.hidden .social-trending-head { margin-bottom: 0; }
+    .social-trending-strip.hidden { padding-bottom: 8px; }
+    .social-chip {
+      border: 1px solid #22435f;
+      background: rgba(10, 18, 32, 0.75);
+      color: #dbeafe;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: transform .15s, border-color .2s, box-shadow .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .social-chip:hover {
+      transform: translateY(-1px);
+      border-color: #38bdf8;
+      box-shadow: 0 8px 20px rgba(56, 189, 248, 0.2);
+    }
+    .social-chip-rank {
+      color: #93c5fd;
+      margin-right: 6px;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    /* Trend Direction Indicators */
+    .social-chip.bullish {
+      border-color: #34d399;
+      color: #34d399;
+      background: rgba(52, 211, 153, 0.08);
+    }
+    .social-chip.bullish:hover {
+      border-color: #34d399;
+      box-shadow: 0 8px 20px rgba(52, 211, 153, 0.25);
+    }
+    .social-chip.bearish {
+      border-color: #f87171;
+      color: #f87171;
+      background: rgba(248, 113, 113, 0.08);
+    }
+    .social-chip.bearish:hover {
+      border-color: #f87171;
+      box-shadow: 0 8px 20px rgba(248, 113, 113, 0.25);
+    }
+    .chip-direction {
+      font-size: 0.9rem;
+      font-weight: 900;
+      margin-right: 4px;
+    }
+    .chip-price {
+      font-size: 0.72rem;
+      color: #cbd5e1;
+      font-weight: 700;
+      margin-left: 4px;
+    }
+    .chip-session {
+      font-size: 0.64rem;
+      color: #94a3b8;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-left: 3px;
+    }
+
+    /* ── Earnings Panel ── */
+    .earnings-panel { width: 100%; }
+    .earnings-day-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .earnings-day-tab {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid #1e3250;
+      color: #94a3b8;
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .earnings-day-tab:hover { border-color: #38bdf8; color: #e0f2fe; }
+    .earnings-day-tab.active {
+      background: rgba(56,189,248,0.15);
+      border-color: #38bdf8;
+      color: #e0f2fe;
+    }
+    .earnings-day-tab.today-tab {
+      border-color: #6366f1;
+      color: #a5b4fc;
+    }
+    .earnings-day-tab.today-tab.active {
+      background: rgba(99,102,241,0.18);
+      border-color: #6366f1;
+      color: #c7d2fe;
+    }
+    .earnings-grid {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .earnings-grid-header,
+    .earnings-grid-row {
+      display: grid;
+      grid-template-columns: 80px 80px 80px 80px 80px;
+      gap: 0;
+      align-items: center;
+      padding: 4px 6px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+    }
+    .earnings-grid-header {
+      color: #64748b;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 2px;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 5px;
+    }
+    .earnings-grid-row {
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background .12s, border-color .12s;
+      margin-bottom: 1px;
+    }
+    .earnings-grid-row:hover {
+      background: rgba(56,189,248,0.07);
+      border-color: #22435f;
+    }
+    .earnings-grid-row.sp500-row .eg-symbol { color: #93c5fd; font-weight: 800; }
+    .eg-symbol { font-weight: 800; font-size: 0.82rem; color: #dbeafe; }
+    .eg-time { display: flex; align-items: center; gap: 4px; font-size: 0.73rem; font-weight: 700; }
+    .eg-time.bmo { color: #fbbf24; }
+    .eg-time.amc { color: #818cf8; }
+    .eg-implied { font-size: 0.75rem; font-weight: 700; color: #94a3b8; }
+    .eg-avg { font-size: 0.75rem; font-weight: 700; }
+    .eg-last { font-size: 0.75rem; font-weight: 700; }
+    .eg-pos { color: #34d399; }
+    .eg-neg { color: #f87171; }
+    .eg-na  { color: #475569; }
+    .earnings-empty { color: #475569; font-size: 0.82rem; padding: 8px 0; }
 
     @keyframes headline-scroll {
       from { transform: translateX(0); }
@@ -329,8 +536,19 @@
 
   <div class="headline-bar"><div id="overallHeadlines"></div></div>
 
+  <div class="social-trending-strip" id="insightsStrip">
+    <div class="social-trending-head">
+      <button class="social-trending-title market-group-btn active" id="socialToggleTitle" type="button">Trending in Social <span class="social-chevron">&#x25BE;</span></button>
+      <button class="social-trending-title market-group-btn" id="earningsToggleTitle" type="button">Earnings This Week <span class="social-chevron">&#x25BE;</span></button>
+      <button class="social-trending-title market-group-btn" id="activeOptionsToggleTitle" type="button">Today's Most Active Options <span class="social-chevron">&#x25BE;</span></button>
+    </div>
+    <div id="insightsStripContent" class="social-trending-list">
+      <span class="dimtext">Loading trending symbols...</span>
+    </div>
+  </div>
+
   <div class="search-wrap">
-    <input id="ticker" placeholder="Search with ticker eg: NVDA,AAPL,TSLA" autocomplete="off" spellcheck="false" />
+    <input id="ticker" placeholder="Search with ticker or name eg: NVDA, Nvidia" autocomplete="off" spellcheck="false" />
     <button id="fetchBtn">Search</button>
   </div>
 
@@ -344,6 +562,17 @@
 
   let inFlight = false, _poll = null, _prevClose = null, _cur = '';
   let _currentTicker = '', _currentCompanyName = '', _newsLoadedFor = '', _newsLoading = false;
+  let _currentEarningsDate = null;
+  let _initialTrendingConsumed = false;
+  let _tickerOptionsLoadedFor = '';
+  let _insightsStripMode = 'trending';
+  let _trendingStripSymbols = [];
+  let _trendingStripUnavailable = false;
+  let _earningsStripSections = [];
+  let _earningsStripUnavailable = false;
+  let _earningsSelectedDate = null;
+  let _activeOptionsItems = [];
+  let _activeOptionsUnavailable = false;
 
   function setLoading(s) {
     inFlight = s;
@@ -368,12 +597,26 @@
     .replace(/\s+/g, ' ')
     .trim();
   const fR    = (l,s) => !l ? 'N/A' : (s!=null ? l+' ('+s.toFixed(1)+')' : l);
+  const fDate = ts => {
+    if (ts == null || ts === '' || ts === false) return '\u2014';
+    // Handle ISO strings (e.g. "2026-04-30T20:00:00.000Z") directly
+    if (typeof ts === 'string') {
+      const d = new Date(ts);
+      return isNaN(d.getTime()) ? '\u2014' : d.toLocaleDateString(undefined, {year:'numeric',month:'short',day:'numeric'});
+    }
+    // Handle numeric unix timestamps (seconds < 1e11, or ms >= 1e11)
+    const n = +ts;
+    if (!Number.isFinite(n) || n <= 0) return '\u2014';
+    const ms = n >= 1e11 ? n : n * 1000;
+    const d  = new Date(ms);
+    return isNaN(d.getTime()) ? '\u2014' : d.toLocaleDateString(undefined, {year:'numeric',month:'short',day:'numeric'});
+  };
   const m     = (lbl, val) => '<div class="metric"><div class="m-label">'+lbl+'</div><div class="m-value">'+val+'</div></div>';
   const newsHtml = (news) => {
     if (!Array.isArray(news) || news.length === 0) {
       return '<p class="dimtext">No recent news found.</p>';
     }
-    return '<div class="news-list">' + news.slice(0, 5).map(item => {
+    return '<div class="news-list">' + news.map(item => {
       const title = item.title || 'Untitled';
       const source = item.source || 'Unknown source';
       const time = item.relativeTime || 'Unknown time';
@@ -413,54 +656,531 @@
     return '<div class="headline-track">'+itemHtml+itemHtml+'</div>';
   };
 
-  /* ── Market Indices ── */
-  function renderMarketTicker(indices) {
-    const bar = document.getElementById('marketTickerBar');
-    if (!bar || !Array.isArray(indices)) return;
+  const trendingStocktwitsHtml = (symbols) => {
+    if (!Array.isArray(symbols) || symbols.length === 0) {
+      return '<span class="dimtext">No trending symbols right now.</span>';
+    }
+    return symbols.slice(0, 10).map((s, i) => {
+      const sym = s.symbol || 'N/A';
+      const title = s.title || '';
+      const direction = s.direction || 'neutral'; // bullish, bearish, or neutral
+      const arrow = s.arrow || '●';
+      const price = Number.isFinite(+s.displayPrice) ? (+s.displayPrice).toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 }) : null;
+      const session = s.displaySession || '';
+      const activePct = Number.isFinite(+s.displayChangePct)
+        ? +s.displayChangePct
+        : (session === 'After Hours' && Number.isFinite(+s.extendedChangePct)
+            ? +s.extendedChangePct
+            : (Number.isFinite(+s.regularChangePct) ? +s.regularChangePct : null));
+      const pct = activePct != null ? ((activePct > 0 ? '+' : '') + activePct.toFixed(2) + '%') : '';
+      const priceAndPct = [price ? ('$'+price) : '', pct ? (price ? (' ('+pct+')') : pct) : ''].join('');
+      return '<button class="social-chip '+direction+'" data-st-symbol="'+escapeHtml(sym)+'" title="'+escapeHtml(title)+'">'
+        + '<span class="social-chip-rank">#'+(i + 1)+'</span>'
+        + '<span class="chip-direction">'+arrow+'</span>'
+        + '<span>'+escapeHtml(sym)+'</span>'
+        + (priceAndPct ? ('<span class="chip-price">'+priceAndPct+'</span>') : '')
+        + (session ? ('<span class="chip-session">'+escapeHtml(session)+'</span>') : '')
+        + '</button>';
+    }).join('');
+  };
 
-    const groups = {
-      US: ['S&P 500','Nasdaq','Dow'],
-      Metals: ['Gold','Silver','10Y'],
-      Energy: ['WTI','Brent'],
-      Currency: ['USD/INR','Dollar Index'],
-      India: ['Sensex'],
-      Asia: ['Nikkei','KOSPI']
-    };
+  function wireTrendingSymbolsButtons() {
+    document.querySelectorAll('[data-st-symbol]').forEach((btn) => {
+      btn.onclick = () => {
+        const sym = btn.getAttribute('data-st-symbol');
+        if (!sym) return;
+        tickerInput.value = sym;
+        doSearch();
+      };
+    });
+  }
 
-    function itemHtml(idx) {
-      const price = idx.price != null ? idx.price.toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 }) : '—';
-      const pct = idx.changePct != null ? idx.changePct : null;
-      const dir = pct == null ? 'flat' : pct > 0 ? 'up' : pct < 0 ? 'down' : 'flat';
-      const arrow = dir === 'up' ? '▲' : dir === 'down' ? '▼' : '●';
-      const pctStr = pct != null ? (pct > 0 ? '+' : '') + pct.toFixed(2) + '%' : '';
-      return '<span class="mkt-item">'
-        + '<span class="mkt-label">' + idx.label + '</span>'
-        + '<span class="mkt-price">' + price + '</span>'
-        + (pctStr ? '<span class="mkt-chg ' + dir + '">' + arrow + ' ' + pctStr + '</span>' : '')
-        + '</span>';
+  function consumeInitialTrendingSymbols() {
+    if (_initialTrendingConsumed) return null;
+    const initial = window.INITIAL_TRENDING_DATA;
+    const symbols = Array.isArray(initial)
+      ? initial
+      : (Array.isArray(initial?.symbols) ? initial.symbols : null);
+    if (!symbols || symbols.length === 0) return null;
+    _initialTrendingConsumed = true;
+    return symbols;
+  }
+
+  function formatEarningsDateLabel(dateIso) {
+    const d = new Date(dateIso + 'T00:00:00');
+    if (Number.isNaN(d.getTime())) return dateIso;
+    return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+  }
+
+  function earningsHourLabel(hour) {
+    const v = String(hour || '').toLowerCase();
+    if (v === 'bmo') return 'BMO';
+    if (v === 'amc') return 'AMC';
+    return 'TBD';
+  }
+
+  function normalizeEarningsSections(payload) {
+    try {
+      const days = payload && typeof payload.days === 'object' && payload.days ? payload.days : {};
+      const allDates = Object.keys(days).sort();
+      if (allDates.length === 0) return [];
+
+      return allDates.map((dateIso) => {
+        const rows = Array.isArray(days[dateIso]) ? days[dateIso] : [];
+        const sortedRows = rows.slice().sort((a, b) => {
+          const aSp = a && a.isSp500 ? 1 : 0;
+          const bSp = b && b.isSp500 ? 1 : 0;
+          if (aSp !== bSp) return bSp - aSp;
+          return String(a?.symbol || '').localeCompare(String(b?.symbol || ''));
+        });
+        return { dateIso, dateLabel: formatEarningsDateLabel(dateIso), rows: sortedRows };
+      }).filter((x) => x.rows.length > 0);
+    } catch (e) {
+      console.error('[earnings] normalizeEarningsSections error:', e);
+      return [];
+    }
+  }
+
+  function earningsStripHtml(sections, selectedDate) {
+    if (!Array.isArray(sections) || sections.length === 0) {
+      return '<span class="dimtext">No earnings schedule available right now.</span>';
     }
 
-    const byLabel = new Map(indices.filter(i => i && i.label != null).map(i => [String(i.label), i]));
+    const today = new Date().toISOString().slice(0, 10);
+    // Default to today if in sections, else nearest future date, else first date
+    if (!selectedDate || !sections.find(s => s.dateIso === selectedDate)) {
+      const todaySection = sections.find(s => s.dateIso === today);
+      const futureSection = sections.find(s => s.dateIso >= today);
+      selectedDate = (todaySection || futureSection || sections[0]).dateIso;
+    }
+    _earningsSelectedDate = selectedDate;
 
-    const html = Object.keys(groups).map((g) => {
-      const labels = groups[g];
-      const items = labels.map(l => byLabel.get(l)).filter(Boolean);
-      if (items.length === 0) return '';
-      return '<div class="market-group" role="group" aria-label="'+g+'">'
-        + '<div class="group-label">' + g + '</div>'
-        + '<div class="group-items">' + items.map(itemHtml).join('<span class="mkt-sep">|</span>') + '</div>'
-        + '</div>';
+    // Day tabs
+    const tabs = sections.map(s => {
+      const isToday = s.dateIso === today;
+      const isActive = s.dateIso === selectedDate;
+      const cls = ['earnings-day-tab', isToday ? 'today-tab' : '', isActive ? 'active' : ''].filter(Boolean).join(' ');
+      const label = isToday ? s.dateLabel + ' ✦' : s.dateLabel;
+      return `<button class="${cls}" data-edate="${escapeHtml(s.dateIso)}" type="button">${escapeHtml(label)}</button>`;
     }).join('');
 
-    bar.innerHTML = '<div class="market-groups">' + html + '</div>';
+    // Grid for selected section
+    const section = sections.find(s => s.dateIso === selectedDate);
+    let grid = '';
+    if (!section || section.rows.length === 0) {
+      grid = '<div class="earnings-empty">No earnings on this date.</div>';
+    } else {
+      const header = '<div class="earnings-grid-header">'
+        + '<span>Symbol</span><span>Time</span><span>Implied</span><span>Avg 4Q</span><span>Last</span>'
+        + '</div>';
+
+      const rows = section.rows.map(row => {
+        const sym = row?.symbol || 'N/A';
+        const isSp = row?.isSp500 ? ' sp500-row' : '';
+        const hour = String(row?.hour || '').toLowerCase();
+        const timeLabel = hour === 'bmo' ? '🌅 BMO' : hour === 'amc' ? '🌙 AMC' : '— TBD';
+        const timeCls = 'eg-time ' + (hour === 'bmo' ? 'bmo' : hour === 'amc' ? 'amc' : '');
+
+        const impliedRaw = row?.impliedMove;
+        const impliedStr = impliedRaw ? escapeHtml(String(impliedRaw)) : '<span class="eg-na">—</span>';
+
+        const avgRaw = Number(row?.avgLast4EarningsMove);
+        const avgStr = Number.isFinite(avgRaw)
+          ? `<span class="${avgRaw >= 0 ? 'eg-pos' : 'eg-neg'}">${avgRaw >= 0 ? '+' : ''}${Math.abs(avgRaw).toFixed(1)}%</span>`
+          : '<span class="eg-na">—</span>';
+
+        const lastRaw = Number(row?.lastEarningsMove);
+        const lastStr = Number.isFinite(lastRaw)
+          ? `<span class="${lastRaw >= 0 ? 'eg-pos' : 'eg-neg'}">${lastRaw >= 0 ? '+' : ''}${lastRaw.toFixed(1)}%</span>`
+          : '<span class="eg-na">—</span>';
+
+        return `<div class="earnings-grid-row${isSp}" data-earnings-symbol="${escapeHtml(sym)}" role="button" tabindex="0">`
+          + `<span class="eg-symbol">${escapeHtml(sym)}</span>`
+          + `<span class="${timeCls}">${timeLabel}</span>`
+          + `<span class="eg-implied">${impliedStr}</span>`
+          + `<span class="eg-avg">${avgStr}</span>`
+          + `<span class="eg-last">${lastStr}</span>`
+          + `</div>`;
+      }).join('');
+
+      grid = `<div class="earnings-grid">${header}${rows}</div>`;
+    }
+
+    return `<div class="earnings-panel"><div class="earnings-day-tabs">${tabs}</div>${grid}</div>`;
+  }
+
+  function wireEarningsSymbolsButtons() {
+    // Wire symbol row clicks → search
+    document.querySelectorAll('[data-earnings-symbol]').forEach((btn) => {
+      btn.onclick = () => {
+        const sym = btn.getAttribute('data-earnings-symbol');
+        if (!sym) return;
+        tickerInput.value = sym;
+        doSearch();
+      };
+    });
+    // Wire day tab clicks → re-render for selected date
+    document.querySelectorAll('.earnings-day-tab[data-edate]').forEach((tab) => {
+      tab.onclick = (e) => {
+        e.stopPropagation();
+        _earningsSelectedDate = tab.getAttribute('data-edate');
+        renderInsightsStripContent();
+      };
+    });
+  }
+
+  function renderInsightsStripContent() {
+    const container = document.getElementById('insightsStripContent');
+    if (!container) return;
+
+    if (_insightsStripMode === 'earnings') {
+      container.innerHTML = earningsStripHtml(_earningsStripSections, _earningsSelectedDate);
+      wireEarningsSymbolsButtons();
+      return;
+    }
+
+    if (_insightsStripMode === 'activeOptions') {
+      container.innerHTML = activeOptionsStripHtml(_activeOptionsItems);
+      wireActiveOptionsButtons();
+      return;
+    }
+
+    if (_trendingStripUnavailable && _trendingStripSymbols.length === 0) {
+      container.innerHTML = '<span class="dimtext">Unavailable</span>';
+      return;
+    }
+
+    container.innerHTML = trendingStocktwitsHtml(_trendingStripSymbols);
+    wireTrendingSymbolsButtons();
+  }
+
+  function setInsightsStripMode(nextMode) {
+    const strip = document.getElementById('insightsStrip');
+    const socialBtn = document.getElementById('socialToggleTitle');
+    const earningsBtn = document.getElementById('earningsToggleTitle');
+    const activeOptionsBtn = document.getElementById('activeOptionsToggleTitle');
+    if (!strip || !socialBtn || !earningsBtn || !activeOptionsBtn) return;
+
+    if (_insightsStripMode === nextMode) {
+      _insightsStripMode = null;
+      strip.classList.add('hidden');
+      socialBtn.classList.remove('active');
+      earningsBtn.classList.remove('active');
+      activeOptionsBtn.classList.remove('active');
+      return;
+    }
+
+    _insightsStripMode = nextMode;
+    strip.classList.remove('hidden');
+    socialBtn.classList.toggle('active', nextMode === 'trending');
+    earningsBtn.classList.toggle('active', nextMode === 'earnings');
+    activeOptionsBtn.classList.toggle('active', nextMode === 'activeOptions');
+    renderInsightsStripContent();
+  }
+
+  function wireInsightsStripButtons() {
+    const socialBtn = document.getElementById('socialToggleTitle');
+    const earningsBtn = document.getElementById('earningsToggleTitle');
+    const activeOptionsBtn = document.getElementById('activeOptionsToggleTitle');
+    if (socialBtn) {
+      socialBtn.onclick = () => setInsightsStripMode('trending');
+    }
+    if (earningsBtn) {
+      earningsBtn.onclick = async () => {
+        if (_earningsStripSections.length === 0) {
+          await loadEarningsWeek();
+        }
+        setInsightsStripMode('earnings');
+      };
+    }
+    if (activeOptionsBtn) {
+      activeOptionsBtn.onclick = async () => {
+        if (_activeOptionsItems.length === 0) {
+          await loadActiveOptions();
+        }
+        setInsightsStripMode('activeOptions');
+      };
+    }
+  }
+
+  async function loadStocktwitsTrending() {
+    const initialSymbols = consumeInitialTrendingSymbols();
+    if (initialSymbols) {
+      _trendingStripSymbols = initialSymbols;
+      if (_insightsStripMode === 'trending') renderInsightsStripContent();
+    }
+
+    try {
+      let res = await fetch('/api/trending', getStocktwitsFetchOptions());
+      if (!res.ok) {
+        res = await fetch('/api/social/trending' + getStocktwitsQueryString(), getStocktwitsFetchOptions());
+      }
+      const data = await res.json();
+      if (data && !data.error && Array.isArray(data.symbols)) {
+        _trendingStripSymbols = data.symbols;
+        if (_insightsStripMode === 'trending') renderInsightsStripContent();
+      }
+    } catch (_) {
+      // silently fail - let the UI show "unavailable" message
+    }
+  }
+
+  async function loadEarningsWeek() {
+    try {
+      const res = await fetch('/api/earnings/week');
+      if (!res.ok) throw new Error('earnings_week_http_' + res.status);
+      const payload = await res.json();
+      _earningsStripSections = normalizeEarningsSections(payload);
+      if (_insightsStripMode === 'earnings') renderInsightsStripContent();
+    } catch (err) {
+      console.error('[earnings] loadEarningsWeek error:', err);
+      _earningsStripSections = [];
+    }
+  }
+
+  function activeOptionsStripHtml(items) {
+    if (!Array.isArray(items) || items.length === 0) {
+      return '<span class="dimtext">No active options available right now.</span>';
+    }
+    return items.slice(0, 15).map((it, i) => {
+      const symbol = it.symbol || 'N/A';
+      const type = it.type || '';
+      const strike = Number.isFinite(+it.strike) ? (+it.strike).toFixed(2) : '\u2014';
+      const vol = Number.isFinite(+it.volume) ? Math.round(+it.volume).toLocaleString() : '\u2014';
+      return '<button class="social-chip" data-active-symbol="'+escapeHtml(symbol)+'" title="'+escapeHtml((it.contract || '')+'')+'">'
+        + '<span class="social-chip-rank">#'+(i + 1)+'</span>'
+        + '<span>'+escapeHtml(symbol)+'</span>'
+        + '<span class="chip-session">'+escapeHtml(type)+'</span>'
+        + '<span class="chip-price">$'+strike+' · vol '+vol+'</span>'
+        + '</button>';
+    }).join('');
+  }
+
+  function wireActiveOptionsButtons() {
+    document.querySelectorAll('[data-active-symbol]').forEach((btn) => {
+      btn.onclick = () => {
+        const sym = btn.getAttribute('data-active-symbol');
+        if (!sym) return;
+        tickerInput.value = sym;
+        doSearch();
+      };
+    });
+  }
+
+  async function loadActiveOptions() {
+    const initial = window.INITIAL_ACTIVE_OPTIONS_DATA;
+    if (initial && Array.isArray(initial.items) && initial.items.length > 0) {
+      _activeOptionsItems = initial.items;
+      if (_insightsStripMode === 'activeOptions') renderInsightsStripContent();
+    }
+    try {
+      const res = await fetch('/api/options/active');
+      const data = await res.json();
+      if (data && !data.error && Array.isArray(data.items)) {
+        _activeOptionsItems = data.items;
+        if (_insightsStripMode === 'activeOptions') renderInsightsStripContent();
+      }
+    } catch (_) {
+      // silently fail - let the UI show "no options available" message
+    }
+  }
+
+  function tickerOptionsHtml(payload) {
+    const calls = Array.isArray(payload?.calls) ? payload.calls : [];
+    const puts = Array.isArray(payload?.puts) ? payload.puts : [];
+    function rowHtml(r) {
+      const strike = Number.isFinite(+r.strike) ? (+r.strike).toFixed(2) : '\u2014';
+      const last = Number.isFinite(+r.lastPrice) ? (+r.lastPrice).toFixed(2) : '\u2014';
+      const vol = Number.isFinite(+r.volume) ? Math.round(+r.volume).toLocaleString() : '\u2014';
+      const oi = Number.isFinite(+r.openInterest) ? Math.round(+r.openInterest).toLocaleString() : '\u2014';
+      return '<tr><td>'+escapeHtml(r.type || '')+'</td><td>'+strike+'</td><td>'+last+'</td><td>'+vol+'</td><td>'+oi+'</td></tr>';
+    }
+    const rows = [...calls, ...puts].slice(0, 30).map(rowHtml).join('');
+    if (!rows) return '<p class="dimtext">No options contracts available.</p>';
+    return '<div class="dimtext" style="margin-bottom:8px">Nearest expiry: '+escapeHtml(payload.expirationDate || '\u2014')+'</div>'
+      + '<table style="width:100%;border-collapse:collapse">'
+      + '<thead><tr><th style="text-align:left">Type</th><th style="text-align:left">Strike</th><th style="text-align:left">Last</th><th style="text-align:left">Volume</th><th style="text-align:left">OI</th></tr></thead>'
+      + '<tbody>'+rows+'</tbody></table>';
+  }
+
+  async function loadTickerOptionsForCurrentTicker() {
+    const container = document.getElementById('tickerOptionsContainer');
+    if (!container || !_currentTicker) return;
+    if (_tickerOptionsLoadedFor === _currentTicker) return;
+    container.innerHTML = '<p class="dimtext">Loading options chain...</p>';
+    try {
+      const res = await fetch('/api/options/' + encodeURIComponent(_currentTicker));
+      const data = await res.json();
+      if (data.error) {
+        container.innerHTML = '<p class="dimtext">'+escapeHtml(data.error)+'</p>';
+        return;
+      }
+      container.innerHTML = tickerOptionsHtml(data);
+      _tickerOptionsLoadedFor = _currentTicker;
+    } catch (_) {
+      container.innerHTML = '<p class="dimtext">Unable to load options chain.</p>';
+    }
+  }
+
+  const MARKET_GROUPS = {
+    US:       ['S&P 500','Nasdaq'],
+    Metals:   ['Gold','Silver'],
+    Bonds:    ['2Y','10Y'],
+    Energy:   ['WTI','Brent'],
+    Crypto:   ['BTC','ETH'],
+    Currency: ['USD/INR','Dollar Index'],
+    Asia:     ['Nikkei','KOSPI','Sensex']
+  };
+
+  // ── Persistent module-level market state ──
+  // Survives across loadMarketIndices calls so pills are never torn down mid-update.
+  let _mktContentMap  = {};   // group -> inner HTML (rows)
+  let _activeGroup    = 'US'; // currently open tab
+  let _mktPillsWired  = false;
+
+  /** Loading-skeleton rows for a group (shown before data arrives). */
+  function _mktSkeletonRows(g) {
+    return MARKET_GROUPS[g].map(l =>
+      '<div class="market-row">' +
+        '<div class="market-cell-label">' + l + '</div>' +
+        '<div class="market-cell-price" style="color:#334155">—</div>' +
+        '<div class="market-cell-chg mkt-chg flat"></div>' +
+      '</div>'
+    ).join('');
+  }
+
+  /** Build the bar shell (pills + content area) exactly once. */
+  function _buildMarketShell() {
+    const bar = document.getElementById('marketTickerBar');
+    if (!bar) return;
+    // Pre-fill content map with loading skeletons for every group
+    Object.keys(MARKET_GROUPS).forEach(g => {
+      if (!_mktContentMap[g]) _mktContentMap[g] = _mktSkeletonRows(g);
+    });
+    const pillsHtml = Object.keys(MARKET_GROUPS).map(g =>
+      '<button class="market-group-btn' + (g === _activeGroup ? ' active' : '') + '" data-group="' + g + '">' + g + '</button>'
+    ).join('');
+    bar.innerHTML =
+      '<div class="market-groups">' + pillsHtml + '</div>' +
+      '<div id="marketContentArea" class="market-content-area visible">' + (_mktContentMap[_activeGroup] || '') + '</div>';
+    _wireMarketPills();
+  }
+
+  /** Wire pill click handlers (called once after shell is built). */
+  function _wireMarketPills() {
+    if (_mktPillsWired) return;
+    _mktPillsWired = true;
+    const bar = document.getElementById('marketTickerBar');
+    if (!bar) return;
+    bar.addEventListener('click', e => {
+      const btn = e.target.closest('.market-group-btn[data-group]');
+      if (!btn) return;
+      const g = btn.dataset.group;
+      const contentArea = document.getElementById('marketContentArea');
+      if (!contentArea) return;
+      if (btn.classList.contains('active')) {
+        // toggle off
+        btn.classList.remove('active');
+        contentArea.classList.remove('visible');
+        _activeGroup = null;
+      } else {
+        document.querySelectorAll('.market-group-btn[data-group]').forEach(p =>
+          p.classList.toggle('active', p.dataset.group === g)
+        );
+        contentArea.innerHTML = _mktContentMap[g] || _mktSkeletonRows(g);
+        contentArea.classList.add('visible');
+        _activeGroup = g;
+      }
+    });
+  }
+
+  /** Build one market-row HTML string from an index item object. */
+  function _mktItemHtml(idx) {
+    const price  = idx.price != null ? idx.price.toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 }) : '—';
+    const dayPct = idx.regularChangePct != null ? idx.regularChangePct : (idx.changePct != null ? idx.changePct : null);
+    const dir    = dayPct == null ? 'flat' : dayPct > 0 ? 'up' : dayPct < 0 ? 'down' : 'flat';
+    const arrow  = dir === 'up' ? '▲' : dir === 'down' ? '▼' : '●';
+    const pctStr = dayPct != null ? (dayPct > 0 ? '+' : '') + dayPct.toFixed(2) + '%' : '';
+    const tooltip = idx.label + (pctStr ? ' — ' + pctStr : '') + ' — ' + price;
+    let afterHtml = '';
+    try {
+      const isAfter = idx.marketSession === 'extended' || (idx.extendedPrice != null && idx.regularPrice != null && idx.extendedPrice !== idx.regularPrice);
+      if (isAfter) {
+        const regular = Number.isFinite(+idx.regularPrice) ? +idx.regularPrice : null;
+        const ext     = Number.isFinite(+idx.extendedPrice) ? +idx.extendedPrice : null;
+        let extPct = null;
+        if (ext != null && regular != null && regular !== 0) extPct = ((ext - regular) / regular) * 100;
+        else if (idx.extendedChangePct != null)              extPct = +idx.extendedChangePct;
+        if (extPct != null) {
+          const extDir = extPct > 0 ? 'up' : extPct < 0 ? 'down' : 'flat';
+          const extStr = (extPct > 0 ? '+' : '') + extPct.toFixed(2) + '%';
+          afterHtml = '<div class="market-cell-after"><span class="after-hours-badge">AH <span class="after-hours-value ' + extDir + '">' + extStr + '</span></span></div>';
+        } else {
+          afterHtml = '<div class="market-cell-after"><span class="after-hours-badge">After Hours</span></div>';
+        }
+      }
+    } catch (e) {}
+    return '<div class="market-row" title="' + tooltip + '">'
+      + '<div class="market-cell-label">'  + idx.label + '</div>'
+      + '<div class="market-cell-price">'  + price     + '</div>'
+      + '<div class="market-cell-chg mkt-chg ' + dir + '">' + (pctStr ? arrow + ' ' + pctStr : '') + '</div>'
+      + afterHtml
+      + '</div>';
+  }
+
+  /**
+   * Update _mktContentMap for whichever groups have data in `indices`,
+   * then refresh the content area if the active group changed.
+   * Pills are NEVER rebuilt — only content is updated in-place.
+   */
+  function renderMarketTicker(indices) {
+    if (!Array.isArray(indices) || indices.length === 0) return;
+    const labelList = indices.filter(i => i && i.label != null).map(i => ({ label: String(i.label), item: i }));
+    function findByLabel(lbl) {
+      const exact = labelList.find(x => x.label === lbl);
+      if (exact) return exact.item;
+      const low = String(lbl).toLowerCase();
+      const fuzzy = labelList.find(x => x.label.toLowerCase().includes(low) || low.includes(x.label.toLowerCase()));
+      return fuzzy ? fuzzy.item : null;
+    }
+    let activeGroupUpdated = false;
+    Object.keys(MARKET_GROUPS).forEach(g => {
+      const items = MARKET_GROUPS[g].map(l => findByLabel(l)).filter(Boolean);
+      if (items.length > 0) {
+        _mktContentMap[g] = items.map(_mktItemHtml).join('');
+        if (g === _activeGroup) activeGroupUpdated = true;
+      }
+    });
+    // Refresh visible content area if the currently open tab just got real data
+    if (activeGroupUpdated && _activeGroup) {
+      const contentArea = document.getElementById('marketContentArea');
+      if (contentArea) {
+        contentArea.innerHTML = _mktContentMap[_activeGroup];
+        contentArea.classList.add('visible');
+      }
+    }
   }
 
   async function loadMarketIndices() {
+    // Build the tab shell once (all tabs visible immediately with loading rows).
+    // On subsequent poll cycles the shell already exists; _buildMarketShell is cheap.
+    _mktPillsWired = false; // re-wire after potential DOM re-render on refresh
+    _buildMarketShell();
     try {
-      const res = await fetch('/api/market-indices');
-      const data = await res.json();
-      if (data.indices) renderMarketTicker(data.indices);
-    } catch (_) {}
+      const fetchOptions = getStocktwitsFetchOptions();
+      // Stage 1 — US only: fast, fills the default active tab
+      const usRes  = await fetch('/api/market-indices?group=US', fetchOptions);
+      const usData = await usRes.json();
+      if (usData.indices) renderMarketTicker(usData.indices);
+
+      // Stage 2 — all groups: runs in background, updates each tab as data arrives
+      fetch('/api/market-indices', fetchOptions)
+        .then(r => r.json())
+        .then(allData => { if (allData && allData.indices) renderMarketTicker(allData.indices); })
+        .catch(() => {});
+    } catch (e) {
+      // keep skeleton on network failure
+    }
   }
 
   async function loadOverallHeadlines() {
@@ -490,6 +1210,7 @@
     try {
       const params = new URLSearchParams();
       if (_currentCompanyName) params.set('companyName', _currentCompanyName);
+      if (Number.isFinite(+_currentEarningsDate)) params.set('earningsDate', String(_currentEarningsDate));
       const query = params.toString() ? ('?' + params.toString()) : '';
       const res = await fetch('/api/news/' + encodeURIComponent(_currentTicker) + query);
       const data = await res.json();
@@ -504,6 +1225,188 @@
     } finally {
       _newsLoading = false;
     }
+  }
+
+  async function loadSocialForCurrentTicker() {
+    const container = document.getElementById('socialContainer');
+    if (!container || !_currentTicker) return;
+    container.innerHTML = '<p class="dimtext">Loading social sentiment...</p>';
+    try {
+      const res = await fetch(
+        '/api/social/sentiment/' + encodeURIComponent(_currentTicker) + getStocktwitsQueryString(),
+        getStocktwitsFetchOptions()
+      );
+      const data = await res.json();
+      if (data.authRequired) {
+        const trending = Array.isArray(data.trending) && data.trending.length
+          ? ('<div style="margin-top:12px"><div class="dimtext" style="margin-bottom:6px">Trending now:</div><div style="display:flex;gap:6px;flex-wrap:wrap">' + data.trending.map(t => ('<button class="tab-btn" style="padding:4px 8px" data-social-symbol="'+escapeHtml(t.symbol)+'">'+escapeHtml(t.symbol)+'</button>')).join('') + '</div></div>')
+          : '';
+        container.innerHTML = socialAuthPromptHtml(data.error) + trending;
+        wireSocialAuthPrompt();
+        wireTrendingSocialSymbols();
+        return;
+      }
+      if (data.error) {
+        if (String(data.error).toLowerCase().includes('auth missing')) {
+          container.innerHTML = socialAuthPromptHtml(data.error);
+          wireSocialAuthPrompt();
+          return;
+        }
+        const msg = escapeHtml(data.error || 'Unable to load social sentiment.');
+        const det = data.details ? ('<div class="dimtext" style="margin-top:8px">' + escapeHtml(String(data.details)) + '</div>') : '';
+        container.innerHTML = '<p class="dimtext">' + msg + '</p>' + det;
+        return;
+      }
+      const scoreHtml = (data.score == null)
+        ? '<div class="dimtext">Not enough labeled posts to compute score.</div>'
+        : '<div style="font-size:20px;margin-bottom:6px">Score: <strong>' + (data.score*100).toFixed(1) + '% Bullish</strong></div>';
+      const counts = '<div class="sent-subrow">Bullish: <strong>' + (data.bullish||0) + '</strong> &nbsp; Bearish: <strong>' + (data.bearish||0) + '</strong> &nbsp; Neutral: <strong>' + (data.neutral||0) + '</strong></div>';
+      const samples = (Array.isArray(data.sample) && data.sample.length > 0)
+        ? '<div style="margin-top:8px">' + data.sample.slice(0,8).map(m=>('<div style="padding:8px 0;border-bottom:1px solid #eee"><div style="font-size:12px;color:#666">'+(m.user||'')+' &middot; '+(new Date(m.created_at).toLocaleTimeString())+'</div><div style="margin-top:4px">'+escapeHtml(m.body||'')+'</div><div style="font-size:12px;color:#888;margin-top:6px">Sentiment: <strong>'+(m.sentiment||'none')+'</strong></div></div>')).join('') + '</div>'
+        : '<p class="dimtext">No recent messages available.</p>';
+      container.innerHTML = scoreHtml + counts + samples;
+    } catch (e) {
+      container.innerHTML = '<p class="dimtext">Unable to load social sentiment.</p>';
+    }
+  }
+
+  function socialAuthPromptHtml(reason) {
+    return '<div class="dimtext" style="margin-bottom:10px">' + escapeHtml(reason || 'Stocktwits auth required') + '</div>' +
+      '<div style="display:grid;gap:8px;max-width:520px">' +
+      '<input id="stocktwitsUsernameInput" type="text" placeholder="Stocktwits username" style="min-width:280px;padding:8px;border-radius:8px;border:1px solid #334155;background:#0b1018;color:#e2e8f0" />' +
+      '<input id="stocktwitsPasswordInput" type="password" placeholder="Stocktwits password" style="min-width:280px;padding:8px;border-radius:8px;border:1px solid #334155;background:#0b1018;color:#e2e8f0" />' +
+      '<input id="stocktwitsTokenInput" type="password" placeholder="Optional legacy token" style="min-width:280px;padding:8px;border-radius:8px;border:1px solid #334155;background:#0b1018;color:#e2e8f0" />' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">' +
+      '<button id="saveStocktwitsAuthBtn" style="padding:8px 12px;border-radius:8px;border:1px solid #334155;background:#111827;color:#e2e8f0;cursor:pointer">Save & Retry</button>' +
+      '<button id="clearStocktwitsAuthBtn" style="padding:8px 12px;border-radius:8px;border:1px solid #334155;background:#111827;color:#e2e8f0;cursor:pointer">Clear</button>' +
+      '</div>' +
+      '</div>' +
+      '<div class="dimtext" style="margin-top:8px">Browser requests will send Authorization: Basic &lt;base64(username:password)&gt; to your local backend. Values are stored in local browser storage for this app.</div>';
+  }
+
+  function getStocktwitsUsername() {
+    try { return localStorage.getItem('stocktwitsUsername') || ''; } catch (_) { return ''; }
+  }
+
+  function setStocktwitsUsername(username) {
+    try {
+      if (username) localStorage.setItem('stocktwitsUsername', username);
+      else localStorage.removeItem('stocktwitsUsername');
+    } catch (_) {}
+  }
+
+  function getStocktwitsPassword() {
+    try { return localStorage.getItem('stocktwitsPassword') || ''; } catch (_) { return ''; }
+  }
+
+  function setStocktwitsPassword(password) {
+    try {
+      if (password) localStorage.setItem('stocktwitsPassword', password);
+      else localStorage.removeItem('stocktwitsPassword');
+    } catch (_) {}
+  }
+
+  function getStocktwitsToken() {
+    try { return localStorage.getItem('stocktwitsToken') || ''; } catch (_) { return ''; }
+  }
+
+  function setStocktwitsToken(token) {
+    try {
+      if (token) localStorage.setItem('stocktwitsToken', token);
+      else localStorage.removeItem('stocktwitsToken');
+    } catch (_) {}
+  }
+
+  function getStocktwitsAuthorizationHeader() {
+    const username = getStocktwitsUsername();
+    const password = getStocktwitsPassword();
+    if (!username || !password) return '';
+    try {
+      return 'Basic ' + btoa(username + ':' + password);
+    } catch (_) {
+      return '';
+    }
+  }
+
+  function getStocktwitsFetchOptions() {
+    const authorization = getStocktwitsAuthorizationHeader();
+    return authorization ? { headers: { Authorization: authorization } } : {};
+  }
+
+  function getStocktwitsQueryString() {
+    const token = getStocktwitsToken();
+    return token ? ('?token=' + encodeURIComponent(token)) : '';
+  }
+
+  async function registerStocktwitsDefaultAuth() {
+    const payload = {
+      username: getStocktwitsUsername(),
+      password: getStocktwitsPassword(),
+      token: getStocktwitsToken()
+    };
+    const hasAnyAuth = payload.token || (payload.username && payload.password);
+    if (!hasAnyAuth) return { ok: true, skipped: true };
+    const res = await fetch('/api/social/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    return res.json();
+  }
+
+  async function clearStocktwitsDefaultAuth() {
+    try {
+      await fetch('/api/social/auth', { method: 'DELETE' });
+    } catch (_) {}
+  }
+
+  function wireSocialAuthPrompt() {
+    const userInput = document.getElementById('stocktwitsUsernameInput');
+    const passwordInput = document.getElementById('stocktwitsPasswordInput');
+    const tokenInput = document.getElementById('stocktwitsTokenInput');
+    const saveBtn = document.getElementById('saveStocktwitsAuthBtn');
+    const clearBtn = document.getElementById('clearStocktwitsAuthBtn');
+    if (userInput) userInput.value = getStocktwitsUsername();
+    if (passwordInput) passwordInput.value = getStocktwitsPassword();
+    if (tokenInput) tokenInput.value = getStocktwitsToken();
+    if (saveBtn) {
+      saveBtn.onclick = async () => {
+        setStocktwitsUsername(String(userInput?.value || '').trim());
+        setStocktwitsPassword(String(passwordInput?.value || '').trim());
+        setStocktwitsToken(String(tokenInput?.value || '').trim());
+        await registerStocktwitsDefaultAuth();
+        await loadStocktwitsTrending();
+        await loadMarketIndices();
+        await loadSocialForCurrentTicker();
+      };
+    }
+    if (clearBtn) {
+      clearBtn.onclick = async () => {
+        setStocktwitsUsername('');
+        setStocktwitsPassword('');
+        setStocktwitsToken('');
+        await clearStocktwitsDefaultAuth();
+        if (userInput) userInput.value = '';
+        if (passwordInput) passwordInput.value = '';
+        if (tokenInput) tokenInput.value = '';
+      };
+    }
+  }
+
+  function wireTrendingSocialSymbols() {
+    const buttons = document.querySelectorAll('[data-social-symbol]');
+    buttons.forEach((btn) => {
+      btn.onclick = () => {
+        const s = btn.getAttribute('data-social-symbol');
+        if (!s) return;
+        tickerInput.value = s;
+        doSearch();
+      };
+    });
+  }
+
+  function escapeHtml(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;');
   }
 
   /* ── live price update ── */
@@ -531,29 +1434,41 @@
     }, 5000);
   }
 
-  /* ── accordion wiring ── */
+  /* ── tab wiring ── */
   function wireTabs() {
-    const btns   = document.querySelectorAll('.tab-btn');
-    const panels = document.querySelectorAll('.panel-wrap');
-    btns.forEach(btn => btn.addEventListener('click', async () => {
-      const id = btn.dataset.tab;
-      const isActive = btn.classList.contains('active');
-      /* close all */
+    const btns = document.querySelectorAll('.tab-btn');
+
+    function getArea() {
+      return document.getElementById('tab-content-area');
+    }
+
+    async function showTab(id, btn) {
+      const area = getArea();
+      if (!area) return;
       btns.forEach(b => b.classList.remove('active'));
-      panels.forEach(p => p.classList.remove('open'));
-      /* open clicked (toggle off if already open) */
-      if (!isActive) {
-        btn.classList.add('active');
-        const panel = document.getElementById('panel-'+id);
-        if (panel) {
-          panel.classList.add('open');
-          setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'nearest'}), 50);
-        }
-        if (id === 'news') {
-          await loadNewsForCurrentTicker();
-        }
+      if (btn) btn.classList.add('active');
+      const tabMap = window._tabContentMap || {};
+      area.innerHTML = tabMap[id] || '<p class="dimtext">No content for this tab.</p>';
+      area.style.display = 'block';
+      if (id === 'news') await loadNewsForCurrentTicker();
+      if (id === 'social') await loadSocialForCurrentTicker();
+      if (id === 'options') await loadTickerOptionsForCurrentTicker();
+    }
+
+    btns.forEach(btn => btn.addEventListener('click', async () => {
+      const id       = btn.dataset.tab;
+      const isActive = btn.classList.contains('active');
+      if (isActive) {
+        btn.classList.remove('active');
+        const area = getArea();
+        if (area) area.style.display = 'none';
+        return;
       }
+      await showTab(id, btn);
     }));
+
+    // expose for auto-open
+    wireTabs._show = showTab;
   }
 
   /* ── main search ── */
@@ -563,8 +1478,10 @@
     if (_poll) { clearInterval(_poll); _poll=null; }
     _currentTicker = sym;
     _currentCompanyName = '';
+    _currentEarningsDate = null;
     _newsLoadedFor = '';
     _newsLoading = false;
+    _tickerOptionsLoadedFor = '';
     _prevClose=null; _cur='';
     setLoading(true);
     resultEl.innerHTML = '<div class="loading-msg">Fetching '+sym+'\u2026</div>';
@@ -575,16 +1492,31 @@
       const tv = data.tradingView||{};
       const displayCompanyName = stripCompanySuffixes(data.shortName);
       _currentCompanyName = displayCompanyName;
+      // earningsDate may be an ISO string or a unix timestamp (seconds)
+      if (data.earningsDate) {
+        const _ed = typeof data.earningsDate === 'string' ? new Date(data.earningsDate).getTime() : +data.earningsDate * 1000;
+        _currentEarningsDate = Number.isFinite(_ed) && _ed > 0 ? _ed : null;
+      } else {
+        _currentEarningsDate = null;
+      }
 
       resultEl.innerHTML =
         /* Price card */
         '<div class="price-card">'+
-          '<div class="company-name">'+sym+(displayCompanyName?' \u00b7 '+displayCompanyName:'')+' </div>'+
+          '<div class="company-name"><span class="ticker-sym">'+sym+'</span>'+(displayCompanyName?'<span class="name-sep">\u00b7</span><span>'+displayCompanyName+'</span>':'')+'</div>'+
           '<div class="price-row">'+
             '<span id="priceValue" class="price-big">\u2014</span>'+
             '<span id="pctChange"  class="pct-badge pct-neutral">\u2014</span>'+
+            '<span id="afterHoursInfo"></span>'+
           '</div>'+
-          '<div class="price-meta">Market Cap: '+fM(data.marketCap)+'&nbsp;&nbsp;\u00b7&nbsp;&nbsp;Prev Close: '+fv(data.previousClose)+'&nbsp;&nbsp;\u00b7&nbsp;&nbsp;Currency: '+(data.currency||'\u2014')+'</div>'+
+          '<div class="price-meta">'+
+            '<span class="meta-chip"><span class="meta-label">Mkt Cap</span><span class="meta-value">'+fM(data.marketCap)+'</span></span>'+
+            '<span class="meta-chip"><span class="meta-label">Prev Close</span><span class="meta-value">'+fv(data.previousClose)+'</span></span>'+
+            '<span class="meta-chip"><span class="meta-label">Currency</span><span class="meta-value">'+(data.currency||'\u2014')+'</span></span>'+
+            '<span class="meta-chip"><span class="meta-label">52W High</span><span class="meta-value meta-high">'+fv(data.fiftyTwoWeekHigh)+'</span></span>'+
+            '<span class="meta-chip"><span class="meta-label">52W Low</span><span class="meta-value meta-low">'+fv(data.fiftyTwoWeekLow)+'</span></span>'+
+            '<span class="meta-chip"><span class="meta-label">Earnings</span><span class="meta-value">'+fDate(data.earningsDate)+'</span></span>'+
+          '</div>'+
         '</div>'+
 
         /* Tab buttons */
@@ -594,11 +1526,16 @@
           '<button class="tab-btn" data-tab="consensus"><span class="tab-icon">\ud83c\udfaf</span> Consensus</button>'+
           '<button class="tab-btn" data-tab="recommendation"><span class="tab-icon">\ud83d\uddc2</span> Recommendation</button>'+
           '<button class="tab-btn" data-tab="news"><span class="tab-icon">\ud83d\udcf0</span> News</button>'+
+          '<button class="tab-btn" data-tab="social"><span class="tab-icon">\ud83d\udcac</span> Social Sentiment</button>'+
           '<button class="tab-btn" data-tab="options"><span class="tab-icon">\u26a1</span> Options</button>'+
         '</div>'+
 
-        /* Fundamentals panel */
-        '<div id="panel-fundamentals" class="panel-wrap"><div class="panel-inner-overflow"><div class="panel-inner">'+
+        /* Single shared tab content area */
+        '<div id="tab-content-area" class="panel-inner" style="display:none;margin-top:8px"></div>';
+
+      // Pre-build content for each tab and store in a map for instant switching
+      window._tabContentMap = {
+        fundamentals:
           '<div class="panel-label">Fundamentals</div><div class="grid">'+
             m('Forward P/E',fv(data.forwardPE))+m('PEG',fv(data.peg))+
             m('EV / EBITDA',fv(data.evEbitda))+m('Enterprise Value',fM(data.enterpriseValue))+
@@ -607,46 +1544,125 @@
             m('FCF Yield',frt(data.fcfYield))+m('FCF Margin',frt(data.fcfMargin))+
             m('OCF Margin',frt(data.ocfMargin))+m('Debt / Equity',fv(data.debtToEquity))+
             m('Market Cap',fM(data.marketCap))+
-          '</div></div></div></div>'+
-
-        /* Technicals panel */
-        '<div id="panel-technicals" class="panel-wrap"><div class="panel-inner-overflow"><div class="panel-inner">'+
+          '</div>',
+        technicals:
           '<div class="panel-label">Technicals</div><div class="grid">'+
             m('RSI',fv(tv.rsi))+m('MA 50',tv.ma50?fv(tv.ma50):'N/A')+m('MA 200',tv.ma200?fv(tv.ma200):'N/A')+
             m('52-W High',fv(data.fiftyTwoWeekHigh))+m('52-W Low',fv(data.fiftyTwoWeekLow))+m('Beta',fv(data.beta))+
-          '</div>'+
-          (tv.error?'<p class="dimtext" style="margin-top:12px">TradingView unavailable</p>':'')+
-        '</div></div></div>'+
-
-        /* Consensus panel */
-        '<div id="panel-consensus" class="panel-wrap"><div class="panel-inner-overflow"><div class="panel-inner">'+
+          '</div>'+(tv.error?'<p class="dimtext" style="margin-top:12px">TradingView unavailable</p>':''),
+        consensus:
           '<div class="panel-label">Consensus</div><div class="grid">'+
             m('Rating',fR(tv.ratingLabel,tv.ratingScore))+
             m('Avg Price Target',fv(data.avgPriceTarget))+m('High Target',fv(data.highPriceTarget))+m('Low Target',fv(data.lowPriceTarget))+
-          '</div></div></div></div>'+
-
-        /* Recommendation panel */
-        '<div id="panel-recommendation" class="panel-wrap"><div class="panel-inner-overflow"><div class="panel-inner">'+
+          '</div>',
+        recommendation:
           '<div class="panel-label">Recommendation Trend</div>'+
-          '<pre>'+JSON.stringify(data.recommendationTrend||'Not available',null,2)+'</pre>'+
-        '</div></div></div>'+
-
-        /* News panel */
-        '<div id="panel-news" class="panel-wrap"><div class="panel-inner-overflow"><div class="panel-inner">'+
+          '<pre>'+JSON.stringify(data.recommendationTrend||'Not available',null,2)+'</pre>',
+        news:
           '<div class="panel-label">News</div>'+
-          '<div id="newsContainer"><p class="dimtext">Click News to fetch latest headlines.</p></div>'+
-        '</div></div></div>'+
-
-        /* Options panel */
-        '<div id="panel-options" class="panel-wrap"><div class="panel-inner-overflow"><div class="panel-inner">'+
+          '<div id="newsContainer"><p class="dimtext">Loading…</p></div>',
+        social:
+          '<div class="panel-label">Social Sentiment</div>'+
+          '<div id="socialContainer"><p class="dimtext">Loading…</p></div>',
+        options:
           '<div class="panel-label">Options</div>'+
-          '<pre>'+JSON.stringify(data.options||'Options data not available',null,2)+'</pre>'+
-        '</div></div></div>';
+          '<div id="tickerOptionsContainer"><p class="dimtext">Open this tab to load latest options chain.</p></div>'
+      };
 
-      const ip = +data.regularMarketPrice;
-      if (Number.isFinite(ip)) updatePrice(ip, data.currency, +data.previousClose);
+      async function loadAndRenderSentiment(sym) {
+        try {
+          const res = await fetch('/api/compare/' + encodeURIComponent(sym));
+          if (!res.ok) return;
+          const j = await res.json();
+          const comps = j.comparisons || {};
+          const parts = [];
+          const sentimentClass = (s) => s === 'UP' ? 'delta-up' : s === 'DOWN' ? 'delta-down' : 'delta-neutral';
+          const fmtPct = (n) => {
+            if (n == null || !Number.isFinite(n)) return '';
+            const abs = Math.abs(n);
+            if (abs > 999) return (n < 0 ? '-' : '') + '999%+';
+            return (n > 0 ? '+' : '') + Number(n).toFixed(2) + '%';
+          };
+          function add(label, key, fmt) {
+            const c = comps[key];
+            if (!c) return;
+            const isLowerBetter = key === 'forwardPE' || key === 'evEbitda';
+            const val = (c.value == null) ? 'N/A' : (fmt ? fmt(c.value) : String(c.value));
+            const dev = c.deviationPct != null ? Number(Number(c.deviationPct).toFixed(2)) : null;
+            const rel = fmtPct(dev);
+            const baseline = (c.histSectorAvg ?? c.sectorAvg ?? null);
+            // Use the deviation sign for wording so percent and direction align (e.g., "93% below")
+            const direction = (dev != null) ? (dev < 0 ? 'below' : dev > 0 ? 'above' : 'near') : '';
+            const displaySentiment = (dev == null)
+              ? 'AVERAGE'
+              : (isLowerBetter
+                ? (dev < 0 ? 'UP' : dev > 0 ? 'DOWN' : 'AVERAGE')
+                : (dev > 0 ? 'UP' : dev < 0 ? 'DOWN' : 'AVERAGE'));
+            const devClass = sentimentClass(displaySentiment);
+            const note = rel ? ` — <span class="${devClass}" title="Thumb indicates sentiment; deviation shows percent difference vs baseline">` + rel + ' ' + direction + '</span>' : '';
+            const emoji = displaySentiment === 'UP' ? '👍' : displaySentiment === 'DOWN' ? '👎' : '➡️';
+            parts.push('<div class="sent-row"><strong>' + label + '</strong><div>' + emoji + '<span style="margin-left:8px">' + val + note + '</span></div></div>');
+            // Always show sector avg and stock historical avg rows (use 'N/A' when missing)
+            const sectorVal = c.sectorAvg != null ? (fmt ? fmt(c.sectorAvg) : String(c.sectorAvg)) : 'N/A';
+            parts.push('<div class="sent-subrow">Sector avg: <strong>' + sectorVal + '</strong></div>');
+
+            const histStockVal = c.stockHistAvg != null ? (fmt ? fmt(c.stockHistAvg) : String(c.stockHistAvg)) : 'N/A';
+            const histWindow = c.stockHistWindow || '5yr';
+            parts.push('<div class="sent-subrow">' + histWindow + ' historical avg: <strong>' + histStockVal + '</strong></div>');
+          }
+          add('Forward P/E', 'forwardPE', v => Number.isFinite(v) ? v.toFixed(2) + 'x' : String(v));
+          add('EV/EBITDA', 'evEbitda', v => Number.isFinite(v) ? v.toFixed(2) + 'x' : String(v));
+          add('FCF Margin', 'fcfMargin', v => Number.isFinite(v) ? (v * 100).toFixed(2) + '%' : String(v));
+
+          if (parts.length > 0) {
+            const sentimentHtml = '<div class="panel-label">Historical and Sector Comparison</div>' + parts.join('');
+            // Prepend sentiment section to fundamentals content
+            window._tabContentMap.fundamentals = sentimentHtml + window._tabContentMap.fundamentals;
+            if (document.querySelector('.tab-btn.active')?.dataset?.tab === 'fundamentals') {
+              const area = document.getElementById('tab-content-area');
+              if (area) area.innerHTML = window._tabContentMap.fundamentals;
+            }
+          }
+        } catch (e) {
+          // silent
+        }
+      }
+
+      const regularNow = Number.isFinite(+data.regularPrice) ? +data.regularPrice : +data.regularMarketPrice;
+      if (Number.isFinite(regularNow)) updatePrice(regularNow, data.currency, +data.previousClose);
+
+      // Populate after-hours badge and percent when extended price is present
+      try {
+        const afterEl = document.getElementById('afterHoursInfo');
+        if (afterEl) {
+          const isAfterHours = data.marketSession === 'extended';
+          const regular = Number.isFinite(+data.regularMarketPrice) ? +data.regularMarketPrice : null;
+          const ext = Number.isFinite(+data.extendedPrice) ? +data.extendedPrice : (Number.isFinite(+data.postMarketPrice) ? +data.postMarketPrice : (Number.isFinite(+data.preMarketPrice) ? +data.preMarketPrice : null));
+          // After-hours percent is always computed against regular close.
+          let extPct = null;
+          if (ext != null && regular != null && regular !== 0) extPct = ((ext - regular) / regular) * 100;
+
+          if (isAfterHours && ext != null && extPct != null && regular != null && regular !== 0 && ext !== regular) {
+            const cls    = extPct > 0 ? 'up' : extPct < 0 ? 'down' : 'flat';
+            const extFmt = ext.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const pctFmt = (extPct > 0 ? '+' : '') + extPct.toFixed(2) + '%';
+            afterEl.innerHTML =
+              '<span class="after-hours-badge">' +
+                'After Hrs&nbsp;<span class="after-hours-value ' + cls + '">' + extFmt + '</span>' +
+                '&nbsp;<span class="after-hours-value ' + cls + '" style="font-size:0.82em;opacity:0.85">(' + pctFmt + ')</span>' +
+              '</span>';
+          } else {
+            afterEl.innerHTML = '';
+          }
+        }
+      } catch (e) { /* silent */ }
       startPolling(sym);
       wireTabs();
+      // auto-open Fundamentals so content is immediately visible
+      const firstBtn = document.querySelector('.tab-btn[data-tab="fundamentals"]');
+      if (wireTabs._show) wireTabs._show('fundamentals', firstBtn);
+      // Load sentiment and inject into fundamentals panel
+      loadAndRenderSentiment(sym);
     } catch(e) {
       resultEl.innerHTML='<p style="color:#f87171;padding:20px 0">'+e.message+'</p>';
     } finally { setLoading(false); }
@@ -654,10 +1670,31 @@
 
   fetchBtn.addEventListener('click', doSearch);
   tickerInput.addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch(); });
+  registerStocktwitsDefaultAuth().catch(() => {});
+  wireInsightsStripButtons();
   loadMarketIndices();
-  setInterval(loadMarketIndices, 60000);
+  setInterval(loadMarketIndices, 5 * 60 * 1000);
   loadOverallHeadlines();
   setInterval(loadOverallHeadlines, 5 * 60 * 1000);
+  
+  // Load earnings and trending together early
+  (async () => {
+    try {
+      console.log('[init] Loading earnings and trending...');
+      await Promise.all([
+        loadEarningsWeek(),
+        loadStocktwitsTrending()
+      ]);
+      console.log('[init] Both data sources loaded, earnings sections:', _earningsStripSections.length);
+    } catch (e) {
+      console.error('[init] Error loading initial data:', e);
+    }
+  })();
+  
+  setInterval(loadStocktwitsTrending, 5 * 60 * 1000);
+  setInterval(loadEarningsWeek, 30 * 60 * 1000);
+  loadActiveOptions();
+  setInterval(loadActiveOptions, 60 * 60 * 1000);
   // Auto-refresh ticker data every 5 minutes if a symbol is loaded
   setInterval(async () => {
     if (!_currentTicker || inFlight) return;
@@ -669,6 +1706,7 @@
       setTimeout(() => document.querySelector('.tab-btn[data-tab="'+activeTabId+'"]')?.click(), 200);
     }
   }, 5 * 60 * 1000);
+
 </script>
 </body>
 </html>

@@ -1,0 +1,31 @@
+name: Run sector and stock aggregators
+
+on:
+  schedule:
+    # Sector historicals: every 3 months (on the 1st of Jan/Apr/Jul/Oct at 06:00 UTC)
+    - cron: '0 6 1 1/3 *'
+    # Stock historicals (5/10): every 2 months (on the 1st of Jan/Mar/May... at 07:00 UTC)
+    - cron: '0 7 1 1/2 *'
+  workflow_dispatch:
+
+jobs:
+  run-aggregators:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm ci || true
+      - name: Run sector aggregator (quarterly)
+        if: github.event.schedule == '0 6 1 1/3 *' || github.event_name == 'workflow_dispatch'
+        env:
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+        run: node azure-functions/sectorAggregator/run.js
+      - name: Run stock aggregator (bi-monthly)
+        if: github.event.schedule == '0 7 1 1/2 *' || github.event_name == 'workflow_dispatch'
+        env:
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+        run: node azure-functions/stockAggregator/run.js

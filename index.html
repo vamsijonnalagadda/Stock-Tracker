@@ -2122,6 +2122,8 @@
       const res  = await fetch('/api/ticker/'+encodeURIComponent(sym));
       const data = await res.json();
       if (data.error) { resultEl.innerHTML='<p style="color:#f87171;padding:20px 0">'+data.error+'</p>'; return; }
+      const resolvedSym = (data && data.symbol) ? String(data.symbol).toUpperCase() : sym;
+      _currentTicker = resolvedSym;
       const tv = data.tradingView||{};
       const displayCompanyName = stripCompanySuffixes(data.shortName);
       _currentCompanyName = displayCompanyName;
@@ -2136,7 +2138,7 @@
       resultEl.innerHTML =
         /* Price card */
         '<div class="price-card">'+
-          '<div class="company-name"><span class="ticker-sym">'+sym+'</span>'+(displayCompanyName?'<span class="name-sep">\u00b7</span><span>'+displayCompanyName+'</span>':'')+'</div>'+
+          '<div class="company-name"><span class="ticker-sym">'+resolvedSym+'</span>'+(displayCompanyName?'<span class="name-sep">\u00b7</span><span>'+displayCompanyName+'</span>':'')+'</div>'+
           '<div class="price-row">'+
             '<span id="priceValue" class="price-big">\u2014</span>'+
             '<span id="pctChange"  class="pct-badge pct-neutral">\u2014</span>'+
@@ -2290,13 +2292,13 @@
           }
         }
       } catch (e) { /* silent */ }
-      startPolling(sym);
+      startPolling(resolvedSym);
       wireTabs();
       // auto-open Fundamentals so content is immediately visible
       const firstBtn = document.querySelector('.tab-btn[data-tab="fundamentals"]');
       if (wireTabs._show) wireTabs._show('fundamentals', firstBtn);
       // Load sentiment and inject into fundamentals panel
-      loadAndRenderSentiment(sym);
+      loadAndRenderSentiment(resolvedSym);
     } catch(e) {
       resultEl.innerHTML='<p style="color:#f87171;padding:20px 0">'+e.message+'</p>';
     } finally { setLoading(false); }

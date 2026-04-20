@@ -1,5 +1,5 @@
 # Single container: Node.js (API + static frontend) + Python (yfinance microservice)
-FROM node:20-bullseye-slim
+FROM node:22-bullseye-slim
 
 # Install Python, pip, and curl for the startup readiness check
 RUN apt-get update && apt-get install -y \

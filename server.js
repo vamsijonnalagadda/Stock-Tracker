@@ -14,7 +14,8 @@ import { getSentiment, sentimentEmoji, deviationPercent, chooseMasterMetric } fr
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+// Increase JSON body size to allow posting enriched next-week payloads
+app.use(express.json({ limit: '50mb' }));
 
 const yahooFinanceClient = new YahooFinance({
   suppressNotices: ['yahooSurvey']
@@ -55,9 +56,12 @@ const TRENDING_POLL_INTERVAL_MS = Number.isFinite(TRENDING_POLL_INTERVAL_MS_RAW)
 const TRENDING_JSON_PATH = './data/trending.json';
 const EARNINGS_WEEK_JSON_PATH = './data/earnings_week.json';
 const EARNINGS_MOVES_JSON_PATH = './data/earnings_moves.json';
+const EARNINGS_NEXT_JSON_PATH = './data/earnings_next.json';
 const DEFAULT_FINNHUB_KEY = 'd7d3gk1r01qv03eu7vf0';
-const EARNINGS_SATURDAY_HOUR_LOCAL = Number(process.env.EARNINGS_SATURDAY_HOUR_LOCAL || 9);
-const IMPLIED_REFRESH_HOUR_LOCAL = Number(process.env.IMPLIED_REFRESH_HOUR_LOCAL || 21);
+const EARNINGS_CENTRAL_TZ = 'America/Chicago';
+const EARNINGS_FRIDAY_REFRESH_HOUR_CT = Number(process.env.EARNINGS_FRIDAY_REFRESH_HOUR_CT || 19); // 7 PM CST/CDT
+const EARNINGS_IMPLIED_REFRESH_HOUR_CT = Number(process.env.EARNINGS_IMPLIED_REFRESH_HOUR_CT || 19); // 7 PM CST/CDT
+const SP500_CACHE_TTL_MS = 24 * 60 * 60_000;
 const PREFERRED_NEWS_SOURCES = [
   "CNBC", "Reuters", "Yahoo Finance", "Bloomberg",
   "Financial Times", "The Street", "Forbes",
@@ -78,6 +82,9 @@ let trendingUpdatePromise = null;
 let trendingPollTimer = null;
 let indexHtmlTemplate = null;
 let weeklyEarningsCache = { updatedAt: 0, weekStart: null, days: {} };
+let nextWeekEarningsCache = { updatedAt: 0, weekStart: null, days: {} };
+const NEXT_WEEK_EARNINGS_TTL_MS = 60 * 60_000; // 1 hour
+let sp500Cache = { symbols: new Set(), updatedAt: 0 };
 let earningsMovesCache = {};
 let earningsRefreshPromise = null;
 let impliedRefreshPromise = null;
@@ -790,6 +797,11 @@ async function fetchFinnhubMetrics(ticker) {
   const peForward = safe(metric.peForward);
   const peg = safe(metric.pegRatio?.['5yr']);
   const marketCap = safe(metric.marketCapitalization);
+  const dividendYield = normalizeYieldRatio(
+    metric.dividendYieldIndicatedAnnual
+    ?? metric.annualizedDividendYield
+    ?? metric.currentDividendYieldTTM
+  );
   const eps = safe(metric.epsNormalizedAnnual?.ttm);
 
   return {
@@ -802,6 +814,7 @@ async function fetchFinnhubMetrics(ticker) {
     financialData: {
       forwardPE: { raw: peForward },
       pegRatio: { raw: peg },
+      dividendYield: { raw: dividendYield },
       enterpriseValue: { raw: null },
       ebitda: { raw: null },
       freeCashflow: { raw: null },
@@ -811,6 +824,23 @@ async function fetchFinnhubMetrics(ticker) {
     recommendationTrend: null,
     quoteSource: "Finnhub API"
   };
+}
+
+async function fetchFinnhubIndexQuote(symbol) {
+  try {
+    const key = getFinnhubKey();
+    if (!key) throw new Error('missing_finnhub_api_key');
+    const url = `${FINNHUB_API}/quote?symbol=${encodeURIComponent(symbol)}&token=${encodeURIComponent(key)}`;
+    const res = await withTimeout(fetch(url), 5000, 'finnhub quote');
+    if (!res.ok) throw new Error(`finnhub_http_${res.status}`);
+    const j = await res.json();
+    // Finnhub returns {c: current, pc: previous close, t: timestamp}
+    const price = Number.isFinite(Number(j?.c)) ? Number(j.c) : null;
+    const prevClose = Number.isFinite(Number(j?.pc)) ? Number(j.pc) : null;
+    return { price, prevClose, marketSession: null };
+  } catch (err) {
+    return null;
+  }
 }
 
 async function fetchFMPProfile(ticker) {
@@ -896,6 +926,11 @@ async function fetchYFinance(ticker) {
     financialData: {
       forwardPE: { raw: data.forwardPE },
       pegRatio: { raw: data.pegRatio },
+      dividendYield: {
+        raw: normalizeYieldRatio(
+          data.dividendYield ?? data.trailingAnnualDividendYield ?? data.forwardAnnualDividendYield
+        )
+      },
       enterpriseValue: { raw: data.enterpriseValue },
       ebitda: { raw: data.ebitda },
       totalRevenue: { raw: data.totalRevenue },
@@ -1007,7 +1042,7 @@ async function resolveTickerSymbol(query) {
 }
 
 async function fetchYahooFinanceAPI(ticker) {
-  const modules = 'price,defaultKeyStatistics,financialData';
+  const modules = 'price,defaultKeyStatistics,financialData,summaryDetail';
   const url = `${YAHOO_QUOTE_SUMMARY}/${encodeURIComponent(ticker)}?modules=${modules}&corsDomain=finance.yahoo.com`;
 
   const res = await fetch(url, {
@@ -1031,6 +1066,7 @@ async function fetchYahooFinanceAPI(ticker) {
   const priceModule = result.price || {};
   const keyStats = result.defaultKeyStatistics || {};
   const finData = result.financialData || {};
+  const summaryDetail = result.summaryDetail || {};
 
   // Real-time price: prefer financialData.currentPrice, fallback to price module
   const currentPrice = safe(finData.currentPrice?.raw) ?? safe(priceModule.regularMarketPrice?.raw);
@@ -1046,6 +1082,12 @@ async function fetchYahooFinanceAPI(ticker) {
   const targetMeanPrice = safe(finData.targetMeanPrice?.raw);
   const marketCap = safe(priceModule.marketCap?.raw);
   const debtToEquity = safe(finData.debtToEquity?.raw);
+  const dividendYield = normalizeYieldRatio(
+    finData.dividendYield?.raw
+    ?? keyStats.trailingAnnualDividendYield?.raw
+    ?? keyStats.forwardAnnualDividendYield?.raw
+    ?? summaryDetail.dividendYield?.raw
+  );
 
   if (currentPrice == null && forwardPE == null) {
     throw new Error('Yahoo Finance API: insufficient data (likely rate-limited)');
@@ -1062,6 +1104,7 @@ async function fetchYahooFinanceAPI(ticker) {
     financialData: {
       forwardPE: { raw: forwardPE },
       pegRatio: { raw: pegRatio },
+      dividendYield: { raw: dividendYield },
       enterpriseValue: { raw: enterpriseValue },
       ebitda: { raw: ebitda },
       totalRevenue: { raw: totalRevenue },
@@ -1084,7 +1127,7 @@ async function fetchYahooFinance2TickerData(ticker) {
     withTimeout(yahooFinanceClient.quote(yahooSymbol), 7000, 'yahoo-finance2 quote'),
     withTimeout(
       yahooFinanceClient.quoteSummary(yahooSymbol, {
-        modules: ['financialData', 'defaultKeyStatistics']
+        modules: ['financialData', 'defaultKeyStatistics', 'summaryDetail']
       }),
       7000,
       'yahoo-finance2 quoteSummary'
@@ -1093,6 +1136,7 @@ async function fetchYahooFinance2TickerData(ticker) {
 
   const financialData = summary?.financialData || {};
   const keyStats = summary?.defaultKeyStatistics || {};
+  const summaryDetail = summary?.summaryDetail || {};
 
   const currentPrice = safe(quote?.regularMarketPrice ?? quote?.postMarketPrice ?? quote?.preMarketPrice);
   const previousClose = safe(quote?.regularMarketPreviousClose ?? quote?.previousClose);
@@ -1107,6 +1151,12 @@ async function fetchYahooFinance2TickerData(ticker) {
   const operatingCashflow = safe(financialData?.operatingCashflow);
   const targetMeanPrice = safe(financialData?.targetMeanPrice);
   const debtToEquity = safe(financialData?.debtToEquity);
+  const dividendYield = normalizeYieldRatio(
+    financialData?.dividendYield
+    ?? keyStats?.trailingAnnualDividendYield
+    ?? keyStats?.forwardAnnualDividendYield
+    ?? summaryDetail?.dividendYield
+  );
 
   if (currentPrice == null && forwardPE == null && pegRatio == null) {
     throw new Error(`yahoo-finance2: insufficient data for ${ticker}`);
@@ -1129,6 +1179,7 @@ async function fetchYahooFinance2TickerData(ticker) {
     financialData: {
       forwardPE: { raw: forwardPE },
       pegRatio: { raw: pegRatio },
+      dividendYield: { raw: dividendYield },
       enterpriseValue: { raw: enterpriseValue },
       ebitda: { raw: ebitda },
       totalRevenue: { raw: totalRevenue },
@@ -1186,6 +1237,13 @@ function pickMetric(candidates) {
     if (c?.value != null) return c;
   }
   return { value: null, source: null };
+}
+
+function normalizeYieldRatio(value) {
+  const n = safe(value);
+  if (n == null) return null;
+  // Keep as ratio for frontend percent formatters (e.g. 0.025 -> 2.50%).
+  return n > 1 ? n / 100 : n;
 }
 
 async function fetchStrictTickerData(ticker) {
@@ -1430,6 +1488,15 @@ async function fetchStrictTickerData(ticker) {
     )
   };
 
+  baseQuote.financialData.dividendYield = {
+    raw: firstNonNull(
+      normalizeYieldRatio(baseQuote.financialData?.dividendYield?.raw),
+      normalizeYieldRatio(yfinanceQuote?.financialData?.dividendYield?.raw),
+      normalizeYieldRatio(yahooApiQuote?.financialData?.dividendYield?.raw),
+      normalizeYieldRatio(eodhdQuote?.financialData?.dividendYield?.raw)
+    )
+  };
+
   baseQuote.quoteSource = "Strict source policy";
   baseQuote.metricSources = {
     currentPrice: currentPick.source,
@@ -1538,6 +1605,7 @@ function computeMetrics(data, tradingView = {}) {
   return {
     forwardPE: safe(fin.forwardPE?.raw),
     peg: safe(fin.pegRatio?.raw),
+    dividendYield: normalizeYieldRatio(fin.dividendYield?.raw),
     evEbitda,
     fcfYield: marketCap && freeCashflow ? freeCashflow / marketCap : null,
     ocfYield: marketCap && operatingCashflow ? operatingCashflow / marketCap : null,
@@ -1724,9 +1792,9 @@ app.get("/api/ticker/:symbol", async (req, res) => {
 
 // ── Market Indices ──────────────────────────────────────────────────────────
 const MARKET_INDICES = [
-  { symbol: "^GSPC",    label: "S&P 500"    },
-  { symbol: "^IXIC",    label: "Nasdaq"     },
-  { symbol: "^DJI",     label: "Dow"        },
+  { symbol: "^GSPC",    label: "S&P 500", finnhubSymbols: ["SPY"] },
+  { symbol: "^IXIC",    label: "Nasdaq", finnhubSymbols: ["QQQ"] },
+  { symbol: "^DJI",     label: "Dow", finnhubSymbols: ["DIA"] },
   { symbol: "GC=F",     label: "Gold"       },
   { symbol: "SI=F",     label: "Silver"     },
   { symbol: "^TNX",     label: "10Y"        },
@@ -1734,9 +1802,9 @@ const MARKET_INDICES = [
   { symbol: "CL=F",     label: "WTI"        },
   { symbol: "BZ=F",     label: "Brent", symbols: ["BZ=F","BRT-USD","LCOc1","BNO"] },
   { symbol: "^BSESN",   label: "Sensex"     },
-  { symbol: "BTC-USD",  label: "BTC"        },
-  { symbol: "ETH-USD",  label: "ETH"        },
-  { symbol: "USDINR=X", label: "USD/INR"    },
+  { symbol: "BTC-USD",  label: "BTC", finnhubSymbols: ["BINANCE:BTCUSDT", "COINBASE:BTCUSD"] },
+  { symbol: "ETH-USD",  label: "ETH", finnhubSymbols: ["BINANCE:ETHUSDT", "COINBASE:ETHUSD"] },
+  { symbol: "USDINR=X", label: "USD/INR", finnhubSymbols: ["OANDA:USD_INR"] },
   { symbol: "^N225",    label: "Nikkei"     },
   { symbol: "^KS11",    label: "KOSPI"      },
   { symbol: "DX-Y.NYB", label: "Dollar Index" }
@@ -1748,7 +1816,7 @@ const STOCKTWITS_INDEX_PROXY = {
 };
 let _marketCache = {};
 let _marketCacheAt = {};
-const MARKET_CACHE_TTL = 60_000; // 1 min
+const MARKET_CACHE_TTL = 5 * 60_000; // 5 minutes
 
 app.get("/api/market-indices", async (req, res) => {
   try {
@@ -1797,37 +1865,81 @@ app.get("/api/market-indices", async (req, res) => {
         }
 
         const candidates = Array.isArray(idx.symbols) && idx.symbols.length > 0 ? idx.symbols : [idx.symbol];
+        const finnhubCandidates = Array.isArray(idx.finnhubSymbols) && idx.finnhubSymbols.length > 0
+          ? idx.finnhubSymbols
+          : candidates;
         let chosen = null;
         let q = null;
-        for (const s of candidates) {
-          try {
-            const r = await fetch(`${YFINANCE_SERVICE_URL}/quote/${encodeURIComponent(s)}`, { timeout: 8000 });
-            if (!r.ok) throw new Error(`HTTP ${r.status}`);
-            const qq = await r.json();
-            const price = qq.regularMarketPrice ?? null;
-            // Reject implausible tiny values for commodities like Brent/WTI
-            const numericPrice = (price == null) ? null : (typeof price === 'number' ? price : Number(price));
-            let plausible = true;
-            const labelUpper = String(idx.label || '').toUpperCase();
-            if (numericPrice != null && (labelUpper.includes('BRENT') || labelUpper.includes('WTI') || labelUpper.includes('OIL'))) {
-              plausible = numericPrice > 1; // oil prices below $1 are implausible
-            }
-            if (numericPrice != null && plausible) {
-              chosen = s;
-              q = qq;
-              break;
-            }
-            // if price is null, keep trying next candidate
-          } catch {
-            // ignore and try next candidate
+        let provider = 'yfinance';
+
+        const isPlausibleIndexPrice = (label, numericPrice) => {
+          if (numericPrice == null || !Number.isFinite(numericPrice)) return false;
+          const labelUpper = String(label || '').toUpperCase();
+          if (labelUpper.includes('BRENT') || labelUpper.includes('WTI') || labelUpper.includes('OIL')) {
+            return numericPrice > 1;
+          }
+          return true;
+        };
+
+        // Try Finnhub first for low-latency index values (best-effort)
+        if (typeof fetchFinnhubIndexQuote === 'function') {
+          for (const s of finnhubCandidates) {
+            try {
+              const fh = await fetchFinnhubIndexQuote(s).catch(() => null);
+              if (fh && isPlausibleIndexPrice(idx.label, fh.price)) {
+                chosen = s;
+                q = { regularMarketPrice: fh.price, regularMarketPreviousClose: fh.prevClose, marketSession: fh.marketSession };
+                provider = 'finnhub';
+                break;
+              }
+            } catch (_) {}
           }
         }
-        if (!chosen && candidates.length > 0) {
-          // final attempt using primary symbol (may return null fields)
-          try {
-            const r = await fetch(`${YFINANCE_SERVICE_URL}/quote/${encodeURIComponent(candidates[0])}`, { timeout: 8000 });
-            if (r.ok) q = await r.json();
-          } catch {}
+
+        // If Finnhub didn't return a value, try yahoo-finance2 directly.
+        if (!q) {
+          for (const s of candidates) {
+            try {
+              const yf2 = await fetchYahooFinance2Quote(s);
+              if (isPlausibleIndexPrice(idx.label, yf2?.price)) {
+                chosen = s;
+                q = {
+                  regularMarketPrice: yf2.price,
+                  regularMarketPreviousClose: yf2.prevClose,
+                  marketSession: yf2.marketSession,
+                  regularPrice: yf2.regularPrice,
+                  extendedPrice: yf2.extendedPrice,
+                  regularChangePct: yf2.regularChangePct,
+                  extendedChangePct: yf2.extendedChangePct
+                };
+                provider = 'yahoo-finance2';
+                break;
+              }
+            } catch (_) {
+              // try next candidate
+            }
+          }
+        }
+
+        // If still empty, fall back to yfinance proxy candidates.
+        if (!q) {
+          for (const s of candidates) {
+            try {
+              const r = await fetch(`${YFINANCE_SERVICE_URL}/quote/${encodeURIComponent(s)}`, { timeout: 2000 });
+              if (!r.ok) throw new Error(`HTTP ${r.status}`);
+              const qq = await r.json();
+              const price = qq.regularMarketPrice ?? null;
+              const numericPrice = (price == null) ? null : (typeof price === 'number' ? price : Number(price));
+              if (isPlausibleIndexPrice(idx.label, numericPrice)) {
+                chosen = s;
+                q = qq;
+                provider = 'yfinance';
+                break;
+              }
+            } catch {
+              // ignore and try next candidate
+            }
+          }
         }
         // For Brent specifically, prefer the canonical BZ=F spot quote if available
         try {
@@ -1841,6 +1953,7 @@ app.get("/api/market-indices", async (req, res) => {
               if (pn2 != null && pn2 > 1) {
                 chosen = 'BZ=F';
                 q = qq2;
+                provider = 'yfinance';
               }
             }
           }
@@ -1851,7 +1964,7 @@ app.get("/api/market-indices", async (req, res) => {
         const prevClose = q?.regularMarketPreviousClose ?? null;
         const change = (price != null && prevClose != null) ? price - prevClose : null;
         const changePct = (change != null && prevClose) ? (change / prevClose) * 100 : null;
-        return { symbol: chosen || idx.symbol, label: cleanLabel, price, change, changePct, source: 'yfinance' };
+        return { symbol: chosen || idx.symbol, label: cleanLabel, price, change, changePct, source: provider };
       })
     );
     _marketCache[cacheKey] = { indices: results };
@@ -2297,8 +2410,11 @@ app.get('/api/compare/:symbol', async (req, res) => {
       const master = chooseMasterMetric(metrics.forwardPE, metrics.peg);
       const histForward = histAvg?.histForwardPE ?? histAvg?.forwardPE ?? null;
       const sectorForward = sectorAvg?.forwardPE ?? null;
-      const sent = dualBaselineSentiment(metrics.forwardPE, sectorForward, stockHist?.forwardPE ?? null, 'valuation');
+      // Thumb always based on 5yr stock historical avg only (not sector avg)
       const baseline = stockHist?.forwardPE ?? null;
+      const sent = baseline != null
+        ? (metrics.forwardPE < baseline ? 'UP' : metrics.forwardPE > baseline ? 'DOWN' : 'AVERAGE')
+        : 'AVERAGE';
       comparisons.forwardPE = {
         value: metrics.forwardPE,
         sectorAvg: sectorForward,
@@ -2329,8 +2445,11 @@ app.get('/api/compare/:symbol', async (req, res) => {
     if (metrics.evEbitda != null) {
       const histVal = histAvg?.evEbitda ?? null;
       const sectorVal = sectorAvg?.evEbitda ?? null;
-      const sent = dualBaselineSentiment(metrics.evEbitda, sectorVal, stockHist?.evEbitda ?? null, 'valuation');
+      // Thumb always based on 5yr stock historical avg only (not sector avg)
       const baseline = stockHist?.evEbitda ?? null;
+      const sent = baseline != null
+        ? (metrics.evEbitda < baseline ? 'UP' : metrics.evEbitda > baseline ? 'DOWN' : 'AVERAGE')
+        : 'AVERAGE';
       comparisons.evEbitda = {
         value: metrics.evEbitda,
         sectorAvg: sectorVal,
@@ -2346,8 +2465,11 @@ app.get('/api/compare/:symbol', async (req, res) => {
     if (metrics.fcfMargin != null) {
       const histVal = histAvg?.fcfMargin ?? null;
       const sectorVal = sectorAvg?.fcfMargin ?? null;
-      const sent = dualBaselineSentiment(metrics.fcfMargin, sectorVal, stockHist?.fcfMargin ?? null, 'efficiency');
+      // Thumb always based on 5yr stock historical avg only (FCF margin: higher is better)
       const baseline = stockHist?.fcfMargin ?? null;
+      const sent = baseline != null
+        ? (metrics.fcfMargin > baseline ? 'UP' : metrics.fcfMargin < baseline ? 'DOWN' : 'AVERAGE')
+        : 'AVERAGE';
       comparisons.fcfMargin = {
         value: metrics.fcfMargin,
         sectorAvg: sectorVal,
@@ -3373,11 +3495,35 @@ function getMondayForDate(dateObj) {
   return d;
 }
 
+function getTimeInCentral(now = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: EARNINGS_CENTRAL_TZ,
+    weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric',
+    hour: 'numeric', minute: 'numeric', hour12: false
+  }).formatToParts(now);
+  const get = (type) => { const p = parts.find(x => x.type === type); return p ? p.value : null; };
+  return {
+    weekday: get('weekday'),
+    year: Number(get('year')),
+    month: Number(get('month')),
+    day: Number(get('day')),
+    hour: Number(get('hour')),
+    minute: Number(get('minute'))
+  };
+}
+
+function isoDateInCentral(now = new Date()) {
+  const ct = getTimeInCentral(now);
+  return `${ct.year}-${String(ct.month).padStart(2, '0')}-${String(ct.day).padStart(2, '0')}`;
+}
+
 function getTargetWeekStart(now = new Date()) {
-  const saturdayCutoff = new Date(now.getFullYear(), now.getMonth(), now.getDate(), EARNINGS_SATURDAY_HOUR_LOCAL, 0, 0, 0);
-  const day = now.getDay();
+  const ct = getTimeInCentral(now);
   const currentWeekMonday = getMondayForDate(now);
-  const shouldSwitchToNextWeek = day === 0 || (day === 6 && now >= saturdayCutoff);
+  const shouldSwitchToNextWeek =
+    ct.weekday === 'Sunday' ||
+    ct.weekday === 'Saturday' ||
+    (ct.weekday === 'Friday' && ct.hour >= EARNINGS_FRIDAY_REFRESH_HOUR_CT);
   if (!shouldSwitchToNextWeek) return currentWeekMonday;
   const nextWeekMonday = new Date(currentWeekMonday);
   nextWeekMonday.setDate(nextWeekMonday.getDate() + 7);
@@ -3419,11 +3565,35 @@ async function loadEarningsCachesFromDisk() {
   } catch (_) {
     earningsMovesCache = {};
   }
+  try {
+    const rawNext = await fs.readFile(EARNINGS_NEXT_JSON_PATH, 'utf8');
+    const parsedNext = JSON.parse(rawNext);
+    if (parsedNext && typeof parsedNext.days === 'object') nextWeekEarningsCache = parsedNext;
+  } catch (_) {
+    // ignore
+  }
 }
 
 async function saveEarningsCachesToDisk() {
   try {
-    await fs.writeFile(EARNINGS_WEEK_JSON_PATH, JSON.stringify(weeklyEarningsCache, null, 2), 'utf8');
+    // If the on-disk weekly file already contains the "next week" payload,
+    // avoid overwriting it. This prevents accidental promotion/overwrite when
+    // some external job updated the next-week file and the server would
+    // otherwise write the same next-week data into the weekly file.
+    let skipWrite = false;
+    try {
+      const rawDisk = await fs.readFile(EARNINGS_WEEK_JSON_PATH, 'utf8');
+      const disk = JSON.parse(rawDisk);
+      if (disk && disk.weekStart && nextWeekEarningsCache && disk.weekStart === nextWeekEarningsCache.weekStart && weeklyEarningsCache.weekStart !== disk.weekStart) {
+        console.warn('[EarningsSync] Skipping overwrite of earnings_week.json because disk already contains next-week payload (weekStart=' + disk.weekStart + ')');
+        skipWrite = true;
+      }
+    } catch (_) {
+      // ignore read/parse errors and fall through to write
+    }
+    if (!skipWrite) {
+      await fs.writeFile(EARNINGS_WEEK_JSON_PATH, JSON.stringify(weeklyEarningsCache, null, 2), 'utf8');
+    }
   } catch (err) {
     console.error('[EarningsSync] Failed writing earnings_week.json:', err?.message || err);
   }
@@ -3431,6 +3601,11 @@ async function saveEarningsCachesToDisk() {
     await fs.writeFile(EARNINGS_MOVES_JSON_PATH, JSON.stringify(earningsMovesCache, null, 2), 'utf8');
   } catch (err) {
     console.error('[EarningsSync] Failed writing earnings_moves.json:', err?.message || err);
+  }
+  try {
+    await fs.writeFile(EARNINGS_NEXT_JSON_PATH, JSON.stringify(nextWeekEarningsCache, null, 2), 'utf8');
+  } catch (err) {
+    // best effort
   }
 }
 
@@ -3460,6 +3635,167 @@ function buildIsSp500Seed() {
   return seed;
 }
 
+async function fetchSp500Constituents() {
+  const url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies';
+  const res = await withTimeout(fetch(url), 12000, 'sp500 list');
+  if (!res.ok) throw new Error(`sp500_http_${res.status}`);
+  const html = await res.text();
+  const $ = cheerio.load(html);
+  const set = new Set();
+  $('table.wikitable tbody tr').each((_, tr) => {
+    const raw = String($(tr).find('td').first().text() || '').trim().toUpperCase();
+    if (!raw) return;
+    const normalized = raw.replace(/\./g, '-');
+    if (/^[A-Z0-9\-]{1,12}$/.test(normalized)) set.add(normalized);
+  });
+  if (set.size < 300) throw new Error('sp500_parse_too_small');
+  return set;
+}
+
+async function getSp500MembershipSet() {
+  if (sp500Cache.updatedAt && (Date.now() - sp500Cache.updatedAt) < SP500_CACHE_TTL_MS && sp500Cache.symbols.size > 0) {
+    return sp500Cache.symbols;
+  }
+  try {
+    const symbols = await fetchSp500Constituents();
+    sp500Cache = { symbols, updatedAt: Date.now() };
+    return symbols;
+  } catch (err) {
+    // Fallback to previously known S&P flags if upstream list fails.
+    const seed = buildIsSp500Seed();
+    if (seed.size > 0) return seed;
+    throw err;
+  }
+}
+
+function addDaysIso(iso, days) {
+  const d = new Date(`${iso}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return iso;
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+function toUnixSeconds(iso) {
+  const d = new Date(`${iso}T00:00:00Z`);
+  return Math.floor(d.getTime() / 1000);
+}
+
+function round2(n) {
+  return Math.round(Number(n) * 100) / 100;
+}
+
+async function fetchFinnhubEarningsHistory(symbol, fromIso, toIso) {
+  const key = getFinnhubKey();
+  if (!key) throw new Error('missing_finnhub_api_key');
+  const url = `${FINNHUB_API}/calendar/earnings?symbol=${encodeURIComponent(symbol)}&from=${encodeURIComponent(fromIso)}&to=${encodeURIComponent(toIso)}&token=${encodeURIComponent(key)}`;
+  const res = await withTimeout(fetch(url), 12000, 'finnhub symbol earnings history');
+  const data = await res.json();
+  if (!res.ok) throw new Error(`finnhub_history_http_${res.status}`);
+  const rows = Array.isArray(data?.earningsCalendar)
+    ? data.earningsCalendar
+    : (Array.isArray(data?.earnings) ? data.earnings : []);
+  return rows;
+}
+
+async function fetchFinnhubDailyCandles(symbol, fromIso, toIso) {
+  const key = getFinnhubKey();
+  if (!key) throw new Error('missing_finnhub_api_key');
+  const from = toUnixSeconds(fromIso);
+  const to = toUnixSeconds(toIso);
+  const url = `${FINNHUB_API}/stock/candle?symbol=${encodeURIComponent(symbol)}&resolution=D&from=${from}&to=${to}&token=${encodeURIComponent(key)}`;
+  const res = await withTimeout(fetch(url), 12000, 'finnhub candles');
+  const data = await res.json();
+  if (!res.ok) throw new Error(`finnhub_candles_http_${res.status}`);
+  if (data?.s !== 'ok' || !Array.isArray(data?.t) || !Array.isArray(data?.c)) return [];
+  const points = [];
+  for (let i = 0; i < data.t.length; i++) {
+    const ts = Number(data.t[i]);
+    const close = Number(data.c[i]);
+    if (!Number.isFinite(ts) || !Number.isFinite(close) || close <= 0) continue;
+    const dateIso = new Date(ts * 1000).toISOString().slice(0, 10);
+    points.push({ dateIso, close });
+  }
+  return points;
+}
+
+function computeMoveForEarningsEvent(eventIso, hour, candleByDate, sortedDates) {
+  if (!eventIso) return null;
+  let idx = sortedDates.indexOf(eventIso);
+  if (idx < 0) idx = sortedDates.findIndex((d) => d > eventIso);
+  if (idx < 0) return null;
+  const h = toHourCode(hour);
+  let preIdx = idx;
+  let postIdx = idx + 1;
+  if (h === 'bmo') {
+    preIdx = idx - 1;
+    postIdx = idx;
+  }
+  const preDate = sortedDates[preIdx];
+  const postDate = sortedDates[postIdx];
+  const preClose = preDate ? candleByDate.get(preDate) : null;
+  const postClose = postDate ? candleByDate.get(postDate) : null;
+  if (!Number.isFinite(preClose) || !Number.isFinite(postClose) || preClose <= 0) return null;
+  return round2(((postClose - preClose) / preClose) * 100);
+}
+
+async function syncMoveHistoryForSymbols(symbols, reason = 'job') {
+  const list = Array.from(new Set((Array.isArray(symbols) ? symbols : []).map((s) => String(s || '').toUpperCase()).filter(Boolean)));
+  if (list.length === 0) return;
+
+  const todayIso = isoDateLocal(new Date());
+  const fromIso = addDaysIso(todayIso, -540);
+  let updated = 0;
+
+  for (const symbol of list) {
+    const prev = earningsMovesCache[symbol] || {};
+    const hasFresh = Number.isFinite(Number(prev?.updatedAt)) && (Date.now() - Number(prev.updatedAt)) < (7 * 24 * 60 * 60_000)
+      && Number.isFinite(Number(prev?.avg4Move)) && Number.isFinite(Number(prev?.lastMove));
+    if (hasFresh) continue;
+
+    try {
+      const eventsRaw = await fetchFinnhubEarningsHistory(symbol, fromIso, todayIso);
+      const events = eventsRaw
+        .map((e) => ({ dateIso: String(e?.date || '').slice(0, 10), hour: toHourCode(e?.hour) }))
+        .filter((e) => !!e.dateIso)
+        .sort((a, b) => String(b.dateIso).localeCompare(String(a.dateIso)))
+        .slice(0, 6);
+      if (events.length === 0) continue;
+
+      const oldest = events[events.length - 1].dateIso;
+      const newest = events[0].dateIso;
+      const candles = await fetchFinnhubDailyCandles(symbol, addDaysIso(oldest, -7), addDaysIso(newest, 7));
+      if (!candles.length) continue;
+
+      const candleByDate = new Map(candles.map((p) => [p.dateIso, p.close]));
+      const sortedDates = Array.from(new Set(candles.map((p) => p.dateIso))).sort();
+      const moves = [];
+      for (const ev of events) {
+        const mv = computeMoveForEarningsEvent(ev.dateIso, ev.hour, candleByDate, sortedDates);
+        if (Number.isFinite(mv)) moves.push(mv);
+        if (moves.length >= 4) break;
+      }
+      if (!moves.length) continue;
+
+      earningsMovesCache[symbol] = {
+        ...prev,
+        lastMove: moves[0],
+        avg4Move: round2(moves.reduce((sum, v) => sum + Math.abs(v), 0) / moves.length),
+        moves,
+        updatedAt: Date.now()
+      };
+      updated += 1;
+    } catch (_) {
+      // best effort per symbol
+    }
+
+    await new Promise((r) => setTimeout(r, 90));
+  }
+
+  if (updated > 0) {
+    console.log(`[EarningsSync] Move history refreshed (${reason}) for ${updated} symbols`);
+  }
+}
+
 function mergeMoveData(symbolUpper) {
   const move = earningsMovesCache[symbolUpper] || null;
   return {
@@ -3469,32 +3805,99 @@ function mergeMoveData(symbolUpper) {
   };
 }
 
-async function refreshWeeklyEarningsCalendar(reason = 'job') {
-  const now = new Date();
-  const targetWeekStart = getTargetWeekStart(now);
-  const targetWeekStartIso = isoDateLocal(targetWeekStart);
-  const { fromIso, toIso } = getWeekRangeFromStart(targetWeekStart);
-  const rawRows = await fetchFinnhubEarningsCalendar(fromIso, toIso);
+function hydrateEarningsDaysFromMoveCache(days) {
+  let updated = 0;
+  const source = days && typeof days === 'object' ? days : {};
+  Object.keys(source).forEach((dateIso) => {
+    const rows = Array.isArray(source[dateIso]) ? source[dateIso] : [];
+    source[dateIso] = rows.map((row) => {
+      const symbol = String(row?.symbol || '').toUpperCase();
+      const moves = mergeMoveData(symbol);
+      const nextRow = {
+        ...row,
+        impliedMove: moves.impliedMove ?? row?.impliedMove ?? null,
+        avgLast4EarningsMove: moves.avgLast4EarningsMove ?? row?.avgLast4EarningsMove ?? null,
+        lastEarningsMove: moves.lastEarningsMove ?? row?.lastEarningsMove ?? null
+      };
+      if (
+        nextRow.impliedMove !== row?.impliedMove ||
+        nextRow.avgLast4EarningsMove !== row?.avgLast4EarningsMove ||
+        nextRow.lastEarningsMove !== row?.lastEarningsMove
+      ) {
+        updated += 1;
+      }
+      return nextRow;
+    });
+  });
+  return updated;
+}
 
-  const priorSp500Set = buildIsSp500Seed();
+async function enrichCompanyNamesForDays(byDay, options = {}) {
+  const maxSymbols = Math.max(0, Number(options.maxSymbols) || 80);
+  const maxDurationMs = Math.max(500, Number(options.maxDurationMs) || 6000);
+  const started = Date.now();
+  const allSymbols = Array.from(new Set(
+    Object.values(byDay || {}).flat().map((r) => String(r?.symbol || '').toUpperCase()).filter(Boolean)
+  )).slice(0, maxSymbols);
+
+  for (const sym of allSymbols) {
+    if (Date.now() - started > maxDurationMs) break;
+    try {
+      const yahooSym = normalizeSymbolForYahoo(sym);
+      const q = await withTimeout(yahooFinanceClient.quote(yahooSym), 5000, 'yf-quote-name');
+      const name = q?.shortName || q?.longName || null;
+      const short = sanitizeCompanyName(name, sym);
+      Object.keys(byDay || {}).forEach((d) => {
+        (byDay[d] || []).forEach((row) => {
+          if (String(row.symbol || '').toUpperCase() === sym) row.companyName = short;
+        });
+      });
+      await new Promise((r) => setTimeout(r, 40));
+    } catch (_) {
+      // ignore per-symbol failures
+    }
+  }
+
+  // Ensure fallback names exist.
+  Object.keys(byDay || {}).forEach((d) => {
+    (byDay[d] || []).forEach((row) => {
+      if (!row.companyName) row.companyName = sanitizeCompanyName(null, String(row.symbol || '').toUpperCase());
+    });
+  });
+}
+
+async function buildEarningsDaysFromRows(rawRows, options = {}) {
+  const symbolsForWeek = Array.from(new Set(
+    (Array.isArray(rawRows) ? rawRows : []).map((r) => String(r?.symbol || '').trim().toUpperCase()).filter(Boolean)
+  ));
+  if (options.syncMoveHistory) {
+    await syncMoveHistoryForSymbols(symbolsForWeek, options.reason || 'job');
+  }
+  const sp500Set = await getSp500MembershipSet().catch(() => buildIsSp500Seed());
   const byDay = {};
-  for (const row of rawRows) {
+  for (const row of (Array.isArray(rawRows) ? rawRows : [])) {
     const symbol = String(row?.symbol || '').trim().toUpperCase();
     const dateIso = String(row?.date || '').slice(0, 10);
     if (!symbol || !dateIso) continue;
     if (!byDay[dateIso]) byDay[dateIso] = [];
     const moves = mergeMoveData(symbol);
+    // Preserve any existing values from the on-disk cache so we don't clobber backfilled data
+    const existingForDate = (weeklyEarningsCache?.days || {})[dateIso] || [];
+    const existingRow = existingForDate.find((r) => String(r?.symbol || '').toUpperCase() === symbol) || null;
     byDay[dateIso].push({
       symbol,
       hour: toHourCode(row?.hour),
       epsEst: Number.isFinite(Number(row?.epsEstimate)) ? Number(row.epsEstimate) : null,
       revenueEst: Number.isFinite(Number(row?.revenueEstimate)) ? Number(row.revenueEstimate) : null,
-      isSp500: priorSp500Set.has(symbol),
-      impliedMove: moves.impliedMove,
-      avgLast4EarningsMove: moves.avgLast4EarningsMove,
-      lastEarningsMove: moves.lastEarningsMove
+      isSp500: sp500Set.has(symbol),
+      impliedMove: moves.impliedMove ?? existingRow?.impliedMove ?? null,
+      avgLast4EarningsMove: moves.avgLast4EarningsMove ?? existingRow?.avgLast4EarningsMove ?? null,
+      lastEarningsMove: moves.lastEarningsMove ?? existingRow?.lastEarningsMove ?? null,
+      companyName: existingRow?.companyName ?? null
     });
   }
+
+  hydrateEarningsDaysFromMoveCache(byDay);
 
   Object.keys(byDay).forEach((d) => {
     byDay[d] = byDay[d].sort((a, b) => {
@@ -3505,11 +3908,58 @@ async function refreshWeeklyEarningsCalendar(reason = 'job') {
     });
   });
 
+  await enrichCompanyNamesForDays(byDay, {
+    maxSymbols: options.maxNameSymbols || 80,
+    maxDurationMs: options.maxNameDurationMs || 6000
+  });
+  return byDay;
+}
+
+async function refreshWeeklyEarningsCalendar(reason = 'job') {
+  const now = new Date();
+  const targetWeekStart = getTargetWeekStart(now);
+  const targetWeekStartIso = isoDateLocal(targetWeekStart);
+  const { fromIso, toIso } = getWeekRangeFromStart(targetWeekStart);
+  const rawRows = await fetchFinnhubEarningsCalendar(fromIso, toIso);
+  const byDay = await buildEarningsDaysFromRows(rawRows, {
+    syncMoveHistory: true,
+    reason,
+    maxNameSymbols: 100,
+    maxNameDurationMs: 9000
+  });
+
   weeklyEarningsCache = {
     updatedAt: Date.now(),
     weekStart: targetWeekStartIso,
     days: byDay
   };
+
+  // Pre-warm/cache the week after target week so "Next Week" opens instantly.
+  try {
+    const twoWeeksMonday = new Date(targetWeekStart);
+    twoWeeksMonday.setDate(twoWeeksMonday.getDate() + 7);
+    const twoWeeksStartIso = isoDateLocal(twoWeeksMonday);
+    if (nextWeekEarningsCache.weekStart !== twoWeeksStartIso) {
+      const range2 = getWeekRangeFromStart(twoWeeksMonday);
+      const rawRows2 = await fetchFinnhubEarningsCalendar(range2.fromIso, range2.toIso);
+      const byDay2 = rawRows2.length > 0
+        ? await buildEarningsDaysFromRows(rawRows2, {
+            syncMoveHistory: false,
+            reason: `${reason}-prewarm-next`,
+            maxNameSymbols: 60,
+            maxNameDurationMs: 3000
+          })
+        : {};
+      nextWeekEarningsCache = {
+        updatedAt: Date.now(),
+        weekStart: twoWeeksStartIso,
+        days: byDay2
+      };
+    }
+  } catch (_) {
+    // best effort prewarm only
+  }
+
   earningsRefreshState.lastWeeklyRefreshWeekStart = targetWeekStartIso;
   await saveEarningsCachesToDisk();
   console.log(`[EarningsSync] Weekly calendar refreshed (${reason}) for week ${targetWeekStartIso}`);
@@ -3562,13 +4012,28 @@ async function computeImpliedMoveForSymbol(symbol) {
 
 async function refreshImpliedMovesForRemainingWeek(reason = 'job') {
   const now = new Date();
-  const todayIso = isoDateLocal(now);
+  const todayIsoCt = isoDateInCentral(now);
   const days = weeklyEarningsCache?.days || {};
-  const symbols = Array.from(new Set(
-    Object.keys(days)
-      .filter((dateIso) => dateIso >= todayIso)
-      .flatMap((dateIso) => (Array.isArray(days[dateIso]) ? days[dateIso] : []).map((r) => String(r?.symbol || '').toUpperCase()).filter(Boolean))
-  ));
+  const nextDateIso = Object.keys(days).filter((d) => d > todayIsoCt).sort()[0] || null;
+  if (!nextDateIso) {
+    earningsRefreshState.lastImpliedRefreshDate = todayIsoCt;
+    return;
+  }
+
+  // Prefer S&P500 symbols first, then others (deduplicated, preserve order)
+  const raw = (Array.isArray(days[nextDateIso]) ? days[nextDateIso] : []).map((r) => ({
+    symbol: String(r?.symbol || '').toUpperCase(),
+    isSp: !!r?.isSp500
+  })).filter(s => s.symbol);
+  const seen = new Set();
+  const spSymbols = [];
+  const otherSymbols = [];
+  for (const item of raw) {
+    if (seen.has(item.symbol)) continue;
+    seen.add(item.symbol);
+    if (item.isSp) spSymbols.push(item.symbol); else otherSymbols.push(item.symbol);
+  }
+  const symbols = [...spSymbols, ...otherSymbols];
 
   let updates = 0;
   for (const symbol of symbols) {
@@ -3597,26 +4062,75 @@ async function refreshImpliedMovesForRemainingWeek(reason = 'job') {
   });
 
   weeklyEarningsCache.updatedAt = Date.now();
-  earningsRefreshState.lastImpliedRefreshDate = todayIso;
+  earningsRefreshState.lastImpliedRefreshDate = todayIsoCt;
   await saveEarningsCachesToDisk();
-  console.log(`[EarningsSync] Implied refresh (${reason}) updated ${updates} symbols for ${todayIso}`);
+  console.log(`[EarningsSync] Implied refresh (${reason}) updated ${updates} symbols for next earnings day ${nextDateIso}`);
 }
 
-function isAfterSaturdayCutoff(now = new Date()) {
-  if (now.getDay() !== 6) return now.getDay() === 0;
-  const cutoff = new Date(now.getFullYear(), now.getMonth(), now.getDate(), EARNINGS_SATURDAY_HOUR_LOCAL, 0, 0, 0);
-  return now >= cutoff;
+async function refreshImpliedMovesForNextTwoWeeks(reason = 'job') {
+  const daysCombined = {
+    ...(weeklyEarningsCache?.days || {}),
+    ...(nextWeekEarningsCache?.days || {})
+  };
+  // Build symbol list preferring S&P500 symbols first
+  const rawCombined = Object.values(daysCombined)
+    .flatMap((rows) => (Array.isArray(rows) ? rows : []).map((r) => ({ symbol: String(r?.symbol || '').toUpperCase(), isSp: !!r?.isSp500 })))
+    .filter(s => s.symbol);
+  const seen2 = new Set();
+  const spSymbols2 = [];
+  const otherSymbols2 = [];
+  for (const item of rawCombined) {
+    if (seen2.has(item.symbol)) continue;
+    seen2.add(item.symbol);
+    if (item.isSp) spSymbols2.push(item.symbol); else otherSymbols2.push(item.symbol);
+  }
+  const symbols = [...spSymbols2, ...otherSymbols2];
+
+  let updates = 0;
+  for (const symbol of symbols) {
+    try {
+      const impliedMove = await computeImpliedMoveForSymbol(symbol);
+      const prev = earningsMovesCache[symbol] || {};
+      earningsMovesCache[symbol] = {
+        ...prev,
+        impliedMove,
+        impliedUpdatedAt: Date.now()
+      };
+      updates += 1;
+    } catch (_) {
+      // best effort per symbol
+    }
+    await new Promise((r) => setTimeout(r, 120));
+  }
+
+  hydrateEarningsDaysFromMoveCache(weeklyEarningsCache.days || {});
+  hydrateEarningsDaysFromMoveCache(nextWeekEarningsCache.days || {});
+  weeklyEarningsCache.updatedAt = Date.now();
+  nextWeekEarningsCache.updatedAt = Date.now();
+  earningsRefreshState.lastImpliedRefreshDate = isoDateInCentral(new Date());
+  await saveEarningsCachesToDisk();
+  console.log(`[EarningsSync] Implied refresh (${reason}) updated ${updates} symbols for next two weeks`);
+}
+
+function isAfterWeeklyRefreshCutoff(now = new Date()) {
+  const ct = getTimeInCentral(now);
+  if (ct.weekday === 'Saturday' || ct.weekday === 'Sunday') return true;
+  if (ct.weekday === 'Friday' && ct.hour >= EARNINGS_FRIDAY_REFRESH_HOUR_CT) return true;
+  return false;
 }
 
 function isAfterImpliedCutoff(now = new Date()) {
-  const cutoff = new Date(now.getFullYear(), now.getMonth(), now.getDate(), IMPLIED_REFRESH_HOUR_LOCAL, 0, 0, 0);
-  return now >= cutoff;
+  const ct = getTimeInCentral(now);
+  const weekday = ct.weekday;
+  const isImpliedRefreshDay = weekday === 'Sunday' || weekday === 'Monday' || weekday === 'Tuesday' || weekday === 'Wednesday' || weekday === 'Thursday';
+  if (!isImpliedRefreshDay) return false;
+  return ct.hour >= EARNINGS_IMPLIED_REFRESH_HOUR_CT;
 }
 
 async function ensureWeeklyCalendarRefreshIfDue(reason = 'job') {
   const now = new Date();
   const targetWeekStartIso = isoDateLocal(getTargetWeekStart(now));
-  const shouldRefreshForWeek = isAfterSaturdayCutoff(now) && earningsRefreshState.lastWeeklyRefreshWeekStart !== targetWeekStartIso;
+  const shouldRefreshForWeek = isAfterWeeklyRefreshCutoff(now) && earningsRefreshState.lastWeeklyRefreshWeekStart !== targetWeekStartIso;
   if (!shouldRefreshForWeek && weeklyEarningsCache?.weekStart === targetWeekStartIso && Object.keys(weeklyEarningsCache.days || {}).length > 0) {
     return false;
   }
@@ -3624,21 +4138,82 @@ async function ensureWeeklyCalendarRefreshIfDue(reason = 'job') {
     await earningsRefreshPromise;
     return true;
   }
-  earningsRefreshPromise = refreshWeeklyEarningsCalendar(reason)
-    .catch((err) => {
+  // If the server was down at the Friday cutoff, it's possible we already
+  // persisted a "next week" payload on disk. Promote that to the weekly
+  // cache on first request after the cutoff so the UI reflects the new week
+  // even if external providers are unavailable.
+  try {
+    const nextIsTarget = nextWeekEarningsCache && nextWeekEarningsCache.weekStart === targetWeekStartIso;
+    const hasNextDays = nextWeekEarningsCache && Object.keys(nextWeekEarningsCache.days || {}).length > 0;
+    const weeklyNotSet = !weeklyEarningsCache || weeklyEarningsCache.weekStart !== targetWeekStartIso || Object.keys(weeklyEarningsCache.days || {}).length === 0;
+    if (nextIsTarget && hasNextDays && weeklyNotSet) {
+      weeklyEarningsCache = {
+        updatedAt: Date.now(),
+        weekStart: nextWeekEarningsCache.weekStart,
+        days: nextWeekEarningsCache.days
+      };
+      earningsRefreshState.lastWeeklyRefreshWeekStart = targetWeekStartIso;
+      await saveEarningsCachesToDisk();
+      console.log('[EarningsSync] Promoted persisted next-week to weekly cache after cutoff');
+      return true;
+    }
+  } catch (e) {
+    // best-effort only; fall through to normal refresh behavior
+  }
+
+  // Wrap refresh so we can recover from provider auth failures (e.g. Finnhub 401)
+  earningsRefreshPromise = (async () => {
+    try {
+      await refreshWeeklyEarningsCalendar(reason);
+    } catch (err) {
       console.error('[EarningsSync] Weekly refresh failed:', err?.message || err);
+      // If Finnhub is unauthorized, advance the cached weekStart anyway so the UI
+      // reflects the next week immediately and doesn't stall until the provider is fixed.
+      const isFinnhub401 = String(err?.message || '').toLowerCase().includes('finnhub_http_401')
+        || (err && err.response && err.response.status === 401);
+      if (isFinnhub401) {
+        try {
+          weeklyEarningsCache.weekStart = targetWeekStartIso;
+          weeklyEarningsCache.updatedAt = Date.now();
+          // Best-effort: enrich existing cached rows with company short names so the UI can sort by name.
+          try {
+            const existingSymbols = Array.from(new Set(Object.values(weeklyEarningsCache.days || {}).flat().map(r => String(r.symbol || '').toUpperCase()).filter(Boolean)));
+            for (const sym of existingSymbols) {
+              try {
+                const yahooSym = normalizeSymbolForYahoo(sym);
+                const q = await withTimeout(yahooFinanceClient.quote(yahooSym), 7000, 'yf-quote-name-fallback');
+                const name = q?.shortName || q?.longName || null;
+                const short = sanitizeCompanyName(name, sym);
+                Object.keys(weeklyEarningsCache.days || {}).forEach((d) => {
+                  (weeklyEarningsCache.days[d] || []).forEach((row) => { if (String(row.symbol || '').toUpperCase() === sym) row.companyName = short; });
+                });
+                await new Promise(r => setTimeout(r, 60));
+              } catch (_) {}
+            }
+          } catch (ee) {
+            // ignore enrichment failures
+          }
+          await saveEarningsCachesToDisk();
+          console.warn('[EarningsSync] Finnhub 401 - advanced weekStart to', targetWeekStartIso);
+          return;
+        } catch (e) {
+          console.error('[EarningsSync] Failed to persist weekStart fallback:', e?.message || e);
+          throw err;
+        }
+      }
       throw err;
-    })
-    .finally(() => {
+    } finally {
       earningsRefreshPromise = null;
-    });
+    }
+  })();
+
   await earningsRefreshPromise;
   return true;
 }
 
 async function ensureImpliedRefreshIfDue(reason = 'job') {
   const now = new Date();
-  const todayIso = isoDateLocal(now);
+  const todayIso = isoDateInCentral(now);
   if (!isAfterImpliedCutoff(now)) return false;
   if (earningsRefreshState.lastImpliedRefreshDate === todayIso) return false;
   if (impliedRefreshPromise) {
@@ -3671,7 +4246,25 @@ async function ensureEarningsUpdatesIfDue(reason = 'job') {
 }
 
 app.get('/api/earnings/week', async (_req, res) => {
-  await ensureEarningsUpdatesIfDue('request');
+  const hasCachedWeek = !!(weeklyEarningsCache?.weekStart && Object.keys(weeklyEarningsCache?.days || {}).length > 0);
+  if (hasCachedWeek) {
+    // Keep first paint snappy: serve cache immediately and refresh in background.
+    ensureEarningsUpdatesIfDue('request').catch(() => {});
+  } else {
+    await ensureEarningsUpdatesIfDue('request');
+  }
+  try {
+    hydrateEarningsDaysFromMoveCache(weeklyEarningsCache.days || {});
+  } catch (_) {}
+  // Ensure every row has a companyName (best-effort fallback to symbol) so UI sorting works.
+  try {
+    Object.keys(weeklyEarningsCache.days || {}).forEach((d) => {
+      (weeklyEarningsCache.days[d] || []).forEach((row) => {
+        if (!row.companyName) row.companyName = sanitizeCompanyName(null, String(row.symbol || '').toUpperCase());
+      });
+    });
+  } catch (_) {}
+
   return res.json({
     updatedAt: weeklyEarningsCache.updatedAt || 0,
     weekStart: weeklyEarningsCache.weekStart || null,
@@ -3679,29 +4272,126 @@ app.get('/api/earnings/week', async (_req, res) => {
   });
 });
 
-app.post('/api/earnings/refresh-week', async (_req, res) => {
+app.post('/api/earnings/refresh-week', async (req, res) => {
   try {
-    await ensureWeeklyCalendarRefreshIfDue('request');
+    const force = String(req.query.force || req.body?.force || '').toLowerCase();
+    if (force === '1' || force === 'true' || force === 'yes') {
+      await refreshWeeklyEarningsCalendar('manual-force');
+    } else {
+      await ensureWeeklyCalendarRefreshIfDue('request');
+    }
     return res.json({ ok: true, updatedAt: weeklyEarningsCache.updatedAt, weekStart: weeklyEarningsCache.weekStart });
   } catch (err) {
     return res.status(502).json({ error: 'weekly_refresh_failed', details: err?.message || String(err) });
   }
 });
 
-app.post('/api/earnings/implied-refresh', async (_req, res) => {
+app.post('/api/earnings/implied-refresh', async (req, res) => {
   try {
-    await ensureImpliedRefreshIfDue('request');
+    const force = String(req.query.force || req.body?.force || '').toLowerCase();
+    if (force === '1' || force === 'true' || force === 'yes') {
+      // Ensure next-week cache exists so force refresh can cover two upcoming weeks.
+      try {
+        const now = new Date();
+        const currentTargetMonday = getTargetWeekStart(now);
+        const nextMonday = new Date(currentTargetMonday);
+        nextMonday.setDate(nextMonday.getDate() + 7);
+        const nextWeekStartIso = isoDateLocal(nextMonday);
+        if (nextWeekEarningsCache.weekStart !== nextWeekStartIso) {
+          const range = getWeekRangeFromStart(nextMonday);
+          const rawRows = await fetchFinnhubEarningsCalendar(range.fromIso, range.toIso);
+          const byDay = rawRows.length > 0
+            ? await buildEarningsDaysFromRows(rawRows, { syncMoveHistory: false, reason: 'manual-force-preload-next', maxNameSymbols: 40, maxNameDurationMs: 2500 })
+            : {};
+          nextWeekEarningsCache = { updatedAt: Date.now(), weekStart: nextWeekStartIso, days: byDay };
+        }
+      } catch (_) {}
+      await refreshImpliedMovesForNextTwoWeeks('manual-force');
+    } else {
+      await ensureImpliedRefreshIfDue('request');
+    }
     return res.json({ ok: true, updatedAt: weeklyEarningsCache.updatedAt, day: earningsRefreshState.lastImpliedRefreshDate });
   } catch (err) {
     return res.status(502).json({ error: 'implied_refresh_failed', details: err?.message || String(err) });
   }
 });
 
+app.get('/api/earnings/next-week', async (_req, res) => {
+  const now = new Date();
+  const currentTargetMonday = getTargetWeekStart(now);
+  const nextMonday = new Date(currentTargetMonday);
+  nextMonday.setDate(nextMonday.getDate() + 7);
+  const nextWeekStartIso = isoDateLocal(nextMonday);
+  try {
+
+    // If this week is already cached, serve it immediately (do not pull again).
+    if (
+      nextWeekEarningsCache.weekStart === nextWeekStartIso &&
+      nextWeekEarningsCache.updatedAt
+    ) {
+      return res.json({ updatedAt: nextWeekEarningsCache.updatedAt, weekStart: nextWeekEarningsCache.weekStart, days: nextWeekEarningsCache.days });
+    }
+
+    const { fromIso, toIso } = getWeekRangeFromStart(nextMonday);
+    const rawRows = await fetchFinnhubEarningsCalendar(fromIso, toIso);
+    if (!rawRows.length) {
+      nextWeekEarningsCache = { updatedAt: Date.now(), weekStart: nextWeekStartIso, days: {} };
+      return res.json({ updatedAt: nextWeekEarningsCache.updatedAt, weekStart: nextWeekEarningsCache.weekStart, days: nextWeekEarningsCache.days });
+    }
+    const byDay = await buildEarningsDaysFromRows(rawRows, {
+      syncMoveHistory: false,
+      reason: 'next-week-request',
+      maxNameSymbols: 60,
+      maxNameDurationMs: 3000
+    });
+
+    nextWeekEarningsCache = { updatedAt: Date.now(), weekStart: nextWeekStartIso, days: byDay };
+    return res.json({ updatedAt: nextWeekEarningsCache.updatedAt, weekStart: nextWeekEarningsCache.weekStart, days: nextWeekEarningsCache.days });
+  } catch (err) {
+    console.error('[EarningsSync] next-week fetch error:', err?.message || err);
+    return res.json({ updatedAt: nextWeekEarningsCache.updatedAt || 0, weekStart: nextWeekStartIso, days: nextWeekEarningsCache.weekStart === nextWeekStartIso ? (nextWeekEarningsCache.days || {}) : {} });
+  }
+});
+
+// Background implied-refresh trigger: if the server was down at the daily implied
+// refresh cutoff, ensureImpliedRefreshIfDue will run on the first incoming
+// request (best-effort, non-blocking) so implied moves are refreshed even when
+// the scheduled job was missed.
+app.use((req, _res, next) => {
+  // Do not block the request; run in background and ignore errors.
+  ensureImpliedRefreshIfDue('background-request').catch(() => {});
+  next();
+});
+
+// Internal: accept an enriched next-week payload and set it in-memory + persist (admin only)
+app.post('/internal/set-next-week', async (req, res) => {
+  try {
+    const payload = req.body || {};
+    if (!payload || typeof payload.days !== 'object') return res.status(400).json({ error: 'invalid_payload' });
+    nextWeekEarningsCache = {
+      updatedAt: Date.now(),
+      weekStart: payload.weekStart || nextWeekEarningsCache.weekStart || null,
+      days: payload.days
+    };
+    await saveEarningsCachesToDisk();
+    return res.json({ ok: true, updatedAt: nextWeekEarningsCache.updatedAt, weekStart: nextWeekEarningsCache.weekStart });
+  } catch (err) {
+    return res.status(500).json({ error: 'set_next_failed', details: err?.message || String(err) });
+  }
+});
+
+
 // ── Active Options / Ticker Options (Alpha Vantage + Yahoo Finance) ─────────
 const ACTIVE_OPTIONS_JSON_PATH = './data/active_options.json';
+const ACTIVE_OPTIONS_TODAY_JSON_PATH = './data/active_options_today.json';
 const TICKER_OPTIONS_JSON_PATH = './data/options_by_ticker.json';
 const OPTIONS_CACHE_TTL_MS = 60 * 60 * 1000;
-const ACTIVE_OPTIONS_TOP_SYMBOLS = 5;
+const TICKER_OPTIONS_CACHE_TTL_MS = 30 * 60 * 1000;
+const ACTIVE_OPTIONS_TODAY_TTL_MS = 30 * 60 * 1000;
+const CENTRAL_TZ = 'America/Chicago';
+const ACTIVE_OPTIONS_REFRESH_START_MIN = 8 * 60 + 30; // 8:30 AM Central
+const ACTIVE_OPTIONS_REFRESH_END_MIN = 15 * 60; // 3:00 PM Central
+const ACTIVE_OPTIONS_TOP_SYMBOLS = 15;
 const ACTIVE_OPTIONS_TOP_CONTRACTS = 15;
 
 let activeOptionsCache = {
@@ -3712,11 +4402,18 @@ let activeOptionsCache = {
   sourceStatus: { alphaVantage: 'degraded', yahooFinance: 'degraded' }
 };
 let activeOptionsRefreshPromise = null;
+let activeOptionsTodayCache = {
+  updatedAt: 0,
+  expiresAt: 0,
+  items: [],
+  sourceStatus: { alphaVantage: 'degraded' }
+};
+let activeOptionsTodayRefreshPromise = null;
 let tickerOptionsCache = {};
 const tickerOptionsRefreshPromises = new Map();
 
 function getAlphaVantageKey() {
-  return String(process.env.ALPHA_VANTAGE_API_KEY || '').trim();
+  return String(process.env.ALPHA_VANTAGE_API_KEY || process.env.ALPHA_VANTAGE_KEY || '').trim();
 }
 
 function isEntryFresh(entry) {
@@ -3785,7 +4482,7 @@ function formatOptionsPayload(symbol, chain, quotePrice, sourceStatus, options =
     expirationDate,
     underlyingPrice: quotePrice,
     updatedAt: Date.now(),
-    expiresAt: Date.now() + OPTIONS_CACHE_TTL_MS,
+    expiresAt: Date.now() + TICKER_OPTIONS_CACHE_TTL_MS,
     sourceStatus,
     calls: normalizedCalls,
     puts: normalizedPuts
@@ -3822,6 +4519,225 @@ async function saveActiveOptionsToDisk() {
   } catch (err) {
     console.error('[OptionsActive] Save error:', err.message || err);
   }
+}
+
+async function loadActiveOptionsTodayFromDisk() {
+  try {
+    const raw = await fs.readFile(ACTIVE_OPTIONS_TODAY_JSON_PATH, 'utf8');
+    const parsed = JSON.parse(raw);
+    if (parsed && Array.isArray(parsed.items)) {
+      activeOptionsTodayCache = {
+        updatedAt: Number(parsed.updatedAt) || 0,
+        expiresAt: Number(parsed.expiresAt) || 0,
+        items: parsed.items,
+        sourceStatus: parsed.sourceStatus || { alphaVantage: 'degraded' }
+      };
+    }
+  } catch (_) {
+    activeOptionsTodayCache = {
+      updatedAt: 0,
+      expiresAt: 0,
+      items: [],
+      sourceStatus: { alphaVantage: 'degraded' }
+    };
+  }
+}
+
+async function saveActiveOptionsTodayToDisk() {
+  try {
+    await fs.writeFile(ACTIVE_OPTIONS_TODAY_JSON_PATH, JSON.stringify(activeOptionsTodayCache, null, 2), 'utf8');
+  } catch (err) {
+    console.error('[OptionsActiveToday] Save error:', err.message || err);
+  }
+}
+
+function normalizeMostActiveStockRow(row) {
+  const ticker = normalizeActiveTicker(row?.ticker);
+  if (!ticker) return null;
+  const parseNum = (v) => {
+    const n = Number(String(v ?? '').replace(/,/g, ''));
+    return Number.isFinite(n) ? n : null;
+  };
+  return {
+    ticker,
+    price: parseNum(row?.price),
+    changeAmount: parseNum(row?.change_amount),
+    changePercentage: row?.change_percentage == null ? null : String(row.change_percentage),
+    volume: parseNum(row?.volume)
+  };
+}
+
+function extractTopOptionContractFromChain(symbol, chain) {
+  const expirationDate = chain?.expirationDate ? isoDateOnly(chain.expirationDate) : null;
+  const calls = Array.isArray(chain?.calls) ? chain.calls : [];
+  const puts = Array.isArray(chain?.puts) ? chain.puts : [];
+  const contracts = [
+    ...calls.map((c) => normalizeOptionContract(c, symbol, 'CALL', expirationDate)).filter(Boolean),
+    ...puts.map((p) => normalizeOptionContract(p, symbol, 'PUT', expirationDate)).filter(Boolean)
+  ].sort((a, b) => (Number(b.volume) || 0) - (Number(a.volume) || 0));
+
+  return contracts.length > 0 ? contracts[0] : null;
+}
+
+function getActiveOptionsTodaySnapshot() {
+  return {
+    updatedAt: activeOptionsTodayCache.updatedAt || 0,
+    expiresAt: activeOptionsTodayCache.expiresAt || 0,
+    sourceStatus: activeOptionsTodayCache.sourceStatus || { alphaVantage: 'degraded' },
+    items: Array.isArray(activeOptionsTodayCache.items) ? activeOptionsTodayCache.items : []
+  };
+}
+
+function getCentralClockParts(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: CENTRAL_TZ,
+    weekday: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  }).formatToParts(date);
+  const map = {};
+  for (const p of parts) map[p.type] = p.value;
+  return {
+    weekday: String(map.weekday || ''),
+    hour: Number(map.hour),
+    minute: Number(map.minute)
+  };
+}
+
+function isActiveOptionsRefreshWindowCST(now = new Date()) {
+  const { weekday, hour, minute } = getCentralClockParts(now);
+  if (!['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].includes(weekday)) return false;
+  if (!Number.isFinite(hour) || !Number.isFinite(minute)) return false;
+  const mins = hour * 60 + minute;
+  return mins >= ACTIVE_OPTIONS_REFRESH_START_MIN && mins < ACTIVE_OPTIONS_REFRESH_END_MIN;
+}
+
+async function maybeRefreshActiveOptionsToday(reason = 'job') {
+  const inWindow = isActiveOptionsRefreshWindowCST();
+  const cached = getActiveOptionsTodaySnapshot();
+  const hasCache = Array.isArray(cached.items) && cached.items.length > 0;
+
+  // Off-hours: keep cached data as-is.
+  if (!inWindow && hasCache) return cached;
+
+  // If no cache exists (e.g., fresh startup), attempt one refresh even off-hours.
+  if (activeOptionsTodayRefreshPromise) {
+    await activeOptionsTodayRefreshPromise.catch(() => {});
+    return getActiveOptionsTodaySnapshot();
+  }
+
+  activeOptionsTodayRefreshPromise = refreshActiveOptionsToday()
+    .catch((err) => {
+      console.error(`[OptionsActiveToday] refresh (${reason}) failed:`, err?.message || err);
+    })
+    .finally(() => {
+      activeOptionsTodayRefreshPromise = null;
+    });
+
+  await activeOptionsTodayRefreshPromise;
+  return getActiveOptionsTodaySnapshot();
+}
+
+async function refreshActiveOptionsToday() {
+  const apiKey = getAlphaVantageKey();
+  if (!apiKey) throw new Error('missing_alpha_vantage_key');
+
+  const url = `${ALPHA_VANTAGE_API}?function=TOP_GAINERS_LOSERS&apikey=${encodeURIComponent(apiKey)}`;
+  const res = await withTimeout(fetch(url), 10000, 'alpha-vantage top-gainers-losers active-today');
+  const body = await res.json();
+  if (!res.ok) throw new Error(`alpha_vantage_http_${res.status}`);
+  if (body?.['Error Message'] || body?.Information || body?.Note) {
+    throw new Error(body?.Information || body?.Note || body?.['Error Message'] || 'alpha_vantage_api_error');
+  }
+
+  const rawItems = Array.isArray(body?.most_actively_traded)
+    ? body.most_actively_traded.map(normalizeMostActiveStockRow).filter(Boolean)
+    : [];
+
+  if (rawItems.length === 0) throw new Error('alpha_vantage_empty_most_actively_traded');
+
+  // Enrich each active ticker with one highest-volume option contract (CALL/PUT + expiration).
+  const sourceStatus = { alphaVantage: 'ok', yahooFinance: 'degraded' };
+  const candidates = rawItems.slice(0, 25);
+  const enrichedSettled = await Promise.allSettled(candidates.map(async (row) => {
+    try {
+      const { chain } = await fetchNearestOptionsSnapshot(row.ticker);
+      const top = extractTopOptionContractFromChain(row.ticker, chain);
+      if (!top) return null;
+      return {
+        ...row,
+        type: top.type || null,
+        expirationDate: top.expirationDate || null,
+        strike: top.strike ?? null,
+        optionVolume: top.volume ?? null,
+        openInterest: top.openInterest ?? null,
+        optionContract: top.contract || null
+      };
+    } catch (_) {
+      return null;
+    }
+  }));
+
+  const enriched = enrichedSettled
+    .map((r) => (r.status === 'fulfilled' ? r.value : null))
+    .filter(Boolean);
+
+  if (enriched.length > 0) {
+    sourceStatus.yahooFinance = 'ok';
+  } else {
+    sourceStatus.yahooFinance = 'degraded';
+  }
+
+  // Keep option detail columns stable by reusing prior cached option fields per ticker.
+  const prevByTicker = new Map(
+    (Array.isArray(activeOptionsTodayCache?.items) ? activeOptionsTodayCache.items : [])
+      .filter((x) => x && x.ticker)
+      .map((x) => [String(x.ticker).toUpperCase(), x])
+  );
+  const enrichedByTicker = new Map(
+    enriched
+      .filter((x) => x && x.ticker)
+      .map((x) => [String(x.ticker).toUpperCase(), x])
+  );
+
+  const merged = rawItems.map((row) => {
+    const key = String(row.ticker || '').toUpperCase();
+    const live = enrichedByTicker.get(key);
+    if (live) return live;
+    const prev = prevByTicker.get(key);
+    if (!prev) return row;
+    return {
+      ...row,
+      type: prev.type ?? null,
+      expirationDate: prev.expirationDate ?? null,
+      strike: prev.strike ?? null,
+      optionVolume: prev.optionVolume ?? null,
+      openInterest: prev.openInterest ?? null,
+      optionContract: prev.optionContract ?? null
+    };
+  });
+
+  const items = merged
+    .sort((a, b) => {
+      const av = Number(a?.optionVolume);
+      const bv = Number(b?.optionVolume);
+      const aHas = Number.isFinite(av);
+      const bHas = Number.isFinite(bv);
+      if (aHas && bHas && av !== bv) return bv - av;
+      if (aHas !== bHas) return aHas ? -1 : 1;
+      return (Number(b?.volume) || 0) - (Number(a?.volume) || 0);
+    })
+    .slice(0, 20);
+
+  activeOptionsTodayCache = {
+    updatedAt: Date.now(),
+    expiresAt: Date.now() + ACTIVE_OPTIONS_TODAY_TTL_MS,
+    sourceStatus,
+    items
+  };
+  await saveActiveOptionsTodayToDisk();
+  return getActiveOptionsTodaySnapshot();
 }
 
 async function loadTickerOptionsFromDisk() {
@@ -3926,7 +4842,17 @@ async function refreshActiveOptions() {
   }
 
   sourceStatus.yahooFinance = yahooSuccess > 0 ? 'ok' : 'degraded';
-  const sorted = contracts
+  const sortedByVolume = contracts
+    .sort((a, b) => (Number(b.volume) || 0) - (Number(a.volume) || 0));
+
+  // Keep one highest-volume option contract per ticker symbol.
+  const bySymbol = new Map();
+  for (const c of sortedByVolume) {
+    const sym = String(c?.symbol || '').toUpperCase();
+    if (!sym || bySymbol.has(sym)) continue;
+    bySymbol.set(sym, c);
+  }
+  const sorted = Array.from(bySymbol.values())
     .sort((a, b) => (Number(b.volume) || 0) - (Number(a.volume) || 0))
     .slice(0, ACTIVE_OPTIONS_TOP_CONTRACTS);
 
@@ -3977,11 +4903,66 @@ app.get('/api/options/active', async (_req, res) => {
   }
 });
 
+// Alpha Vantage "today most active" list (stocks as proxy for options interest)
+app.get('/api/active-options', async (_req, res) => {
+  const cached = getActiveOptionsTodaySnapshot();
+  const inRefreshWindow = isActiveOptionsRefreshWindowCST();
+
+  // Off-hours (after 3:00 PM to before 8:30 AM Central): always use cached data.
+  if (!inRefreshWindow && cached.items.length > 0) {
+    return res.json({
+      ...cached,
+      fromCache: true,
+      stale: !isEntryFresh(cached),
+      offHoursCache: true
+    });
+  }
+
+  if (isEntryFresh(cached) && cached.items.length > 0) {
+    return res.json({ ...cached, fromCache: true, stale: false });
+  }
+  try {
+    if (activeOptionsTodayRefreshPromise) {
+      await activeOptionsTodayRefreshPromise;
+    } else {
+      activeOptionsTodayRefreshPromise = refreshActiveOptionsToday();
+      await activeOptionsTodayRefreshPromise;
+    }
+    const fresh = getActiveOptionsTodaySnapshot();
+    return res.json({ ...fresh, fromCache: false, stale: false });
+  } catch (err) {
+    if (cached.items.length > 0) {
+      return res.json({
+        ...cached,
+        stale: true,
+        fromCache: true,
+        sourceStatus: { alphaVantage: 'degraded' },
+        warning: err.message || 'active_options_today_refresh_failed'
+      });
+    }
+    return res.status(502).json({
+      error: 'Failed to fetch market data',
+      sourceStatus: { alphaVantage: 'degraded' },
+      details: err.message || 'active_options_today_refresh_failed'
+    });
+  } finally {
+    activeOptionsTodayRefreshPromise = null;
+  }
+});
+
 app.get('/api/options/:symbol', async (req, res) => {
   const symbol = String(req.params.symbol || '').toUpperCase();
   if (!symbol) return res.status(400).json({ error: 'Missing symbol' });
   const limit = Math.max(5, Math.min(100, Number(req.query.limit) || 20));
   const cached = tickerOptionsCache[symbol];
+  const inRefreshWindow = isActiveOptionsRefreshWindowCST();
+  const hasCached = !!(cached && ((cached.calls && cached.calls.length) || (cached.puts && cached.puts.length)));
+
+  // Off-hours CST: serve cached ticker options and avoid refresh.
+  if (!inRefreshWindow && hasCached) {
+    return res.json({ ...cached, fromCache: true, stale: !isEntryFresh(cached), offHoursCache: true });
+  }
+
   if (isEntryFresh(cached) && ((cached.calls && cached.calls.length) || (cached.puts && cached.puts.length))) {
     return res.json({ ...cached, fromCache: true, stale: false });
   }
@@ -4013,6 +4994,178 @@ app.get('/api/options/:symbol', async (req, res) => {
     });
   } finally {
     tickerOptionsRefreshPromises.delete(symbol);
+  }
+});
+
+// ── Options chain by time horizon (months=3|6|9|12) ────────────────────────
+const horizonOptionsCache = {};
+const HORIZON_OPTIONS_TTL_MS = 30 * 60 * 1000; // 30 minutes
+
+app.get('/api/options/:symbol/chain', async (req, res) => {
+  const symbol = String(req.params.symbol || '').toUpperCase();
+  if (!symbol) return res.status(400).json({ error: 'Missing symbol' });
+  const sortBy = String(req.query.sortBy || 'volume');
+  const limit = Math.min(50, Math.max(5, Number(req.query.limit) || 20));
+  const inRefreshWindow = isActiveOptionsRefreshWindowCST();
+
+  // Buckets: 0-3, 3-6, 6-9, 9-12, 12+
+  const bucketRaw = String(req.query.bucket || '').trim();
+  const monthsRaw = Number(req.query.months);
+  let bucket = bucketRaw;
+  if (!bucket) {
+    // Backward-compat for old months query parameter.
+    if (monthsRaw <= 3 || !Number.isFinite(monthsRaw)) bucket = '0-3';
+    else if (monthsRaw <= 6) bucket = '3-6';
+    else if (monthsRaw <= 9) bucket = '6-9';
+    else if (monthsRaw <= 12) bucket = '9-12';
+    else bucket = '12+';
+  }
+
+  const bucketRanges = {
+    '0-3': { min: 0, max: 3 },
+    '3-6': { min: 3, max: 6 },
+    '6-9': { min: 6, max: 9 },
+    '9-12': { min: 9, max: 12 },
+    '12+': { min: 12, max: null }
+  };
+  const range = bucketRanges[bucket] || bucketRanges['0-3'];
+  const cacheKey = `${symbol}_${bucket}`;
+
+  const cached = horizonOptionsCache[cacheKey];
+
+  // Off-hours CST: serve cached chain bucket and avoid refresh.
+  if (!inRefreshWindow && cached && Array.isArray(cached.data) && cached.data.length > 0) {
+    const result = sortBy === 'openInterest'
+      ? [...cached.data].sort((a, b) => (Number(b.openInterest) || 0) - (Number(a.openInterest) || 0)).slice(0, limit)
+      : cached.data.slice(0, limit);
+    return res.json({
+      symbol,
+      bucket,
+      rangeMonths: range,
+      sortBy,
+      fromCache: true,
+      stale: !(cached.expiresAt > Date.now()),
+      offHoursCache: true,
+      contracts: result,
+      updatedAt: cached.updatedAt
+    });
+  }
+
+  if (cached && cached.expiresAt > Date.now()) {
+    const result = sortBy === 'openInterest'
+      ? [...cached.data].sort((a, b) => (Number(b.openInterest) || 0) - (Number(a.openInterest) || 0)).slice(0, limit)
+      : cached.data.slice(0, limit);
+    return res.json({ symbol, bucket, rangeMonths: range, sortBy, fromCache: true, contracts: result, updatedAt: cached.updatedAt });
+  }
+
+  try {
+    const yahooSymbol = normalizeSymbolForYahoo(symbol);
+    const optMeta = await withTimeout(yahooFinanceClient.options(yahooSymbol), 12000, 'yf-options-meta');
+    const allExpirDates = Array.isArray(optMeta?.expirationDates) ? optMeta.expirationDates : [];
+    const quoteResult = await withTimeout(yahooFinanceClient.quote(yahooSymbol), 7000, 'yf-quote').catch(() => null);
+    const underlyingPrice = safe(quoteResult?.regularMarketPrice) ?? null;
+
+    const nowSec = Date.now() / 1000;
+    const toEpochSec = (v) => {
+      if (v == null) return null;
+      if (typeof v === 'number') {
+        if (!Number.isFinite(v)) return null;
+        return v > 1e11 ? v / 1000 : v;
+      }
+      if (v instanceof Date) {
+        const t = v.getTime();
+        return Number.isFinite(t) ? t / 1000 : null;
+      }
+      if (typeof v === 'string') {
+        const n = Number(v);
+        if (Number.isFinite(n)) return n > 1e11 ? n / 1000 : n;
+        const d = new Date(v);
+        const t = d.getTime();
+        return Number.isFinite(t) ? t / 1000 : null;
+      }
+      return null;
+    };
+
+    const inBucket = (tsLike) => {
+      const ts = toEpochSec(tsLike);
+      if (!Number.isFinite(ts)) return false;
+      const monthsAhead = (ts - nowSec) / (60 * 60 * 24 * 30.4375);
+      if (!Number.isFinite(monthsAhead) || monthsAhead < 0) return false;
+      if (range.max == null) return monthsAhead >= range.min;
+      return monthsAhead >= range.min && monthsAhead < range.max;
+    };
+
+    // expirationDates are Unix timestamps in seconds
+    const validDates = allExpirDates
+      .map((d) => toEpochSec(d))
+      .filter((d) => Number.isFinite(d) && inBucket(d));
+    const datesToFetch = validDates.slice(0, 16);
+    const allContracts = [];
+    const seenContracts = new Set();
+
+    // Always include nearest chain already loaded in initial meta call (no extra request)
+    const nearestChain = Array.isArray(optMeta?.options) ? optMeta.options[0] : null;
+    if (nearestChain) {
+      const nearestTs = toEpochSec(nearestChain.expirationDate);
+      const includeNearest = nearestTs != null ? inBucket(nearestTs) : false;
+      if (includeNearest) {
+      const expDate0 = nearestChain.expirationDate
+        ? isoDateOnly(typeof nearestChain.expirationDate === 'number'
+            ? new Date(nearestChain.expirationDate * 1000)
+            : new Date(nearestChain.expirationDate))
+        : null;
+      const calls0 = (nearestChain.calls || []).map((c) => normalizeOptionContract(c, symbol, 'CALL', expDate0)).filter(Boolean);
+      const puts0 = (nearestChain.puts || []).map((p) => normalizeOptionContract(p, symbol, 'PUT', expDate0)).filter(Boolean);
+      for (const c of [...calls0, ...puts0]) {
+        const key = String(c.contract || `${c.type}_${c.expirationDate}_${c.strike}`);
+        if (!seenContracts.has(key)) {
+          seenContracts.add(key);
+          allContracts.push(c);
+        }
+      }
+      }
+    }
+
+    for (const expTs of datesToFetch) {
+      try {
+        const expIso = new Date(Number(expTs) * 1000).toISOString().slice(0, 10);
+        const chainData = await withTimeout(
+          yahooFinanceClient.options(yahooSymbol, { date: expIso }),
+          10000,
+          'yf-options-exp'
+        );
+        const chain = Array.isArray(chainData?.options) ? chainData.options[0] : null;
+        if (!chain) continue;
+        const expirationDate = isoDateOnly(new Date(expTs * 1000));
+        const calls = (chain.calls || []).map((c) => normalizeOptionContract(c, symbol, 'CALL', expirationDate)).filter(Boolean);
+        const puts = (chain.puts || []).map((p) => normalizeOptionContract(p, symbol, 'PUT', expirationDate)).filter(Boolean);
+        for (const c of [...calls, ...puts]) {
+          const key = String(c.contract || `${c.type}_${c.expirationDate}_${c.strike}`);
+          if (!seenContracts.has(key)) {
+            seenContracts.add(key);
+            allContracts.push(c);
+          }
+        }
+      } catch (_) {}
+    }
+
+    const sorted = allContracts
+      .sort((a, b) => (Number(b.volume) || 0) - (Number(a.volume) || 0))
+      .slice(0, 50);
+
+    horizonOptionsCache[cacheKey] = { data: sorted, expiresAt: Date.now() + HORIZON_OPTIONS_TTL_MS, updatedAt: Date.now() };
+
+    const result = sortBy === 'openInterest'
+      ? [...sorted].sort((a, b) => (Number(b.openInterest) || 0) - (Number(a.openInterest) || 0)).slice(0, limit)
+      : sorted.slice(0, limit);
+
+    return res.json({ symbol, bucket, rangeMonths: range, sortBy, underlyingPrice, fromCache: false, contracts: result, updatedAt: Date.now() });
+  } catch (err) {
+    const c2 = horizonOptionsCache[cacheKey];
+    if (c2 && c2.data && c2.data.length > 0) {
+      return res.json({ symbol, bucket, rangeMonths: range, sortBy, fromCache: true, stale: true, contracts: c2.data.slice(0, limit), warning: err.message });
+    }
+    return res.status(502).json({ error: `Unable to load options chain for ${symbol}`, details: err.message });
   }
 });
 
@@ -4135,7 +5288,7 @@ app.get('/', async (_req, res) => {
     if (!indexHtmlTemplate) {
       indexHtmlTemplate = await fs.readFile(`${__dirname}/index.html`, 'utf8');
     }
-    const inlineScript = `<script>window.INITIAL_TRENDING_DATA=${serializeForInlineScript(getTrendingSnapshot())};window.INITIAL_ACTIVE_OPTIONS_DATA=${serializeForInlineScript(getActiveOptionsSnapshot())};</script>`;
+    const inlineScript = `<script>window.INITIAL_TRENDING_DATA=${serializeForInlineScript(getTrendingSnapshot())};window.INITIAL_ACTIVE_OPTIONS_DATA=${serializeForInlineScript(getActiveOptionsTodaySnapshot())};</script>`;
     const html = indexHtmlTemplate.includes('</head>')
       ? indexHtmlTemplate.replace('</head>', `${inlineScript}\n</head>`)
       : `${inlineScript}\n${indexHtmlTemplate}`;
@@ -4155,8 +5308,13 @@ app.listen(PORT, () => {
       await ensureEarningsUpdatesIfDue('startup');
       setInterval(() => ensureEarningsUpdatesIfDue('job').catch(() => {}), 15 * 60 * 1000);
       await loadActiveOptionsFromDisk();
+      await loadActiveOptionsTodayFromDisk();
       await loadTickerOptionsFromDisk();
       setInterval(() => refreshActiveOptions().catch(() => {}), 60 * 60 * 1000);
+      await maybeRefreshActiveOptionsToday('startup');
+      setInterval(() => {
+        maybeRefreshActiveOptionsToday('job').catch(() => {});
+      }, 30 * 60 * 1000);
     } catch (err) {
       console.error('[Options] Startup initialization failed:', err.message || err);
     }
@@ -4166,6 +5324,15 @@ app.listen(PORT, () => {
     .then(() => {
       startTrendingPoller();
       console.log(`Trending poller started (interval ${TRENDING_POLL_INTERVAL_MS}ms)`);
+      // Warm market indices cache periodically (every 5 minutes)
+      try {
+        const warmUrl = `http://localhost:${PORT}/api/market-indices`;
+        setInterval(() => {
+          fetch(warmUrl).catch(() => {});
+        }, 5 * 60 * 1000);
+        // Do an initial warm after startup
+        fetch(warmUrl).catch(() => {});
+      } catch (e) {}
     })
     .catch((error) => {
       startTrendingPoller();

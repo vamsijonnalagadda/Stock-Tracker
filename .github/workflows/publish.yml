@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 env:
-  IMAGE_NAME: trade-talk
+  IMAGE_NAME: stock-tracker
 
 jobs:
   build-and-push:

@@ -1,10 +1,157 @@
 {
-  "updatedAt": 0,
-  "expiresAt": 0,
-  "baseSymbols": [],
+  "updatedAt": 1776644643507,
+  "expiresAt": 1776648243507,
+  "baseSymbols": [
+    "ISPC",
+    "CTNT",
+    "BMNU",
+    "BYND",
+    "YXT",
+    "TZA",
+    "EFOI",
+    "NVDA",
+    "TSLL",
+    "BITO",
+    "NFLX",
+    "INTC",
+    "ZSPC",
+    "TQQQ",
+    "SOXS"
+  ],
   "sourceStatus": {
-    "alphaVantage": "degraded",
-    "yahooFinance": "degraded"
+    "alphaVantage": "ok",
+    "yahooFinance": "ok"
   },
-  "items": []
+  "items": [
+    {
+      "symbol": "NVDA",
+      "contract": "NVDA260420C00200000",
+      "expirationDate": "2026-04-20",
+      "type": "CALL",
+      "strike": 200,
+      "lastPrice": 2.62,
+      "bid": 2.6,
+      "ask": 2.64,
+      "volume": 84694,
+      "openInterest": 9189,
+      "impliedVolatility": 0.397466962890625
+    },
+    {
+      "symbol": "NFLX",
+      "contract": "NFLX260424C00100000",
+      "expirationDate": "2026-04-24",
+      "type": "CALL",
+      "strike": 100,
+      "lastPrice": 0.75,
+      "bid": 0.75,
+      "ask": 0.76,
+      "volume": 55683,
+      "openInterest": 5584,
+      "impliedVolatility": 0.3891662646484375
+    },
+    {
+      "symbol": "BYND",
+      "contract": "BYND260424C00001000",
+      "expirationDate": "2026-04-24",
+      "type": "CALL",
+      "strike": 1,
+      "lastPrice": 0.05,
+      "bid": 0.05,
+      "ask": 0.06,
+      "volume": 52397,
+      "openInterest": 41991,
+      "impliedVolatility": 2.93750265625
+    },
+    {
+      "symbol": "INTC",
+      "contract": "INTC260424C00070000",
+      "expirationDate": "2026-04-24",
+      "type": "CALL",
+      "strike": 70,
+      "lastPrice": 3.2,
+      "bid": 3.15,
+      "ask": 3.25,
+      "volume": 15337,
+      "openInterest": 12015,
+      "impliedVolatility": 1.2085000512695312
+    },
+    {
+      "symbol": "TQQQ",
+      "contract": "TQQQ260424C00060000",
+      "expirationDate": "2026-04-24",
+      "type": "CALL",
+      "strike": 60,
+      "lastPrice": 0.98,
+      "bid": 0.93,
+      "ask": 0.99,
+      "volume": 12666,
+      "openInterest": 6139,
+      "impliedVolatility": 0.5654340332031251
+    },
+    {
+      "symbol": "TSLL",
+      "contract": "TSLL260424C00014000",
+      "expirationDate": "2026-04-24",
+      "type": "CALL",
+      "strike": 14,
+      "lastPrice": 0.86,
+      "bid": 0.79,
+      "ask": 0.83,
+      "volume": 6438,
+      "openInterest": 5529,
+      "impliedVolatility": 1.3203158984374999
+    },
+    {
+      "symbol": "BMNU",
+      "contract": "BMNU260515C00003000",
+      "expirationDate": "2026-05-15",
+      "type": "CALL",
+      "strike": 3,
+      "lastPrice": 0.22,
+      "bid": 0.15,
+      "ask": 0.25,
+      "volume": 4955,
+      "openInterest": 12064,
+      "impliedVolatility": 1.640626796875
+    },
+    {
+      "symbol": "SOXS",
+      "contract": "SOXS260424C00021000",
+      "expirationDate": "2026-04-24",
+      "type": "CALL",
+      "strike": 21,
+      "lastPrice": 0.45,
+      "bid": 0.45,
+      "ask": 0.47,
+      "volume": 4917,
+      "openInterest": 485,
+      "impliedVolatility": 1.3418001660156247
+    },
+    {
+      "symbol": "BITO",
+      "contract": "BITO260424C00011000",
+      "expirationDate": "2026-04-24",
+      "type": "CALL",
+      "strike": 11,
+      "lastPrice": 0.12,
+      "bid": 0.1,
+      "ask": 0.12,
+      "volume": 3075,
+      "openInterest": 1522,
+      "impliedVolatility": 0.500005
+    },
+    {
+      "symbol": "TZA",
+      "contract": "TZA260424C00005000",
+      "expirationDate": "2026-04-24",
+      "type": "CALL",
+      "strike": 5,
+      "lastPrice": 0.21,
+      "bid": 0.19,
+      "ask": 0.22,
+      "volume": 2467,
+      "openInterest": 497,
+      "impliedVolatility": 0.6875031250000001
+    }
+  ]
 }

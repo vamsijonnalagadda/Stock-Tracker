@@ -1,0 +1,240 @@
+{
+  "updatedAt": 1776626074286,
+  "expiresAt": 1776627874286,
+  "sourceStatus": {
+    "alphaVantage": "ok",
+    "yahooFinance": "ok"
+  },
+  "items": [
+    {
+      "ticker": "NVDA",
+      "price": 201.68,
+      "changeAmount": 3.33,
+      "changePercentage": "1.6789%",
+      "volume": 159148890,
+      "type": "CALL",
+      "expirationDate": "2026-04-20",
+      "strike": 200,
+      "optionVolume": 84694,
+      "openInterest": 9189,
+      "optionContract": "NVDA260420C00200000"
+    },
+    {
+      "ticker": "TSLA",
+      "price": 400.62,
+      "changeAmount": 11.72,
+      "changePercentage": "3.0136%",
+      "volume": 90011786,
+      "type": "CALL",
+      "expirationDate": "2026-04-20",
+      "strike": 400,
+      "optionVolume": 78612,
+      "openInterest": 8922,
+      "optionContract": "TSLA260420C00400000"
+    },
+    {
+      "ticker": "AMC",
+      "price": 1.86,
+      "changeAmount": 0.25,
+      "changePercentage": "15.528%",
+      "volume": 87417194,
+      "type": "CALL",
+      "expirationDate": "2026-04-24",
+      "strike": 2,
+      "optionVolume": 61331,
+      "openInterest": 35669,
+      "optionContract": "AMC260424C00002000"
+    },
+    {
+      "ticker": "NFLX",
+      "price": 97.31,
+      "changeAmount": -10.48,
+      "changePercentage": "-9.7226%",
+      "volume": 125244477,
+      "type": "CALL",
+      "expirationDate": "2026-04-24",
+      "strike": 100,
+      "optionVolume": 55683,
+      "openInterest": 5584,
+      "optionContract": "NFLX260424C00100000"
+    },
+    {
+      "ticker": "BYND",
+      "price": 0.8226,
+      "changeAmount": 0.0406,
+      "changePercentage": "5.1918%",
+      "volume": 196331441,
+      "type": "CALL",
+      "expirationDate": "2026-04-24",
+      "strike": 1,
+      "optionVolume": 52397,
+      "openInterest": 41991,
+      "optionContract": "BYND260424C00001000"
+    },
+    {
+      "ticker": "INTC",
+      "price": 68.5,
+      "changeAmount": 0,
+      "changePercentage": "0.0%",
+      "volume": 117636317,
+      "type": "CALL",
+      "expirationDate": "2026-04-24",
+      "strike": 70,
+      "optionVolume": 15337,
+      "openInterest": 12015,
+      "optionContract": "INTC260424C00070000"
+    },
+    {
+      "ticker": "TQQQ",
+      "price": 58.59,
+      "changeAmount": 2.16,
+      "changePercentage": "3.8278%",
+      "volume": 102221295,
+      "type": "CALL",
+      "expirationDate": "2026-04-24",
+      "strike": 60,
+      "optionVolume": 12666,
+      "openInterest": 6139,
+      "optionContract": "TQQQ260424C00060000"
+    },
+    {
+      "ticker": "XLE",
+      "price": 54.98,
+      "changeAmount": -1.6,
+      "changePercentage": "-2.8279%",
+      "volume": 90974999,
+      "type": "PUT",
+      "expirationDate": "2026-04-24",
+      "strike": 55,
+      "optionVolume": 6470,
+      "openInterest": 5973,
+      "optionContract": "XLE260424P00055000"
+    },
+    {
+      "ticker": "TSLL",
+      "price": 13.9,
+      "changeAmount": 0.83,
+      "changePercentage": "6.3504%",
+      "volume": 155499797,
+      "type": "CALL",
+      "expirationDate": "2026-04-24",
+      "strike": 14,
+      "optionVolume": 6438,
+      "openInterest": 5529,
+      "optionContract": "TSLL260424C00014000"
+    },
+    {
+      "ticker": "BMNU",
+      "price": 2.31,
+      "changeAmount": 0.09,
+      "changePercentage": "4.0541%",
+      "volume": 204656144,
+      "type": "CALL",
+      "expirationDate": "2026-05-15",
+      "strike": 3,
+      "optionVolume": 4955,
+      "openInterest": 12064,
+      "optionContract": "BMNU260515C00003000"
+    },
+    {
+      "ticker": "SOXS",
+      "price": 18.87,
+      "changeAmount": -1.41,
+      "changePercentage": "-6.9527%",
+      "volume": 100119548,
+      "type": "CALL",
+      "expirationDate": "2026-04-24",
+      "strike": 21,
+      "optionVolume": 4917,
+      "openInterest": 485,
+      "optionContract": "SOXS260424C00021000"
+    },
+    {
+      "ticker": "SCO",
+      "price": 8.46,
+      "changeAmount": 0.74,
+      "changePercentage": "9.5855%",
+      "volume": 85309356,
+      "type": "CALL",
+      "expirationDate": "2026-04-24",
+      "strike": 9,
+      "optionVolume": 3114,
+      "openInterest": 654,
+      "optionContract": "SCO260424C00009000"
+    },
+    {
+      "ticker": "BITO",
+      "price": 10.635,
+      "changeAmount": 0.285,
+      "changePercentage": "2.7536%",
+      "volume": 130902369,
+      "type": "CALL",
+      "expirationDate": "2026-04-24",
+      "strike": 11,
+      "optionVolume": 3075,
+      "openInterest": 1522,
+      "optionContract": "BITO260424C00011000"
+    },
+    {
+      "ticker": "PLUG",
+      "price": 2.78,
+      "changeAmount": -0.08,
+      "changePercentage": "-2.7972%",
+      "volume": 83024173,
+      "type": "CALL",
+      "expirationDate": "2026-04-24",
+      "strike": 2.5,
+      "optionVolume": 2601,
+      "openInterest": 4041,
+      "optionContract": "PLUG260424C00002500"
+    },
+    {
+      "ticker": "TZA",
+      "price": 5.085,
+      "changeAmount": -0.345,
+      "changePercentage": "-6.3536%",
+      "volume": 166522224,
+      "type": "CALL",
+      "expirationDate": "2026-04-24",
+      "strike": 5,
+      "optionVolume": 2467,
+      "openInterest": 497,
+      "optionContract": "TZA260424C00005000"
+    },
+    {
+      "ticker": "ISPC",
+      "price": 0.1365,
+      "changeAmount": 0.02,
+      "changePercentage": "17.1674%",
+      "volume": 592180868
+    },
+    {
+      "ticker": "CTNT",
+      "price": 0.0953,
+      "changeAmount": -0.0655,
+      "changePercentage": "-40.7338%",
+      "volume": 434818217
+    },
+    {
+      "ticker": "YXT",
+      "price": 0.496,
+      "changeAmount": 0.1143,
+      "changePercentage": "29.945%",
+      "volume": 179238730
+    },
+    {
+      "ticker": "EFOI",
+      "price": 6.49,
+      "changeAmount": 4.4,
+      "changePercentage": "210.5263%",
+      "volume": 164810554
+    },
+    {
+      "ticker": "ZSPC",
+      "price": 0.0536,
+      "changeAmount": -0.0335,
+      "changePercentage": "-38.4615%",
+      "volume": 115698623
+    }
+  ]
+}

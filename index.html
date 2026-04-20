@@ -118,6 +118,14 @@
       color: #f0f6ff; font-size: 1rem; font-weight: 900; letter-spacing: 0.05em;
     }
     .company-name .name-sep { color: #334155; }
+     /* Table alignment fixes: use fixed table layout and normalize header buttons
+       so header column widths match body column widths during horizontal scroll */
+     #optionsHorizonTableArea table,
+     table { table-layout: fixed; width: 100%; border-collapse: collapse; }
+     #optionsHorizonTableArea th, #optionsHorizonTableArea td,
+     th, td { padding: 4px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+     /* Make header sort buttons not change layout when arrows toggle */
+     .active-sort-btn { background: none; border: none; padding: 0; margin: 0; font: inherit; color: inherit; cursor: pointer; }
     .price-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
     .price-big { font-size: 56px; font-weight: 900; letter-spacing: -0.045em; line-height: 1; color: #f8fafc; }
     .pct-badge {
@@ -433,11 +441,20 @@
       width: 100%;
       overflow-x: auto;
     }
+    .earnings-grid-inner { display: inline-block; min-width: max-content; }
+    .earnings-grid-rows {
+      max-height: 340px; /* enforce ~10 visible rows, scroll for the rest */
+      overflow-y: auto;
+      margin-top: 8px;
+      padding-right: 6px;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
     .earnings-grid-header,
     .earnings-grid-row {
       display: grid;
-      grid-template-columns: 80px 80px 80px 80px 80px;
-      gap: 0;
+      grid-template-columns: 72px 130px 52px 82px 72px 72px 72px;
+      gap: 8px;
       align-items: center;
       padding: 4px 6px;
       border-radius: 6px;
@@ -453,11 +470,26 @@
       border-bottom: 1px solid #1e293b;
       padding-bottom: 5px;
     }
+    .earnings-sort-btn {
+      appearance: none;
+      background: transparent;
+      border: 0;
+      color: inherit;
+      font: inherit;
+      text-transform: inherit;
+      letter-spacing: inherit;
+      cursor: pointer;
+      text-align: left;
+      padding: 0;
+      width: 100%;
+    }
+    .earnings-sort-btn.active { color: #cbd5e1; }
     .earnings-grid-row {
       cursor: pointer;
       border: 1px solid transparent;
       transition: background .12s, border-color .12s;
       margin-bottom: 1px;
+      min-height: 32px;
     }
     .earnings-grid-row:hover {
       background: rgba(56,189,248,0.07);
@@ -465,6 +497,8 @@
     }
     .earnings-grid-row.sp500-row .eg-symbol { color: #93c5fd; font-weight: 800; }
     .eg-symbol { font-weight: 800; font-size: 0.82rem; color: #dbeafe; }
+    .eg-company { font-size: 0.72rem; color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .eg-sp { font-weight: 700; font-size: 0.72rem; color: #94a3b8; }
     .eg-time { display: flex; align-items: center; gap: 4px; font-size: 0.73rem; font-weight: 700; }
     .eg-time.bmo { color: #fbbf24; }
     .eg-time.amc { color: #818cf8; }
@@ -475,6 +509,84 @@
     .eg-neg { color: #f87171; }
     .eg-na  { color: #475569; }
     .earnings-empty { color: #475569; font-size: 0.82rem; padding: 8px 0; }
+    .earnings-week-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      gap: 8px;
+    }
+    .earnings-week-nav-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid #1e3a5f;
+      color: #7dd3fc;
+      border-radius: 8px;
+      padding: 5px 14px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .earnings-week-nav-btn:hover { background: rgba(56,189,248,0.12); border-color: #38bdf8; color: #e0f2fe; }
+
+    .active-options-grid {
+      width: 100%;
+      overflow-x: auto;
+      flex: 1 1 100%;
+    }
+    .active-options-grid-rows {
+      max-height: 340px;
+      overflow-y: auto;
+      margin-top: 8px;
+      padding-right: 6px;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+    .active-options-grid-header,
+    .active-options-grid-row {
+      display: grid;
+      grid-template-columns: 90px 70px 100px 72px 96px 92px 120px;
+      gap: 8px;
+      align-items: center;
+      padding: 4px 6px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+    }
+    .active-options-grid-header {
+      color: #64748b;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 2px;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 5px;
+    }
+    .active-options-grid-row {
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background .12s, border-color .12s;
+      margin-bottom: 1px;
+      min-height: 32px;
+    }
+    .active-options-grid-row:hover {
+      background: rgba(56,189,248,0.07);
+      border-color: #22435f;
+    }
+    .active-sort-btn {
+      appearance: none;
+      background: transparent;
+      border: 0;
+      color: inherit;
+      font: inherit;
+      text-transform: inherit;
+      letter-spacing: inherit;
+      cursor: pointer;
+      text-align: left;
+      padding: 0;
+      width: 100%;
+    }
+    .active-sort-btn.active { color: #cbd5e1; }
 
     @keyframes headline-scroll {
       from { transform: translateX(0); }
@@ -536,11 +648,11 @@
 
   <div class="headline-bar"><div id="overallHeadlines"></div></div>
 
-  <div class="social-trending-strip" id="insightsStrip">
+  <div class="social-trending-strip hidden" id="insightsStrip">
     <div class="social-trending-head">
-      <button class="social-trending-title market-group-btn active" id="socialToggleTitle" type="button">Trending in Social <span class="social-chevron">&#x25BE;</span></button>
-      <button class="social-trending-title market-group-btn" id="earningsToggleTitle" type="button">Earnings This Week <span class="social-chevron">&#x25BE;</span></button>
-      <button class="social-trending-title market-group-btn" id="activeOptionsToggleTitle" type="button">Today's Most Active Options <span class="social-chevron">&#x25BE;</span></button>
+      <button class="social-trending-title market-group-btn" id="socialToggleTitle" type="button">Trending in Social <span class="social-chevron">&#x25BE;</span></button>
+      <button class="social-trending-title market-group-btn" id="earningsToggleTitle" type="button">Earnings <span class="social-chevron">&#x25BE;</span></button>
+      <button class="social-trending-title market-group-btn" id="activeOptionsToggleTitle" type="button">Most Active Options <span class="social-chevron">&#x25BE;</span></button>
     </div>
     <div id="insightsStripContent" class="social-trending-list">
       <span class="dimtext">Loading trending symbols...</span>
@@ -565,13 +677,20 @@
   let _currentEarningsDate = null;
   let _initialTrendingConsumed = false;
   let _tickerOptionsLoadedFor = '';
-  let _insightsStripMode = 'trending';
+  let _insightsStripMode = null;
   let _trendingStripSymbols = [];
   let _trendingStripUnavailable = false;
   let _earningsStripSections = [];
+  let _earningsNextWeekSections = [];
+  let _earningsWeekOffset = 0; // 0 = current week, 1 = next week
+  let _earningsWeekNotice = '';
   let _earningsStripUnavailable = false;
   let _earningsSelectedDate = null;
+  let _earningsSortKey = 'spname';
+  let _earningsSortDir = 'asc';
   let _activeOptionsItems = [];
+  let _activeOptionsSortKey = 'optionVolume';
+  let _activeOptionsSortDir = 'desc';
   let _activeOptionsUnavailable = false;
 
   function setLoading(s) {
@@ -691,6 +810,8 @@
         if (!sym) return;
         tickerInput.value = sym;
         doSearch();
+        // Close the insights strip when a trending symbol is clicked
+        try { setInsightsStripMode('trending'); } catch (_) {}
       };
     });
   }
@@ -763,6 +884,9 @@
       const label = isToday ? s.dateLabel + ' ✦' : s.dateLabel;
       return `<button class="${cls}" data-edate="${escapeHtml(s.dateIso)}" type="button">${escapeHtml(label)}</button>`;
     }).join('');
+    const weekNavBtn = _earningsWeekOffset > 0
+      ? '<button class="earnings-week-nav-btn" id="earningsPrevWeekBtn" type="button">&#8592; Current Week</button>'
+      : '<button class="earnings-week-nav-btn" id="earningsNextWeekBtn" type="button">Next Week &#8594;</button>';
 
     // Grid for selected section
     const section = sections.find(s => s.dateIso === selectedDate);
@@ -770,15 +894,86 @@
     if (!section || section.rows.length === 0) {
       grid = '<div class="earnings-empty">No earnings on this date.</div>';
     } else {
+      const parseImpliedMove = (v) => {
+        if (v == null || v === '') return null;
+        const m = String(v).match(/-?\d+(?:\.\d+)?/);
+        return m ? Number(m[0]) : null;
+      };
+      const hourRank = (h) => {
+        const v = String(h || '').toLowerCase();
+        if (v === 'bmo') return 0;
+        if (v === 'amc') return 1;
+        return 2;
+      };
+      const rowVal = (row, key) => {
+        if (key === 'symbol') return String(row?.symbol || '');
+        if (key === 'company') return String(row?.companyName || row?.symbol || '').toLowerCase();
+        if (key === 'spname') return [row?.isSp500 ? 0 : 1, String(row?.companyName || row?.symbol || '').toLowerCase()];
+        if (key === 'time') return hourRank(row?.hour);
+        if (key === 'implied') return parseImpliedMove(row?.impliedMove);
+        if (key === 'avg') {
+          const n = Number(row?.avgLast4EarningsMove);
+          return Number.isFinite(n) ? n : null;
+        }
+        if (key === 'last') {
+          const n = Number(row?.lastEarningsMove);
+          return Number.isFinite(n) ? n : null;
+        }
+        return null;
+      };
+      const compareValues = (av, bv) => {
+        if (Array.isArray(av) || Array.isArray(bv)) {
+          const aArr = Array.isArray(av) ? av : [av];
+          const bArr = Array.isArray(bv) ? bv : [bv];
+          const len = Math.max(aArr.length, bArr.length);
+          for (let i = 0; i < len; i++) {
+            const res = compareValues(aArr[i], bArr[i]);
+            if (res !== 0) return res;
+          }
+          return 0;
+        }
+        if (av == null && bv == null) return 0;
+        if (av == null) return 1;
+        if (bv == null) return -1;
+        if (typeof av === 'string' || typeof bv === 'string') return String(av || '').localeCompare(String(bv || ''));
+        return av - bv;
+      };
+
+      const sortedRows = section.rows.slice().sort((a, b) => {
+        const av = rowVal(a, _earningsSortKey);
+        const bv = rowVal(b, _earningsSortKey);
+        let cmp = compareValues(av, bv);
+
+        if (cmp === 0) {
+          cmp = String(a?.symbol || '').localeCompare(String(b?.symbol || ''));
+        }
+        return _earningsSortDir === 'asc' ? cmp : -cmp;
+      });
+
+      const sortArrow = (key) => {
+        if (_earningsSortKey !== key) return '';
+        return _earningsSortDir === 'asc' ? ' ▲' : ' ▼';
+      };
+      const sortBtn = (key, label) => {
+        const active = _earningsSortKey === key ? ' active' : '';
+        return `<button type="button" class="earnings-sort-btn${active}" data-esort="${key}">${label}${sortArrow(key)}</button>`;
+      };
       const header = '<div class="earnings-grid-header">'
-        + '<span>Symbol</span><span>Time</span><span>Implied</span><span>Avg 4Q</span><span>Last</span>'
+        + `<span>${sortBtn('symbol', 'Symbol')}</span>`
+        + `<span>${sortBtn('company', 'Company')}</span>`
+        + `<span>${sortBtn('spname', 'In S&P')}</span>`
+        + `<span>${sortBtn('time', 'Time')}</span>`
+        + `<span>${sortBtn('implied', 'Implied')}</span>`
+        + `<span>${sortBtn('avg', 'Avg 4Q')}</span>`
+        + `<span>${sortBtn('last', 'Last Q')}</span>`
         + '</div>';
 
-      const rows = section.rows.map(row => {
+      // Build all rows but render inside a scrollable container limited to ~10 visible rows
+      const rows = sortedRows.map(row => {
         const sym = row?.symbol || 'N/A';
         const isSp = row?.isSp500 ? ' sp500-row' : '';
         const hour = String(row?.hour || '').toLowerCase();
-        const timeLabel = hour === 'bmo' ? '🌅 BMO' : hour === 'amc' ? '🌙 AMC' : '— TBD';
+        const timeLabel = hour === 'bmo' ? 'BeforeMarket' : 'AfterMarket';
         const timeCls = 'eg-time ' + (hour === 'bmo' ? 'bmo' : hour === 'amc' ? 'amc' : '');
 
         const impliedRaw = row?.impliedMove;
@@ -794,8 +989,12 @@
           ? `<span class="${lastRaw >= 0 ? 'eg-pos' : 'eg-neg'}">${lastRaw >= 0 ? '+' : ''}${lastRaw.toFixed(1)}%</span>`
           : '<span class="eg-na">—</span>';
 
+        const spYes = row?.isSp500 ? 'Yes' : 'No';
+        const companyDisplay = escapeHtml(String(row?.companyName || row?.symbol || ''));
         return `<div class="earnings-grid-row${isSp}" data-earnings-symbol="${escapeHtml(sym)}" role="button" tabindex="0">`
           + `<span class="eg-symbol">${escapeHtml(sym)}</span>`
+          + `<span class="eg-company" title="${companyDisplay}">${companyDisplay}</span>`
+          + `<span class="eg-sp">${escapeHtml(spYes)}</span>`
           + `<span class="${timeCls}">${timeLabel}</span>`
           + `<span class="eg-implied">${impliedStr}</span>`
           + `<span class="eg-avg">${avgStr}</span>`
@@ -803,10 +1002,17 @@
           + `</div>`;
       }).join('');
 
-      grid = `<div class="earnings-grid">${header}${rows}</div>`;
+      const visibleRows = 10;
+      const rowHeightPx = 34;
+      const rowsContainerStyle = section.rows.length > visibleRows
+        ? ` style="max-height:${visibleRows * rowHeightPx}px"`
+        : '';
+
+      grid = `<div class="earnings-grid"><div class="earnings-grid-inner">${header}<div class="earnings-grid-rows"${rowsContainerStyle}>${rows}</div></div></div>`;
     }
 
-    return `<div class="earnings-panel"><div class="earnings-day-tabs">${tabs}</div>${grid}</div>`;
+    const noticeHtml = _earningsWeekNotice ? `<div class="earnings-empty">${escapeHtml(_earningsWeekNotice)}</div>` : '';
+    return `<div class="earnings-panel"><div class="earnings-day-tabs">${tabs}${weekNavBtn}</div>${noticeHtml}${grid}</div>`;
   }
 
   function wireEarningsSymbolsButtons() {
@@ -817,6 +1023,8 @@
         if (!sym) return;
         tickerInput.value = sym;
         doSearch();
+        // Close the insights strip when an earnings symbol is clicked
+        try { setInsightsStripMode('earnings'); } catch (_) {}
       };
     });
     // Wire day tab clicks → re-render for selected date
@@ -827,6 +1035,99 @@
         renderInsightsStripContent();
       };
     });
+    // Wire sort buttons
+    document.querySelectorAll('[data-esort]').forEach((btn) => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        const nextKey = btn.getAttribute('data-esort');
+        if (!nextKey) return;
+        if (_earningsSortKey === nextKey) {
+          _earningsSortDir = _earningsSortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          _earningsSortKey = nextKey;
+          _earningsSortDir = 'asc';
+        }
+        renderInsightsStripContent();
+      };
+    });
+    // Wire week nav buttons
+    const nextWeekBtn = document.getElementById('earningsNextWeekBtn');
+    if (nextWeekBtn) {
+      nextWeekBtn.onclick = async (e) => {
+        e.stopPropagation();
+        _earningsWeekNotice = '';
+        if (_earningsNextWeekSections.length === 0) {
+          nextWeekBtn.textContent = 'Loading\u2026';
+          await loadEarningsWeek(1);
+        }
+        if (_earningsNextWeekSections.length === 0) {
+          _earningsWeekOffset = 0;
+          _earningsSelectedDate = null;
+          _earningsWeekNotice = 'No later earnings week available yet.';
+          renderInsightsStripContent();
+          return;
+        }
+        _earningsWeekOffset = 1;
+        _earningsSelectedDate = null;
+        renderInsightsStripContent();
+      };
+    }
+    const prevWeekBtn = document.getElementById('earningsPrevWeekBtn');
+    if (prevWeekBtn) {
+      prevWeekBtn.onclick = (e) => {
+        e.stopPropagation();
+        _earningsWeekOffset = 0;
+        _earningsSelectedDate = null;
+        _earningsWeekNotice = '';
+        renderInsightsStripContent();
+      };
+    }
+    
+    // Let the parent `.earnings-grid` handle horizontal scrolling
+    try {
+      const container = document.querySelector('.earnings-grid');
+      if (container) {
+        container.style.WebkitOverflowScrolling = 'touch';
+      }
+    } catch (e) {
+      console.warn('earnings scroll touch setup failed', e);
+    }
+    // Robust horizontal sync: if rows or container scroll horizontally,
+    // mirror that offset to the header so columns stay aligned.
+    try {
+      document.querySelectorAll('.earnings-grid').forEach((container) => {
+        const header = container.querySelector('.earnings-grid-header');
+        const rows = container.querySelector('.earnings-grid-rows');
+        if (!header || !rows) return;
+        // Prevent independent horizontal scrolling inside rows so only the parent scrolls.
+        header.style.overflowX = 'hidden';
+        rows.style.overflowX = 'hidden';
+        // Allow vertical pan inside rows but block horizontal touch panning
+        rows.style.touchAction = 'pan-y';
+
+        let raf = null;
+        const sync = (x) => {
+          if (raf) cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(() => {
+            header.style.transform = `translateX(${ -x }px)`;
+            raf = null;
+          });
+        };
+
+        // Mirror parent horizontal scroll to header
+        container.addEventListener('scroll', () => { sync(container.scrollLeft); }, { passive: true });
+
+        // Forward horizontal mouse-wheel/trackpad gestures from rows to the parent container
+        rows.addEventListener('wheel', (e) => {
+          if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+            container.scrollLeft += e.deltaX;
+            e.preventDefault();
+          }
+        }, { passive: false });
+      });
+    } catch (e) {
+      console.warn('earnings scroll mirror failed', e);
+    }
   }
 
   function renderInsightsStripContent() {
@@ -834,7 +1135,8 @@
     if (!container) return;
 
     if (_insightsStripMode === 'earnings') {
-      container.innerHTML = earningsStripHtml(_earningsStripSections, _earningsSelectedDate);
+      const sections = _earningsWeekOffset === 1 ? _earningsNextWeekSections : _earningsStripSections;
+      container.innerHTML = earningsStripHtml(sections, _earningsSelectedDate);
       wireEarningsSymbolsButtons();
       return;
     }
@@ -886,11 +1188,15 @@
       socialBtn.onclick = () => setInsightsStripMode('trending');
     }
     if (earningsBtn) {
-      earningsBtn.onclick = async () => {
-        if (_earningsStripSections.length === 0) {
-          await loadEarningsWeek();
-        }
+      earningsBtn.onclick = () => {
+        const wasOpen = _insightsStripMode === 'earnings';
         setInsightsStripMode('earnings');
+        if (wasOpen || _insightsStripMode !== 'earnings') return;
+        if (_earningsStripSections.length === 0) {
+          const container = document.getElementById('insightsStripContent');
+          if (container) container.innerHTML = '<span class="dimtext">Loading earnings…</span>';
+          loadEarningsWeek().catch(() => {});
+        }
       };
     }
     if (activeOptionsBtn) {
@@ -925,16 +1231,30 @@
     }
   }
 
-  async function loadEarningsWeek() {
+  async function loadEarningsWeek(offset = 0) {
     try {
-      const res = await fetch('/api/earnings/week');
+      const url = offset === 1 ? '/api/earnings/next-week' : '/api/earnings/week';
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), offset === 1 ? 15000 : 20000);
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeoutId);
       if (!res.ok) throw new Error('earnings_week_http_' + res.status);
       const payload = await res.json();
-      _earningsStripSections = normalizeEarningsSections(payload);
+      const sections = normalizeEarningsSections(payload);
+      if (offset === 1) {
+        _earningsNextWeekSections = sections;
+      } else {
+        _earningsStripSections = sections;
+        _earningsWeekNotice = '';
+      }
       if (_insightsStripMode === 'earnings') renderInsightsStripContent();
     } catch (err) {
       console.error('[earnings] loadEarningsWeek error:', err);
-      _earningsStripSections = [];
+      if (offset === 1) {
+        _earningsNextWeekSections = [];
+        _earningsWeekNotice = 'Unable to load later week right now.';
+      }
+      else _earningsStripSections = [];
     }
   }
 
@@ -942,29 +1262,188 @@
     if (!Array.isArray(items) || items.length === 0) {
       return '<span class="dimtext">No active options available right now.</span>';
     }
-    return items.slice(0, 15).map((it, i) => {
+    const num = (v) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    };
+    const parsePct = (v) => {
+      if (v == null) return null;
+      const m = String(v).match(/-?\d+(?:\.\d+)?/);
+      return m ? Number(m[0]) : null;
+    };
+    const rowsData = items
+      .map((it) => {
+        const symbol = String(it?.ticker || it?.symbol || '').toUpperCase();
+        if (!symbol) return null;
+        return {
+          symbol,
+          type: String(it?.type || it?.optionType || '').toUpperCase(),
+          expirationDate: String(it?.expirationDate || it?.expiration || ''),
+          strike: num(it?.strike),
+          optionVolume: num(it?.optionVolume ?? it?.optVolume ?? it?.option_volume),
+          openInterest: num(it?.openInterest ?? it?.open_interest ?? it?.oi),
+          optionContract: String(it?.optionContract || it?.contract || ''),
+          price: num(it?.price),
+          change: num(it?.changeAmount ?? it?.change_amount),
+          changePct: parsePct(it?.changePercentage ?? it?.change_percentage),
+          volume: num(it?.volume)
+        };
+      })
+      .filter(Boolean);
+
+    if (rowsData.length === 0) {
+      return '<span class="dimtext">No active options available right now.</span>';
+    }
+
+    const rowVal = (row, key) => {
+      if (key === 'symbol') return String(row?.symbol || '');
+      if (key === 'type') return String(row?.type || '');
+      if (key === 'expirationDate') return String(row?.expirationDate || '');
+      if (key === 'strike') return num(row?.strike);
+      if (key === 'optionVolume') return num(row?.optionVolume);
+      if (key === 'openInterest') return num(row?.openInterest);
+      if (key === 'price') return num(row?.price);
+      if (key === 'volume') return num(row?.volume);
+      return null;
+    };
+    const sorted = rowsData.slice().sort((a, b) => {
+      const av = rowVal(a, _activeOptionsSortKey);
+      const bv = rowVal(b, _activeOptionsSortKey);
+      // Keep missing values at the bottom regardless of sort direction.
+      if (av == null && bv == null) {
+        const tie = String(a?.symbol || '').localeCompare(String(b?.symbol || ''));
+        return tie;
+      }
+      if (av == null) return 1;
+      if (bv == null) return -1;
+
+      let cmp = 0;
+      if (typeof av === 'string' || typeof bv === 'string') {
+        cmp = String(av || '').localeCompare(String(bv || ''));
+      } else {
+        cmp = av - bv;
+      }
+      if (cmp === 0) cmp = String(a?.symbol || '').localeCompare(String(b?.symbol || ''));
+      return _activeOptionsSortDir === 'asc' ? cmp : -cmp;
+    });
+
+    const sortArrow = (key) => {
+      if (_activeOptionsSortKey !== key) return '';
+      return _activeOptionsSortDir === 'asc' ? ' ▲' : ' ▼';
+    };
+    const sortBtn = (key, label) => {
+      const active = _activeOptionsSortKey === key ? ' active' : '';
+      return `<button type="button" class="active-sort-btn${active}" data-aosort="${key}">${label}${sortArrow(key)}</button>`;
+    };
+    const header = '<div class="active-options-grid-header">'
+      + `<span>${sortBtn('symbol', 'Ticker')}</span>`
+      + `<span>${sortBtn('type', 'Type')}</span>`
+      + `<span>${sortBtn('expirationDate', 'Expiry')}</span>`
+      + `<span>${sortBtn('strike', 'Strike')}</span>`
+      + `<span>${sortBtn('optionVolume', 'Opt Vol')}</span>`
+      + `<span>${sortBtn('openInterest', 'OI')}</span>`
+      + `<span>${sortBtn('volume', 'Stock Vol')}</span>`
+      + '</div>';
+
+    const rows = sorted.map((it) => {
       const symbol = it.symbol || 'N/A';
-      const type = it.type || '';
-      const strike = Number.isFinite(+it.strike) ? (+it.strike).toFixed(2) : '\u2014';
-      const vol = Number.isFinite(+it.volume) ? Math.round(+it.volume).toLocaleString() : '\u2014';
-      return '<button class="social-chip" data-active-symbol="'+escapeHtml(symbol)+'" title="'+escapeHtml((it.contract || '')+'')+'">'
-        + '<span class="social-chip-rank">#'+(i + 1)+'</span>'
-        + '<span>'+escapeHtml(symbol)+'</span>'
-        + '<span class="chip-session">'+escapeHtml(type)+'</span>'
-        + '<span class="chip-price">$'+strike+' · vol '+vol+'</span>'
-        + '</button>';
+      const type = String(it.type || '').toUpperCase();
+      const exp = String(it.expirationDate || '');
+      const strike = num(it.strike);
+      const optVol = num(it.optionVolume);
+      const oi = num(it.openInterest);
+      const vol = num(it.volume);
+      const typeColor = type === 'CALL' ? '#4ade80' : (type === 'PUT' ? '#f87171' : '#94a3b8');
+      return '<div class="active-options-grid-row" data-active-option-symbol="'+escapeHtml(symbol)+'" title="'+escapeHtml(String(it.optionContract || it.contract || ''))+'">'
+        + '<span style="font-weight:800;color:#dbeafe">'+escapeHtml(symbol)+'</span>'
+        + '<span style="font-weight:700;color:'+typeColor+'">'+escapeHtml(type || '\u2014')+'</span>'
+        + '<span>'+escapeHtml(exp || '\u2014')+'</span>'
+        + '<span>'+(strike == null ? '\u2014' : strike.toFixed(2))+'</span>'
+        + '<span>'+(optVol == null ? '\u2014' : Math.round(optVol).toLocaleString())+'</span>'
+        + '<span>'+(oi == null ? '\u2014' : Math.round(oi).toLocaleString())+'</span>'
+        + '<span>'+(vol == null ? '\u2014' : Math.round(vol).toLocaleString())+'</span>'
+        + '</div>';
     }).join('');
+
+    const visibleRows = 10;
+    const rowHeightPx = 34;
+    const rowsContainerStyle = sorted.length > visibleRows
+      ? ` style="max-height:${visibleRows * rowHeightPx}px"`
+      : '';
+
+    return `<div class="active-options-grid">${header}<div class="active-options-grid-rows"${rowsContainerStyle}>${rows}</div></div>`;
   }
 
   function wireActiveOptionsButtons() {
-    document.querySelectorAll('[data-active-symbol]').forEach((btn) => {
+    document.querySelectorAll('[data-active-option-symbol]').forEach((btn) => {
       btn.onclick = () => {
-        const sym = btn.getAttribute('data-active-symbol');
+        const sym = btn.getAttribute('data-active-option-symbol');
         if (!sym) return;
         tickerInput.value = sym;
         doSearch();
+        // Close the insights strip when an active options symbol is clicked
+        try { setInsightsStripMode('activeOptions'); } catch (_) {}
       };
     });
+    document.querySelectorAll('[data-aosort]').forEach((btn) => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        const nextKey = btn.getAttribute('data-aosort');
+        if (!nextKey) return;
+        if (_activeOptionsSortKey === nextKey) {
+          _activeOptionsSortDir = _activeOptionsSortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          _activeOptionsSortKey = nextKey;
+          _activeOptionsSortDir = 'asc';
+        }
+      };
+    });
+
+    // Let the parent `.earnings-grid` handle horizontal scrolling
+    try {
+      const container = document.querySelector('.earnings-grid');
+      if (container) {
+        container.style.WebkitOverflowScrolling = 'touch';
+      }
+    } catch (e) {
+      console.warn('earnings scroll touch setup failed', e);
+    }
+    // Robust horizontal sync: if rows or container scroll horizontally,
+    // mirror that offset to the header so columns stay aligned.
+    try {
+      document.querySelectorAll('.earnings-grid').forEach((container) => {
+        const header = container.querySelector('.earnings-grid-header');
+        const rows = container.querySelector('.earnings-grid-rows');
+        if (!header || !rows) return;
+        // Prevent independent horizontal scrolling inside rows so only the parent scrolls.
+        header.style.overflowX = 'hidden';
+        rows.style.overflowX = 'hidden';
+        // Allow vertical pan inside rows but block horizontal touch panning
+        rows.style.touchAction = 'pan-y';
+
+        let raf = null;
+        const sync = (x) => {
+          if (raf) cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(() => {
+            header.style.transform = `translateX(${ -x }px)`;
+            raf = null;
+          });
+        };
+
+        // Mirror parent horizontal scroll to header
+        container.addEventListener('scroll', () => { sync(container.scrollLeft); }, { passive: true });
+
+        // Forward horizontal mouse-wheel/trackpad gestures from rows to the parent container
+        rows.addEventListener('wheel', (e) => {
+          if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+            container.scrollLeft += e.deltaX;
+            e.preventDefault();
+          }
+        }, { passive: false });
+      });
+    } catch (e) {
+      console.warn('earnings scroll mirror failed', e);
+    }
   }
 
   async function loadActiveOptions() {
@@ -974,7 +1453,7 @@
       if (_insightsStripMode === 'activeOptions') renderInsightsStripContent();
     }
     try {
-      const res = await fetch('/api/options/active');
+      const res = await fetch('/api/active-options');
       const data = await res.json();
       if (data && !data.error && Array.isArray(data.items)) {
         _activeOptionsItems = data.items;
@@ -985,6 +1464,70 @@
     }
   }
 
+  // Options horizon state
+  let _optionsHorizonBucket = '0-3';
+  let _optionsHorizonCache = {};
+  let _tickerOptionsBasePayload = null;
+  let _tickerOptionsSortKey = 'volume';
+  let _tickerOptionsSortDir = 'desc';
+
+  function sortTickerOptionsRows(rows) {
+    const num = (v) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    };
+    const rowVal = (row, key) => {
+      if (key === 'type') return String(row?.type || '');
+      if (key === 'expirationDate') return String(row?.expirationDate || '');
+      if (key === 'strike') return num(row?.strike);
+      if (key === 'lastPrice') return num(row?.lastPrice);
+      if (key === 'volume') return num(row?.volume);
+      if (key === 'openInterest') return num(row?.openInterest);
+      return null;
+    };
+    return rows.slice().sort((a, b) => {
+      const av = rowVal(a, _tickerOptionsSortKey);
+      const bv = rowVal(b, _tickerOptionsSortKey);
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      let cmp = 0;
+      if (typeof av === 'string' || typeof bv === 'string') {
+        cmp = String(av || '').localeCompare(String(bv || ''));
+      } else {
+        cmp = av - bv;
+      }
+      return _tickerOptionsSortDir === 'asc' ? cmp : -cmp;
+    });
+  }
+
+  function tickerOptionsSortArrow(key) {
+    if (_tickerOptionsSortKey !== key) return '';
+    return _tickerOptionsSortDir === 'asc' ? ' ▲' : ' ▼';
+  }
+
+  function tickerOptionsSortBtn(key, label) {
+    return `<button type="button" class="active-sort-btn${_tickerOptionsSortKey === key ? ' active' : ''}" data-topsort="${key}">${label}${tickerOptionsSortArrow(key)}</button>`;
+  }
+
+  function wireTickerOptionsSortButtons() {
+    document.querySelectorAll('[data-topsort]').forEach((btn) => {
+      btn.onclick = async (e) => {
+        e.stopPropagation();
+        const nextKey = btn.getAttribute('data-topsort');
+        if (!nextKey) return;
+        if (_tickerOptionsSortKey === nextKey) {
+          _tickerOptionsSortDir = _tickerOptionsSortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          _tickerOptionsSortKey = nextKey;
+          _tickerOptionsSortDir = 'asc';
+        }
+        // Re-render current horizon table with new sorting.
+        await loadHorizonOptions(_currentTicker, _optionsHorizonBucket || '0-3');
+      };
+    });
+  }
+
   function tickerOptionsHtml(payload) {
     const calls = Array.isArray(payload?.calls) ? payload.calls : [];
     const puts = Array.isArray(payload?.puts) ? payload.puts : [];
@@ -993,21 +1536,107 @@
       const last = Number.isFinite(+r.lastPrice) ? (+r.lastPrice).toFixed(2) : '\u2014';
       const vol = Number.isFinite(+r.volume) ? Math.round(+r.volume).toLocaleString() : '\u2014';
       const oi = Number.isFinite(+r.openInterest) ? Math.round(+r.openInterest).toLocaleString() : '\u2014';
-      return '<tr><td>'+escapeHtml(r.type || '')+'</td><td>'+strike+'</td><td>'+last+'</td><td>'+vol+'</td><td>'+oi+'</td></tr>';
+      const typeCls = r.type === 'CALL' ? 'color:#4ade80;font-weight:700' : 'color:#f87171;font-weight:700';
+      return '<tr style="border-bottom:1px solid #1e293b"><td style="padding:4px 6px;'+typeCls+'">'+escapeHtml(r.type||'')+'</td><td style="padding:4px 6px">'+strike+'</td><td style="padding:4px 6px">'+last+'</td><td style="padding:4px 6px">'+vol+'</td><td style="padding:4px 6px">'+oi+'</td></tr>';
     }
-    const rows = [...calls, ...puts].slice(0, 30).map(rowHtml).join('');
-    if (!rows) return '<p class="dimtext">No options contracts available.</p>';
-    return '<div class="dimtext" style="margin-bottom:8px">Nearest expiry: '+escapeHtml(payload.expirationDate || '\u2014')+'</div>'
-      + '<table style="width:100%;border-collapse:collapse">'
-      + '<thead><tr><th style="text-align:left">Type</th><th style="text-align:left">Strike</th><th style="text-align:left">Last</th><th style="text-align:left">Volume</th><th style="text-align:left">OI</th></tr></thead>'
-      + '<tbody>'+rows+'</tbody></table>';
+    const horizonTabs = [
+      { key: '0-3', label: 'Next 0-3' },
+      { key: '3-6', label: 'Next 3-6' },
+      { key: '9-12', label: 'Next 9-12' },
+      { key: '12+', label: '12 and above' }
+    ].map(w =>
+      '<button class="earnings-day-tab'+(w.key===_optionsHorizonBucket?' active':'')+' options-horizon-tab" data-bucket="'+w.key+'">'+w.label+'</button>'
+    ).join('');
+    const nearestSorted = sortTickerOptionsRows([...calls, ...puts]);
+    const nearestRows = nearestSorted.slice(0, 20).map(rowHtml).join('');
+    return '<div style="margin-bottom:6px;font-size:0.78rem;color:#64748b">Nearest expiry: <strong>'+escapeHtml(payload.expirationDate || '\u2014')+'</strong></div>'
+      + '<div style="margin-bottom:8px;font-size:0.75rem;color:#475569">Select a time window to see top active options by volume:</div>'
+      + '<div id="optionsHorizonTabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">'+horizonTabs+'</div>'
+      + '<div id="optionsHorizonTableArea" style="overflow-x:auto">'
+      + (nearestRows
+          ? '<table style="width:100%;border-collapse:collapse;font-size:0.8rem">'
+            + '<thead><tr style="color:#64748b;font-size:0.7rem;text-transform:uppercase;border-bottom:1px solid #334155">'
+            + '<th style="text-align:left;padding:4px 6px">'+tickerOptionsSortBtn('type', 'Type')+'</th>'
+            + '<th style="text-align:left;padding:4px 6px">'+tickerOptionsSortBtn('strike', 'Strike')+'</th>'
+            + '<th style="text-align:left;padding:4px 6px">'+tickerOptionsSortBtn('lastPrice', 'Last')+'</th>'
+            + '<th style="text-align:left;padding:4px 6px">'+tickerOptionsSortBtn('volume', 'Volume')+'</th>'
+            + '<th style="text-align:left;padding:4px 6px">'+tickerOptionsSortBtn('openInterest', 'OI')+'</th></tr></thead>'
+            + '<tbody>'+nearestRows+'</tbody></table>'
+          : '<p class="dimtext">No contracts for nearest expiry.</p>')
+      + '</div>';
+  }
+
+  function tickerOptionsHorizonHtml(contracts, bucketLabel) {
+    if (!Array.isArray(contracts) || contracts.length === 0) {
+      return '<p class="dimtext">No active contracts found in '+bucketLabel+'.</p>';
+    }
+    const sortedContracts = sortTickerOptionsRows(contracts);
+    const rows = sortedContracts.map(r => {
+      const strike = Number.isFinite(+r.strike) ? (+r.strike).toFixed(2) : '\u2014';
+      const last = Number.isFinite(+r.lastPrice) ? (+r.lastPrice).toFixed(2) : '\u2014';
+      const vol = Number.isFinite(+r.volume) ? Math.round(+r.volume).toLocaleString() : '\u2014';
+      const oi = Number.isFinite(+r.openInterest) ? Math.round(+r.openInterest).toLocaleString() : '\u2014';
+      const exp = escapeHtml(r.expirationDate || '\u2014');
+      const typeCls = r.type === 'CALL' ? 'color:#4ade80;font-weight:700' : 'color:#f87171;font-weight:700';
+      return '<tr style="border-bottom:1px solid #1e293b">'
+        + '<td style="padding:4px 6px;'+typeCls+'">'+escapeHtml(r.type||'')+'</td>'
+        + '<td style="padding:4px 6px">'+exp+'</td>'
+        + '<td style="padding:4px 6px">'+strike+'</td>'
+        + '<td style="padding:4px 6px">'+last+'</td>'
+        + '<td style="padding:4px 6px">'+vol+'</td>'
+        + '<td style="padding:4px 6px">'+oi+'</td>'
+        + '</tr>';
+    }).join('');
+    return '<table style="width:100%;border-collapse:collapse;font-size:0.8rem">'
+      + '<thead><tr style="color:#64748b;font-size:0.7rem;text-transform:uppercase;border-bottom:1px solid #334155">'
+      + '<th style="text-align:left;padding:4px 6px">'+tickerOptionsSortBtn('type', 'Type')+'</th><th style="text-align:left;padding:4px 6px">'+tickerOptionsSortBtn('expirationDate', 'Expiry')+'</th>'
+      + '<th style="text-align:left;padding:4px 6px">'+tickerOptionsSortBtn('strike', 'Strike')+'</th><th style="text-align:left;padding:4px 6px">'+tickerOptionsSortBtn('lastPrice', 'Last')+'</th>'
+      + '<th style="text-align:left;padding:4px 6px">'+tickerOptionsSortBtn('volume', 'Volume')+'</th><th style="text-align:left;padding:4px 6px">'+tickerOptionsSortBtn('openInterest', 'OI')+'</th>'
+      + '</tr></thead><tbody>'+rows+'</tbody></table>';
+  }
+
+  async function loadHorizonOptions(ticker, bucket) {
+    const key = ticker + '_' + bucket;
+    const area = document.getElementById('optionsHorizonTableArea');
+    if (!area) return;
+    if (_optionsHorizonCache[key]) {
+      area.innerHTML = tickerOptionsHorizonHtml(_optionsHorizonCache[key], bucket);
+      wireTickerOptionsSortButtons();
+      return;
+    }
+    area.innerHTML = '<p class="dimtext">Loading '+bucket+' options\u2026</p>';
+    try {
+      const res = await fetch('/api/options/' + encodeURIComponent(ticker) + '/chain?bucket=' + encodeURIComponent(bucket) + '&limit=20');
+      const data = await res.json();
+      if (data.error) { area.innerHTML = '<p class="dimtext">'+escapeHtml(data.error)+'</p>'; return; }
+      const contracts = Array.isArray(data.contracts) ? data.contracts : [];
+      _optionsHorizonCache[key] = contracts;
+      area.innerHTML = tickerOptionsHorizonHtml(contracts, bucket);
+      wireTickerOptionsSortButtons();
+    } catch (_) {
+      area.innerHTML = '<p class="dimtext">Unable to load options for this window.</p>';
+    }
+  }
+
+  function wireOptionsHorizonTabs() {
+    document.querySelectorAll('.options-horizon-tab').forEach(btn => {
+      btn.onclick = async (e) => {
+        e.stopPropagation();
+        const bucket = String(btn.getAttribute('data-bucket') || '0-3');
+        _optionsHorizonBucket = bucket;
+        document.querySelectorAll('.options-horizon-tab').forEach(b => b.classList.toggle('active', b === btn));
+        await loadHorizonOptions(_currentTicker, bucket);
+      };
+    });
   }
 
   async function loadTickerOptionsForCurrentTicker() {
     const container = document.getElementById('tickerOptionsContainer');
     if (!container || !_currentTicker) return;
     if (_tickerOptionsLoadedFor === _currentTicker) return;
-    container.innerHTML = '<p class="dimtext">Loading options chain...</p>';
+    _optionsHorizonCache = {};
+    _optionsHorizonBucket = '0-3';
+    container.innerHTML = '<p class="dimtext">Loading options chain\u2026</p>';
     try {
       const res = await fetch('/api/options/' + encodeURIComponent(_currentTicker));
       const data = await res.json();
@@ -1016,6 +1645,10 @@
         return;
       }
       container.innerHTML = tickerOptionsHtml(data);
+      _tickerOptionsBasePayload = data;
+      wireOptionsHorizonTabs();
+      wireTickerOptionsSortButtons();
+      await loadHorizonOptions(_currentTicker, '0-3');
       _tickerOptionsLoadedFor = _currentTicker;
     } catch (_) {
       container.innerHTML = '<p class="dimtext">Unable to load options chain.</p>';
@@ -1541,7 +2174,7 @@
             m('EV / EBITDA',fv(data.evEbitda))+m('Enterprise Value',fM(data.enterpriseValue))+
             m('EBITDA',fM(data.ebitda))+m('Total Revenue',fB(data.totalRevenue))+
             m('Free Cash Flow',fB(data.freeCashflow))+m('Op. Cash Flow',fB(data.operatingCashflow))+
-            m('FCF Yield',frt(data.fcfYield))+m('FCF Margin',frt(data.fcfMargin))+
+            m('Dividend Yield',frt(data.dividendYield))+m('FCF Yield',frt(data.fcfYield))+m('FCF Margin',frt(data.fcfMargin))+
             m('OCF Margin',frt(data.ocfMargin))+m('Debt / Equity',fv(data.debtToEquity))+
             m('Market Cap',fM(data.marketCap))+
           '</div>',
@@ -1588,10 +2221,11 @@
             if (!c) return;
             const isLowerBetter = key === 'forwardPE' || key === 'evEbitda';
             const val = (c.value == null) ? 'N/A' : (fmt ? fmt(c.value) : String(c.value));
-            const dev = c.deviationPct != null ? Number(Number(c.deviationPct).toFixed(2)) : null;
+            // Always use 5yr stock historical deviation for thumb — fall back to deviationPct only if stockHistAvg is missing
+            const histDev = c.deviationFromStockHistPct != null ? Number(Number(c.deviationFromStockHistPct).toFixed(2)) : null;
+            const dev = histDev ?? (c.stockHistAvg == null && c.deviationPct != null ? Number(Number(c.deviationPct).toFixed(2)) : null);
             const rel = fmtPct(dev);
-            const baseline = (c.histSectorAvg ?? c.sectorAvg ?? null);
-            // Use the deviation sign for wording so percent and direction align (e.g., "93% below")
+            // Use the deviation sign for wording
             const direction = (dev != null) ? (dev < 0 ? 'below' : dev > 0 ? 'above' : 'near') : '';
             const displaySentiment = (dev == null)
               ? 'AVERAGE'
@@ -1599,16 +2233,16 @@
                 ? (dev < 0 ? 'UP' : dev > 0 ? 'DOWN' : 'AVERAGE')
                 : (dev > 0 ? 'UP' : dev < 0 ? 'DOWN' : 'AVERAGE'));
             const devClass = sentimentClass(displaySentiment);
-            const note = rel ? ` — <span class="${devClass}" title="Thumb indicates sentiment; deviation shows percent difference vs baseline">` + rel + ' ' + direction + '</span>' : '';
+            const histWindow = c.stockHistWindow || '5yr';
+            const baselineLabel = c.stockHistAvg != null ? `vs ${histWindow} avg` : '';
+            const note = rel ? ` — <span class="${devClass}" title="vs ${histWindow} stock historical average">` + rel + ' ' + direction + (baselineLabel ? ' ' + baselineLabel : '') + '</span>' : '';
             const emoji = displaySentiment === 'UP' ? '👍' : displaySentiment === 'DOWN' ? '👎' : '➡️';
             parts.push('<div class="sent-row"><strong>' + label + '</strong><div>' + emoji + '<span style="margin-left:8px">' + val + note + '</span></div></div>');
-            // Always show sector avg and stock historical avg rows (use 'N/A' when missing)
+            // Show stock historical avg as the primary reference; sector avg is secondary
+            const histStockVal = c.stockHistAvg != null ? (fmt ? fmt(c.stockHistAvg) : String(c.stockHistAvg)) : 'N/A';
+            parts.push('<div class="sent-subrow">' + histWindow + ' historical avg: <strong>' + histStockVal + '</strong></div>');
             const sectorVal = c.sectorAvg != null ? (fmt ? fmt(c.sectorAvg) : String(c.sectorAvg)) : 'N/A';
             parts.push('<div class="sent-subrow">Sector avg: <strong>' + sectorVal + '</strong></div>');
-
-            const histStockVal = c.stockHistAvg != null ? (fmt ? fmt(c.stockHistAvg) : String(c.stockHistAvg)) : 'N/A';
-            const histWindow = c.stockHistWindow || '5yr';
-            parts.push('<div class="sent-subrow">' + histWindow + ' historical avg: <strong>' + histStockVal + '</strong></div>');
           }
           add('Forward P/E', 'forwardPE', v => Number.isFinite(v) ? v.toFixed(2) + 'x' : String(v));
           add('EV/EBITDA', 'evEbitda', v => Number.isFinite(v) ? v.toFixed(2) + 'x' : String(v));

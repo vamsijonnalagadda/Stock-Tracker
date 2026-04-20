@@ -9,8 +9,8 @@
       -0.63
     ],
     "updatedAt": 1776358389765,
-    "impliedMove": "±3.52%",
-    "impliedUpdatedAt": 1776358413799
+    "impliedMove": "±1.15%",
+    "impliedUpdatedAt": 1776460367454
   },
   "FITB": {
     "lastMove": -1.43,
@@ -22,8 +22,8 @@
       0.15
     ],
     "updatedAt": 1776358387587,
-    "impliedMove": "±3.3%",
-    "impliedUpdatedAt": 1776358413228
+    "impliedMove": "±0.68%",
+    "impliedUpdatedAt": 1776460366873
   },
   "RF": {
     "lastMove": -0.84,
@@ -35,8 +35,8 @@
       0.84
     ],
     "updatedAt": 1776358388651,
-    "impliedMove": "±3.42%",
-    "impliedUpdatedAt": 1776358413536
+    "impliedMove": "±0.54%",
+    "impliedUpdatedAt": 1776460367174
   },
   "TFC": {
     "lastMove": -0.61,
@@ -48,8 +48,8 @@
       0.79
     ],
     "updatedAt": 1776358390775,
-    "impliedMove": "±2.95%",
-    "impliedUpdatedAt": 1776358414077
+    "impliedMove": "±1.08%",
+    "impliedUpdatedAt": 1776460367793
   },
   "ALLY": {
     "lastMove": -0.29,
@@ -61,8 +61,8 @@
       -2.27
     ],
     "updatedAt": 1776358391769,
-    "impliedMove": "±4.53%",
-    "impliedUpdatedAt": 1776358414558
+    "impliedMove": "±1.24%",
+    "impliedUpdatedAt": 1776460368118
   },
   "ALV": {
     "lastMove": 0.86,
@@ -74,8 +74,8 @@
       0.74
     ],
     "updatedAt": 1776358392807,
-    "impliedMove": "±4.62%",
-    "impliedUpdatedAt": 1776358415012
+    "impliedMove": "±0.91%",
+    "impliedUpdatedAt": 1776460368430
   },
   "BMI": {
     "lastMove": -1.76,
@@ -87,8 +87,8 @@
       -0.08
     ],
     "updatedAt": 1776358393997,
-    "impliedMove": "±7.37%",
-    "impliedUpdatedAt": 1776358415497
+    "impliedMove": "±13.87%",
+    "impliedUpdatedAt": 1776460368830
   },
   "MCBS": {
     "lastMove": -0.15,
@@ -100,8 +100,8 @@
       -0.15
     ],
     "updatedAt": 1776358399986,
-    "impliedMove": "±3.62%",
-    "impliedUpdatedAt": 1776358416297
+    "impliedMove": "±2.99%",
+    "impliedUpdatedAt": 1776460370505
   },
   "AMNF": {
     "lastMove": 4.88,
@@ -178,7 +178,9 @@
     "moves": [
       -3.5
     ],
-    "updatedAt": 1776343523076
+    "updatedAt": 1776343523076,
+    "impliedMove": "±119.13%",
+    "impliedUpdatedAt": 1776615176359
   },
   "AIRE": {
     "lastMove": -3.45,
@@ -262,8 +264,8 @@
       0.86
     ],
     "updatedAt": 1776358366297,
-    "impliedMove": "±2.69%",
-    "impliedUpdatedAt": 1776358405080
+    "impliedMove": "±1.07%",
+    "impliedUpdatedAt": 1776379221039
   },
   "BK": {
     "lastMove": 2.06,
@@ -276,8 +278,8 @@
       -0.48
     ],
     "updatedAt": 1776358367349,
-    "impliedMove": "±0.32%",
-    "impliedUpdatedAt": 1776358405298
+    "impliedMove": "±0.73%",
+    "impliedUpdatedAt": 1776379221350
   },
   "CFG": {
     "lastMove": -1.83,
@@ -290,8 +292,8 @@
       0.61
     ],
     "updatedAt": 1776358368368,
-    "impliedMove": "±1.51%",
-    "impliedUpdatedAt": 1776358405648
+    "impliedMove": "±1.35%",
+    "impliedUpdatedAt": 1776379221647
   },
   "KEY": {
     "lastMove": 0.23,
@@ -304,8 +306,8 @@
       0.99
     ],
     "updatedAt": 1776358369415,
-    "impliedMove": "±1.56%",
-    "impliedUpdatedAt": 1776358405893
+    "impliedMove": "±1.53%",
+    "impliedUpdatedAt": 1776379221934
   },
   "PEP": {
     "lastMove": 0.45,
@@ -318,8 +320,8 @@
       1.18
     ],
     "updatedAt": 1776358370522,
-    "impliedMove": "±1.56%",
-    "impliedUpdatedAt": 1776358406241
+    "impliedMove": "±1.45%",
+    "impliedUpdatedAt": 1776379222229
   },
   "PLD": {
     "lastMove": 2.05,
@@ -332,8 +334,8 @@
       -0.71
     ],
     "updatedAt": 1776358371540,
-    "impliedMove": "±1.4%",
-    "impliedUpdatedAt": 1776358406927
+    "impliedMove": "±1.31%",
+    "impliedUpdatedAt": 1776379222574
   },
   "SCHW": {
     "lastMove": -4.5,
@@ -346,8 +348,8 @@
       1.04
     ],
     "updatedAt": 1776358372663,
-    "impliedMove": "±1.64%",
-    "impliedUpdatedAt": 1776358408222
+    "impliedMove": "±1.61%",
+    "impliedUpdatedAt": 1776379222843
   },
   "TRV": {
     "lastMove": -1.07,
@@ -360,8 +362,8 @@
       1.13
     ],
     "updatedAt": 1776358373743,
-    "impliedMove": "±1.47%",
-    "impliedUpdatedAt": 1776358408565
+    "impliedMove": "±1.37%",
+    "impliedUpdatedAt": 1776379223139
   },
   "USB": {
     "lastMove": -1.1,
@@ -374,8 +376,8 @@
       -1.73
     ],
     "updatedAt": 1776358374795,
-    "impliedMove": "±1.79%",
-    "impliedUpdatedAt": 1776358408862
+    "impliedMove": "±1.59%",
+    "impliedUpdatedAt": 1776379223552
   },
   "NFLX": {
     "lastMove": -0.78,
@@ -388,8 +390,8 @@
       -0.68
     ],
     "updatedAt": 1776358375776,
-    "impliedMove": "±5.79%",
-    "impliedUpdatedAt": 1776358409261
+    "impliedMove": "±6.19%",
+    "impliedUpdatedAt": 1776379224056
   },
   "HOFT": {
     "lastMove": -6.18,
@@ -416,8 +418,8 @@
       -1.75
     ],
     "updatedAt": 1776358377912,
-    "impliedMove": "±21.35%",
-    "impliedUpdatedAt": 1776358409885
+    "impliedMove": "±3.58%",
+    "impliedUpdatedAt": 1776379224812
   },
   "JKS": {
     "lastMove": -7.76,
@@ -430,8 +432,8 @@
       -1.68
     ],
     "updatedAt": 1776358378957,
-    "impliedMove": "±3.65%",
-    "impliedUpdatedAt": 1776358410113
+    "impliedMove": "±5.50%",
+    "impliedUpdatedAt": 1776379225058
   },
   "MAN": {
     "lastMove": -2.28,
@@ -444,8 +446,8 @@
       -0.52
     ],
     "updatedAt": 1776358380068,
-    "impliedMove": "±3.58%",
-    "impliedUpdatedAt": 1776358410445
+    "impliedMove": "±3.43%",
+    "impliedUpdatedAt": 1776379225389
   },
   "MRSH": {
     "lastMove": 1.88,
@@ -458,8 +460,8 @@
       0.76
     ],
     "updatedAt": 1776358381260,
-    "impliedMove": "±6.42%",
-    "impliedUpdatedAt": 1776358410797
+    "impliedMove": "±6.36%",
+    "impliedUpdatedAt": 1776379225664
   },
   "XIFR": {
     "lastMove": -0.19,
@@ -471,7 +473,9 @@
       -1.08,
       -0.64
     ],
-    "updatedAt": 1776358382355
+    "updatedAt": 1776358382355,
+    "impliedMove": "±2.26%",
+    "impliedUpdatedAt": 1776379225988
   },
   "AA": {
     "lastMove": -0.46,
@@ -484,8 +488,8 @@
       -1.17
     ],
     "updatedAt": 1776358383435,
-    "impliedMove": "±5.38%",
-    "impliedUpdatedAt": 1776358412219
+    "impliedMove": "±4.59%",
+    "impliedUpdatedAt": 1776379226322
   },
   "CNS": {
     "lastMove": 1.74,
@@ -498,8 +502,8 @@
       1.43
     ],
     "updatedAt": 1776358385543,
-    "impliedMove": "±5.75%",
-    "impliedUpdatedAt": 1776358412625
+    "impliedMove": "±5.98%",
+    "impliedUpdatedAt": 1776379226914
   },
   "FNB": {
     "lastMove": -0.34,
@@ -512,7 +516,4223 @@
       -0.52
     ],
     "updatedAt": 1776358386552,
+    "impliedMove": "±3.66%",
+    "impliedUpdatedAt": 1776379227212
+  },
+  "STLD": {
+    "impliedMove": "±7.66%",
+    "impliedUpdatedAt": 1776643225356
+  },
+  "AGNC": {
+    "impliedMove": "±2.73%",
+    "impliedUpdatedAt": 1776643226384
+  },
+  "ALK": {
+    "impliedMove": "±11.72%",
+    "impliedUpdatedAt": 1776643226663
+  },
+  "BOH": {
+    "impliedMove": "±6.26%",
+    "impliedUpdatedAt": 1776643228386
+  },
+  "BOKF": {
+    "impliedMove": "±3.20%",
+    "impliedUpdatedAt": 1776643228681
+  },
+  "CCNE": {
+    "impliedMove": "±6.10%",
+    "impliedUpdatedAt": 1776643229886
+  },
+  "CLF": {
+    "impliedMove": "±10.09%",
+    "impliedUpdatedAt": 1776643230187
+  },
+  "DX": {
+    "impliedMove": "±7.49%",
+    "impliedUpdatedAt": 1776643231070
+  },
+  "JBIO": {
+    "impliedMove": "±24.74%",
+    "impliedUpdatedAt": 1776643234789
+  },
+  "NNOX": {
+    "impliedMove": "±19.09%",
+    "impliedUpdatedAt": 1776643237923
+  },
+  "NVCR": {
+    "impliedMove": "±17.16%",
+    "impliedUpdatedAt": 1776643238764
+  },
+  "RBB": {
+    "impliedMove": "±12.08%",
+    "impliedUpdatedAt": 1776615001100
+  },
+  "WNEB": {
+    "impliedMove": "±22.59%",
+    "impliedUpdatedAt": 1776643243708
+  },
+  "WTFC": {
+    "impliedMove": "±4.59%",
+    "impliedUpdatedAt": 1776643243972
+  },
+  "ZION": {
+    "impliedMove": "±6.91%",
+    "impliedUpdatedAt": 1776643244407
+  },
+  "CHTR": {
+    "impliedMove": "±11.84%",
+    "impliedUpdatedAt": 1776614803157
+  },
+  "HCA": {
+    "impliedMove": "±7.08%",
+    "impliedUpdatedAt": 1776614803450
+  },
+  "NSC": {
+    "impliedMove": "±4.91%",
+    "impliedUpdatedAt": 1776614803707
+  },
+  "PG": {
+    "impliedMove": "±3.20%",
+    "impliedUpdatedAt": 1776614803978
+  },
+  "SLB": {
+    "impliedMove": "±4.50%",
+    "impliedUpdatedAt": 1776614804251
+  },
+  "APOG": {
+    "impliedMove": "±10.33%",
+    "impliedUpdatedAt": 1776614886059
+  },
+  "CRI": {
+    "impliedMove": "±11.01%",
+    "impliedUpdatedAt": 1776614887604
+  },
+  "CVEO": {
+    "impliedMove": "±6.62%",
+    "impliedUpdatedAt": 1776614887893
+  },
+  "DCOM": {
+    "impliedMove": "±8.76%",
+    "impliedUpdatedAt": 1776614888142
+  },
+  "FLG": {
+    "impliedMove": "±6.67%",
+    "impliedUpdatedAt": 1776614889454
+  },
+  "GNTX": {
+    "impliedMove": "±7.74%",
+    "impliedUpdatedAt": 1776614889984
+  },
+  "GTLS": {
+    "impliedMove": "±0.69%",
+    "impliedUpdatedAt": 1776614890271
+  },
+  "HTH": {
+    "impliedMove": "±6.72%",
+    "impliedUpdatedAt": 1776614891155
+  },
+  "IRMD": {
+    "impliedMove": "±4.17%",
+    "impliedUpdatedAt": 1776614891499
+  },
+  "NVT": {
+    "impliedMove": "±9.63%",
+    "impliedUpdatedAt": 1776614892332
+  },
+  "PBI": {
+    "impliedMove": "±7.41%",
+    "impliedUpdatedAt": 1776614892852
+  },
+  "PIPR": {
+    "impliedMove": "±7.59%",
+    "impliedUpdatedAt": 1776614893385
+  },
+  "RPT": {
+    "impliedMove": "±1.82%",
+    "impliedUpdatedAt": 1776614893668
+  },
+  "SXT": {
+    "impliedMove": "±9.12%",
+    "impliedUpdatedAt": 1776614894859
+  },
+  "TWIN": {
+    "impliedMove": "±9.54%",
+    "impliedUpdatedAt": 1776614895213
+  },
+  "WT": {
+    "impliedMove": "±8.67%",
+    "impliedUpdatedAt": 1776614895489
+  },
+  "WU": {
+    "impliedMove": "±8.70%",
+    "impliedUpdatedAt": 1776614895764
+  },
+  "AMP": {
+    "impliedMove": "±6.06%",
+    "impliedUpdatedAt": 1776614804538
+  },
+  "AON": {
+    "impliedMove": "±6.79%",
+    "impliedUpdatedAt": 1776614804809
+  },
+  "AXP": {
+    "impliedMove": "±4.03%",
+    "impliedUpdatedAt": 1776614805079
+  },
+  "BKR": {
+    "impliedMove": "±7.29%",
+    "impliedUpdatedAt": 1776614805375
+  },
+  "BX": {
+    "impliedMove": "±5.17%",
+    "impliedUpdatedAt": 1776614805655
+  },
+  "CBRE": {
+    "impliedMove": "±8.10%",
+    "impliedUpdatedAt": 1776614805937
+  },
+  "CMCSA": {
+    "impliedMove": "±5.08%",
+    "impliedUpdatedAt": 1776614806202
+  },
+  "CNP": {
+    "impliedMove": "±4.35%",
+    "impliedUpdatedAt": 1776614806491
+  },
+  "DLR": {
+    "impliedMove": "±2.48%",
+    "impliedUpdatedAt": 1776614806799
+  },
+  "DOV": {
+    "impliedMove": "±5.48%",
+    "impliedUpdatedAt": 1776614807082
+  },
+  "DOW": {
+    "impliedMove": "±6.42%",
+    "impliedUpdatedAt": 1776614807366
+  },
+  "ERIE": {
+    "impliedMove": "±7.57%",
+    "impliedUpdatedAt": 1776614807648
+  },
+  "EW": {
+    "impliedMove": "±7.77%",
+    "impliedUpdatedAt": 1776614807932
+  },
+  "FCX": {
+    "impliedMove": "±5.04%",
+    "impliedUpdatedAt": 1776614808255
+  },
+  "GILD": {
+    "impliedMove": "±2.82%",
+    "impliedUpdatedAt": 1776614808549
+  },
+  "HAS": {
+    "impliedMove": "±7.53%",
+    "impliedUpdatedAt": 1776614808837
+  },
+  "HBAN": {
+    "impliedMove": "±5.50%",
+    "impliedUpdatedAt": 1776614809100
+  },
+  "HIG": {
+    "impliedMove": "±3.83%",
+    "impliedUpdatedAt": 1776614809381
+  },
+  "HON": {
+    "impliedMove": "±3.96%",
+    "impliedUpdatedAt": 1776614809659
+  },
+  "INTC": {
+    "impliedMove": "±9.47%",
+    "impliedUpdatedAt": 1776614809933
+  },
+  "KDP": {
+    "impliedMove": "±6.09%",
+    "impliedUpdatedAt": 1776614810194
+  },
+  "KLAC": {
+    "impliedMove": "±10.45%",
+    "impliedUpdatedAt": 1776614810495
+  },
+  "LMT": {
+    "impliedMove": "±4.30%",
+    "impliedUpdatedAt": 1776614810759
+  },
+  "NDAQ": {
+    "impliedMove": "±1.84%",
+    "impliedUpdatedAt": 1776614811033
+  },
+  "NEE": {
+    "impliedMove": "±3.17%",
+    "impliedUpdatedAt": 1776614811331
+  },
+  "NEM": {
+    "impliedMove": "±6.03%",
+    "impliedUpdatedAt": 1776614811621
+  },
+  "PCG": {
+    "impliedMove": "±3.15%",
+    "impliedUpdatedAt": 1776614811879
+  },
+  "PFG": {
+    "impliedMove": "±9.24%",
+    "impliedUpdatedAt": 1776614812428
+  },
+  "PHM": {
+    "impliedMove": "±5.57%",
+    "impliedUpdatedAt": 1776614812720
+  },
+  "POOL": {
+    "impliedMove": "±7.32%",
+    "impliedUpdatedAt": 1776614813002
+  },
+  "ROP": {
+    "impliedMove": "±6.23%",
+    "impliedUpdatedAt": 1776614813272
+  },
+  "SNA": {
+    "impliedMove": "±5.88%",
+    "impliedUpdatedAt": 1776614813535
+  },
+  "TMO": {
+    "impliedMove": "±4.23%",
+    "impliedUpdatedAt": 1776614813808
+  },
+  "UNP": {
+    "impliedMove": "±3.27%",
+    "impliedUpdatedAt": 1776614814079
+  },
+  "VRSN": {
+    "impliedMove": "±6.45%",
+    "impliedUpdatedAt": 1776614814373
+  },
+  "WST": {
+    "impliedMove": "±9.38%",
+    "impliedUpdatedAt": 1776614814669
+  },
+  "AAL": {
+    "impliedMove": "±6.65%",
+    "impliedUpdatedAt": 1776614896022
+  },
+  "ABCB": {
+    "impliedMove": "±5.93%",
+    "impliedUpdatedAt": 1776614896280
+  },
+  "ACA": {
+    "impliedMove": "±9.05%",
+    "impliedUpdatedAt": 1776614896844
+  },
+  "ACIU": {
+    "impliedMove": "±29.65%",
+    "impliedUpdatedAt": 1776614897181
+  },
+  "ACNB": {
+    "impliedMove": "±2.55%",
+    "impliedUpdatedAt": 1776614897490
+  },
+  "AMAL": {
+    "impliedMove": "±10.26%",
+    "impliedUpdatedAt": 1776614898397
+  },
+  "AMBP": {
+    "impliedMove": "±21.25%",
+    "impliedUpdatedAt": 1776614898652
+  },
+  "AMTB": {
+    "impliedMove": "±20.88%",
+    "impliedUpdatedAt": 1776614899279
+  },
+  "APPF": {
+    "impliedMove": "±13.80%",
+    "impliedUpdatedAt": 1776614899579
+  },
+  "ASB": {
+    "impliedMove": "±17.64%",
+    "impliedUpdatedAt": 1776614900126
+  },
+  "ASPN": {
+    "impliedMove": "±30.78%",
+    "impliedUpdatedAt": 1776614900455
+  },
+  "BFH": {
+    "impliedMove": "±10.26%",
+    "impliedUpdatedAt": 1776614901464
+  },
+  "BFIN": {
+    "impliedMove": "±13.10%",
+    "impliedUpdatedAt": 1776614901758
+  },
+  "BPOP": {
+    "impliedMove": "±5.87%",
+    "impliedUpdatedAt": 1776614902719
+  },
+  "BTU": {
+    "impliedMove": "±4.87%",
+    "impliedUpdatedAt": 1776614903619
+  },
+  "BWMX": {
+    "impliedMove": "±9.37%",
+    "impliedUpdatedAt": 1776614903997
+  },
+  "BYD": {
+    "impliedMove": "±5.58%",
+    "impliedUpdatedAt": 1776614904598
+  },
+  "CHE": {
+    "impliedMove": "±7.75%",
+    "impliedUpdatedAt": 1776614905997
+  },
+  "CLFD": {
+    "impliedMove": "±6.52%",
+    "impliedUpdatedAt": 1776614906266
+  },
+  "CNOB": {
+    "impliedMove": "±1.54%",
+    "impliedUpdatedAt": 1776614907214
+  },
+  "COLB": {
+    "impliedMove": "±8.00%",
+    "impliedUpdatedAt": 1776614907477
+  },
+  "COUR": {
+    "impliedMove": "±15.37%",
+    "impliedUpdatedAt": 1776614907825
+  },
+  "CSL": {
+    "impliedMove": "±8.78%",
+    "impliedUpdatedAt": 1776614908101
+  },
+  "CUBI": {
+    "impliedMove": "±9.13%",
+    "impliedUpdatedAt": 1776614908393
+  },
+  "CVLG": {
+    "impliedMove": "±3.07%",
+    "impliedUpdatedAt": 1776614908716
+  },
+  "EBC": {
+    "impliedMove": "±10.62%",
+    "impliedUpdatedAt": 1776614909565
+  },
+  "ENSG": {
+    "impliedMove": "±7.73%",
+    "impliedUpdatedAt": 1776614909882
+  },
+  "ENVA": {
+    "impliedMove": "±18.12%",
+    "impliedUpdatedAt": 1776614910166
+  },
+  "EVTC": {
+    "impliedMove": "±13.58%",
+    "impliedUpdatedAt": 1776614910957
+  },
+  "FBIN": {
+    "impliedMove": "±12.32%",
+    "impliedUpdatedAt": 1776614911229
+  },
+  "FCFS": {
+    "impliedMove": "±6.80%",
+    "impliedUpdatedAt": 1776614911760
+  },
+  "FCNCA": {
+    "impliedMove": "±5.52%",
+    "impliedUpdatedAt": 1776614912047
+  },
+  "FFBC": {
+    "impliedMove": "±6.20%",
+    "impliedUpdatedAt": 1776614912386
+  },
+  "FISI": {
+    "impliedMove": "±4.72%",
+    "impliedUpdatedAt": 1776614912978
+  },
+  "FRST": {
+    "impliedMove": "±15.74%",
+    "impliedUpdatedAt": 1776614913854
+  },
+  "GBCI": {
+    "impliedMove": "±1.91%",
+    "impliedUpdatedAt": 1776614914485
+  },
+  "GLPI": {
+    "impliedMove": "±4.01%",
+    "impliedUpdatedAt": 1776614915155
+  },
+  "GRC": {
+    "impliedMove": "±6.50%",
+    "impliedUpdatedAt": 1776614915530
+  },
+  "HELE": {
+    "impliedMove": "±16.86%",
+    "impliedUpdatedAt": 1776614915783
+  },
+  "HFWA": {
+    "impliedMove": "±8.35%",
+    "impliedUpdatedAt": 1776614916145
+  },
+  "HNI": {
+    "impliedMove": "±6.16%",
+    "impliedUpdatedAt": 1776614916424
+  },
+  "HOG": {
+    "impliedMove": "±4.63%",
+    "impliedUpdatedAt": 1776614916728
+  },
+  "HUBG": {
+    "impliedMove": "±5.38%",
+    "impliedUpdatedAt": 1776614917714
+  },
+  "HZO": {
+    "impliedMove": "±8.04%",
+    "impliedUpdatedAt": 1776614917976
+  },
+  "IBCP": {
+    "impliedMove": "±9.58%",
+    "impliedUpdatedAt": 1776614918276
+  },
+  "IRDM": {
+    "impliedMove": "±13.49%",
+    "impliedUpdatedAt": 1776614918542
+  },
+  "KN": {
+    "impliedMove": "±7.44%",
+    "impliedUpdatedAt": 1776614918851
+  },
+  "KNSL": {
+    "impliedMove": "±8.87%",
+    "impliedUpdatedAt": 1776614919201
+  },
+  "KRNY": {
+    "impliedMove": "±12.56%",
+    "impliedUpdatedAt": 1776614919487
+  },
+  "LADR": {
+    "impliedMove": "±6.06%",
+    "impliedUpdatedAt": 1776614919816
+  },
+  "LAZ": {
+    "impliedMove": "±16.76%",
+    "impliedUpdatedAt": 1776614920102
+  },
+  "MBIN": {
+    "impliedMove": "±9.94%",
+    "impliedUpdatedAt": 1776614920956
+  },
+  "MBLY": {
+    "impliedMove": "±9.61%",
+    "impliedUpdatedAt": 1776614921302
+  },
+  "MITK": {
+    "impliedMove": "±14.87%",
+    "impliedUpdatedAt": 1776614921586
+  },
+  "MPT": {
+    "impliedMove": "±5.04%",
+    "impliedUpdatedAt": 1776614921959
+  },
+  "MSBI": {
+    "impliedMove": "±5.00%",
+    "impliedUpdatedAt": 1776614922211
+  },
+  "MVIS": {
+    "impliedMove": "±29.69%",
+    "impliedUpdatedAt": 1776614922492
+  },
+  "MXL": {
+    "impliedMove": "±17.67%",
+    "impliedUpdatedAt": 1776614922872
+  },
+  "NBTB": {
+    "impliedMove": "±11.43%",
+    "impliedUpdatedAt": 1776614923457
+  },
+  "OCFC": {
+    "impliedMove": "±10.17%",
+    "impliedUpdatedAt": 1776614924970
+  },
+  "OIS": {
+    "impliedMove": "±23.79%",
+    "impliedUpdatedAt": 1776614925253
+  },
+  "ORC": {
+    "impliedMove": "±7.85%",
+    "impliedUpdatedAt": 1776614925861
+  },
+  "ORI": {
+    "impliedMove": "±5.61%",
+    "impliedUpdatedAt": 1776614926159
+  },
+  "OSIS": {
+    "impliedMove": "±5.96%",
+    "impliedUpdatedAt": 1776614926442
+  },
+  "OXSQ": {
+    "impliedMove": "±4.03%",
+    "impliedUpdatedAt": 1776614927066
+  },
+  "PATK": {
+    "impliedMove": "±11.13%",
+    "impliedUpdatedAt": 1776614927353
+  },
+  "PCB": {
+    "impliedMove": "±19.57%",
+    "impliedUpdatedAt": 1776614927705
+  },
+  "PECO": {
+    "impliedMove": "±8.59%",
+    "impliedUpdatedAt": 1776614928293
+  },
+  "PENN": {
+    "impliedMove": "±12.28%",
+    "impliedUpdatedAt": 1776614928634
+  },
+  "PINE": {
+    "impliedMove": "±7.98%",
+    "impliedUpdatedAt": 1776614929278
+  },
+  "POWI": {
+    "impliedMove": "±8.97%",
+    "impliedUpdatedAt": 1776614929546
+  },
+  "PTCT": {
+    "impliedMove": "±13.61%",
+    "impliedUpdatedAt": 1776614930388
+  },
+  "R": {
+    "impliedMove": "±4.67%",
+    "impliedUpdatedAt": 1776614930863
+  },
+  "REXR": {
+    "impliedMove": "±7.40%",
+    "impliedUpdatedAt": 1776614931400
+  },
+  "SCCO": {
+    "impliedMove": "±5.30%",
+    "impliedUpdatedAt": 1776614933359
+  },
+  "SES": {
+    "impliedMove": "±22.48%",
+    "impliedUpdatedAt": 1776614933989
+  },
+  "SHBI": {
+    "impliedMove": "±3.91%",
+    "impliedUpdatedAt": 1776614934257
+  },
+  "SKYW": {
+    "impliedMove": "±8.43%",
+    "impliedUpdatedAt": 1776614934526
+  },
+  "SLM": {
+    "impliedMove": "±6.87%",
+    "impliedUpdatedAt": 1776614934788
+  },
+  "SSB": {
+    "impliedMove": "±1.87%",
+    "impliedUpdatedAt": 1776614935582
+  },
+  "SSNC": {
+    "impliedMove": "±8.04%",
+    "impliedUpdatedAt": 1776614935855
+  },
+  "STRA": {
+    "impliedMove": "±3.83%",
+    "impliedUpdatedAt": 1776614936392
+  },
+  "TAL": {
+    "impliedMove": "±12.37%",
+    "impliedUpdatedAt": 1776614936905
+  },
+  "TBBK": {
+    "impliedMove": "±14.33%",
+    "impliedUpdatedAt": 1776614937189
+  },
+  "TCBI": {
+    "impliedMove": "±3.58%",
+    "impliedUpdatedAt": 1776614937552
+  },
+  "TCBK": {
+    "impliedMove": "±4.14%",
+    "impliedUpdatedAt": 1776614937819
+  },
+  "TECK": {
+    "impliedMove": "±4.81%",
+    "impliedUpdatedAt": 1776614938152
+  },
+  "THRM": {
+    "impliedMove": "±6.57%",
+    "impliedUpdatedAt": 1776614938403
+  },
+  "TOWN": {
+    "impliedMove": "±6.79%",
+    "impliedUpdatedAt": 1776614938982
+  },
+  "TUSK": {
+    "impliedMove": "±20.70%",
+    "impliedUpdatedAt": 1776614939526
+  },
+  "UVE": {
+    "impliedMove": "±9.60%",
+    "impliedUpdatedAt": 1776614941216
+  },
+  "VC": {
+    "impliedMove": "±9.39%",
+    "impliedUpdatedAt": 1776614941834
+  },
+  "VLY": {
+    "impliedMove": "±3.84%",
+    "impliedUpdatedAt": 1776614942139
+  },
+  "WKC": {
+    "impliedMove": "±3.70%",
+    "impliedUpdatedAt": 1776614942794
+  },
+  "WTBA": {
+    "impliedMove": "±18.92%",
+    "impliedUpdatedAt": 1776614943391
+  },
+  "BA": {
+    "impliedMove": "±4.52%",
+    "impliedUpdatedAt": 1776614814932
+  },
+  "BSX": {
+    "impliedMove": "±5.61%",
+    "impliedUpdatedAt": 1776614815228
+  },
+  "CCI": {
+    "impliedMove": "±5.88%",
+    "impliedUpdatedAt": 1776614815511
+  },
+  "CME": {
+    "impliedMove": "±2.67%",
+    "impliedUpdatedAt": 1776614815811
+  },
+  "CSX": {
+    "impliedMove": "±4.20%",
+    "impliedUpdatedAt": 1776614816111
+  },
+  "DOC": {
+    "impliedMove": "±5.68%",
+    "impliedUpdatedAt": 1776614816373
+  },
+  "ELV": {
+    "impliedMove": "±7.55%",
+    "impliedUpdatedAt": 1776614816666
+  },
+  "GEV": {
+    "impliedMove": "±5.29%",
+    "impliedUpdatedAt": 1776614816959
+  },
+  "GL": {
+    "impliedMove": "±5.64%",
+    "impliedUpdatedAt": 1776614817221
+  },
+  "IBM": {
+    "impliedMove": "±5.84%",
+    "impliedUpdatedAt": 1776614817482
+  },
+  "KMI": {
+    "impliedMove": "±2.79%",
+    "impliedUpdatedAt": 1776614817769
+  },
+  "LRCX": {
+    "impliedMove": "±7.12%",
+    "impliedUpdatedAt": 1776614818060
+  },
+  "LUV": {
+    "impliedMove": "±7.25%",
+    "impliedUpdatedAt": 1776614818365
+  },
+  "LVS": {
+    "impliedMove": "±6.19%",
+    "impliedUpdatedAt": 1776614818644
+  },
+  "MAS": {
+    "impliedMove": "±7.57%",
+    "impliedUpdatedAt": 1776614818924
+  },
+  "MCO": {
+    "impliedMove": "±6.31%",
+    "impliedUpdatedAt": 1776614819226
+  },
+  "NOW": {
+    "impliedMove": "±8.63%",
+    "impliedUpdatedAt": 1776614819481
+  },
+  "OTIS": {
+    "impliedMove": "±5.98%",
+    "impliedUpdatedAt": 1776614820068
+  },
+  "PKG": {
+    "impliedMove": "±8.23%",
+    "impliedUpdatedAt": 1776614820363
+  },
+  "PM": {
+    "impliedMove": "±4.31%",
+    "impliedUpdatedAt": 1776614820654
+  },
+  "RJF": {
+    "impliedMove": "±6.42%",
+    "impliedUpdatedAt": 1776614820905
+  },
+  "ROL": {
+    "impliedMove": "±6.99%",
+    "impliedUpdatedAt": 1776614821199
+  },
+  "T": {
+    "impliedMove": "±3.82%",
+    "impliedUpdatedAt": 1776614821460
+  },
+  "TDY": {
+    "impliedMove": "±5.52%",
+    "impliedUpdatedAt": 1776614821731
+  },
+  "TEL": {
+    "impliedMove": "±7.74%",
+    "impliedUpdatedAt": 1776614822028
+  },
+  "TSLA": {
+    "impliedMove": "±2.02%",
+    "impliedUpdatedAt": 1776614822292
+  },
+  "TXN": {
+    "impliedMove": "±5.77%",
+    "impliedUpdatedAt": 1776614822592
+  },
+  "TXT": {
+    "impliedMove": "±7.41%",
+    "impliedUpdatedAt": 1776614822845
+  },
+  "URI": {
+    "impliedMove": "±6.29%",
+    "impliedUpdatedAt": 1776614823106
+  },
+  "VRT": {
+    "impliedMove": "±8.57%",
+    "impliedUpdatedAt": 1776614823360
+  },
+  "WAB": {
+    "impliedMove": "±7.57%",
+    "impliedUpdatedAt": 1776614823618
+  },
+  "ASGN": {
+    "impliedMove": "±12.65%",
+    "impliedUpdatedAt": 1776614944167
+  },
+  "AZZ": {
+    "impliedMove": "±6.94%",
+    "impliedUpdatedAt": 1776614944506
+  },
+  "BANC": {
+    "impliedMove": "±7.06%",
+    "impliedUpdatedAt": 1776614944759
+  },
+  "BANR": {
+    "impliedMove": "±7.78%",
+    "impliedUpdatedAt": 1776614945050
+  },
+  "BDN": {
+    "impliedMove": "±14.36%",
+    "impliedUpdatedAt": 1776614945417
+  },
+  "BKU": {
+    "impliedMove": "±7.19%",
+    "impliedUpdatedAt": 1776614945677
+  },
+  "CACI": {
+    "impliedMove": "±6.27%",
+    "impliedUpdatedAt": 1776614946592
+  },
+  "CASH": {
+    "impliedMove": "±4.28%",
+    "impliedUpdatedAt": 1776614946863
+  },
+  "CATY": {
+    "impliedMove": "±3.65%",
+    "impliedUpdatedAt": 1776614947147
+  },
+  "CBAN": {
+    "impliedMove": "±9.20%",
+    "impliedUpdatedAt": 1776614947417
+  },
+  "CCS": {
+    "impliedMove": "±9.97%",
+    "impliedUpdatedAt": 1776614947704
+  },
+  "CHDN": {
+    "impliedMove": "±7.90%",
+    "impliedUpdatedAt": 1776614948321
+  },
+  "CIVB": {
+    "impliedMove": "±9.50%",
+    "impliedUpdatedAt": 1776614948631
+  },
+  "EDU": {
+    "impliedMove": "±11.51%",
+    "impliedUpdatedAt": 1776614950135
+  },
+  "EFSC": {
+    "impliedMove": "±8.63%",
+    "impliedUpdatedAt": 1776614950482
+  },
+  "EGBN": {
+    "impliedMove": "±11.56%",
+    "impliedUpdatedAt": 1776614950845
+  },
+  "EGP": {
+    "impliedMove": "±2.73%",
+    "impliedUpdatedAt": 1776614951184
+  },
+  "EPRT": {
+    "impliedMove": "±1.27%",
+    "impliedUpdatedAt": 1776614951457
+  },
+  "FAF": {
+    "impliedMove": "±8.50%",
+    "impliedUpdatedAt": 1776614951781
+  },
+  "FMAO": {
+    "impliedMove": "±11.34%",
+    "impliedUpdatedAt": 1776614953555
+  },
+  "FR": {
+    "impliedMove": "±2.13%",
+    "impliedUpdatedAt": 1776614954450
+  },
+  "FULT": {
+    "impliedMove": "±2.90%",
+    "impliedUpdatedAt": 1776614955178
+  },
+  "GGG": {
+    "impliedMove": "±5.68%",
+    "impliedUpdatedAt": 1776614955512
+  },
+  "GSHD": {
+    "impliedMove": "±16.67%",
+    "impliedUpdatedAt": 1776614956051
+  },
+  "HLX": {
+    "impliedMove": "±13.83%",
+    "impliedUpdatedAt": 1776614956946
+  },
+  "HXL": {
+    "impliedMove": "±7.34%",
+    "impliedUpdatedAt": 1776614957476
+  },
+  "KALU": {
+    "impliedMove": "±4.77%",
+    "impliedUpdatedAt": 1776614958085
+  },
+  "KNX": {
+    "impliedMove": "±7.59%",
+    "impliedUpdatedAt": 1776614958662
+  },
+  "KREF": {
+    "impliedMove": "±11.18%",
+    "impliedUpdatedAt": 1776614959050
+  },
+  "LBRT": {
+    "impliedMove": "±10.63%",
+    "impliedUpdatedAt": 1776614959312
+  },
+  "MEDP": {
+    "impliedMove": "±13.40%",
+    "impliedUpdatedAt": 1776614960165
+  },
+  "MHO": {
+    "impliedMove": "±9.33%",
+    "impliedUpdatedAt": 1776614960724
+  },
+  "MOH": {
+    "impliedMove": "±12.87%",
+    "impliedUpdatedAt": 1776614961562
+  },
+  "MSB": {
+    "impliedMove": "±18.52%",
+    "impliedUpdatedAt": 1776614961862
+  },
+  "MTH": {
+    "impliedMove": "±12.49%",
+    "impliedUpdatedAt": 1776614962136
+  },
+  "NEU": {
+    "impliedMove": "±8.25%",
+    "impliedUpdatedAt": 1776614962418
+  },
+  "OBK": {
+    "impliedMove": "±5.47%",
+    "impliedUpdatedAt": 1776614963303
+  },
+  "OII": {
+    "impliedMove": "±13.19%",
+    "impliedUpdatedAt": 1776614963820
+  },
+  "ONB": {
+    "impliedMove": "±4.36%",
+    "impliedUpdatedAt": 1776614964098
+  },
+  "PNFP": {
+    "impliedMove": "±6.65%",
+    "impliedUpdatedAt": 1776614965623
+  },
+  "PTEN": {
+    "impliedMove": "±11.10%",
+    "impliedUpdatedAt": 1776614966150
+  },
+  "QS": {
+    "impliedMove": "±12.33%",
+    "impliedUpdatedAt": 1776614966695
+  },
+  "RS": {
+    "impliedMove": "±5.03%",
+    "impliedUpdatedAt": 1776614967504
+  },
+  "SEIC": {
+    "impliedMove": "±4.40%",
+    "impliedUpdatedAt": 1776614967773
+  },
+  "SIGI": {
+    "impliedMove": "±6.52%",
+    "impliedUpdatedAt": 1776614968213
+  },
+  "SRCE": {
+    "impliedMove": "±4.50%",
+    "impliedUpdatedAt": 1776614968678
+  },
+  "STC": {
+    "impliedMove": "±6.11%",
+    "impliedUpdatedAt": 1776614969245
+  },
+  "TMHC": {
+    "impliedMove": "±7.71%",
+    "impliedUpdatedAt": 1776614969771
+  },
+  "TNL": {
+    "impliedMove": "±6.84%",
+    "impliedUpdatedAt": 1776614970035
+  },
+  "UBSI": {
+    "impliedMove": "±5.37%",
+    "impliedUpdatedAt": 1776614970923
+  },
+  "UVSP": {
+    "impliedMove": "±27.55%",
+    "impliedUpdatedAt": 1776614971216
+  },
+  "WEX": {
+    "impliedMove": "±13.60%",
+    "impliedUpdatedAt": 1776614971492
+  },
+  "CB": {
     "impliedMove": "±4.09%",
-    "impliedUpdatedAt": 1776358412888
+    "impliedUpdatedAt": 1776614823906
+  },
+  "COF": {
+    "impliedMove": "±4.90%",
+    "impliedUpdatedAt": 1776614824193
+  },
+  "DGX": {
+    "impliedMove": "±6.15%",
+    "impliedUpdatedAt": 1776614824461
+  },
+  "DHI": {
+    "impliedMove": "±5.11%",
+    "impliedUpdatedAt": 1776614824786
+  },
+  "DHR": {
+    "impliedMove": "±4.53%",
+    "impliedUpdatedAt": 1776614825054
+  },
+  "EFX": {
+    "impliedMove": "±14.07%",
+    "impliedUpdatedAt": 1776614825364
+  },
+  "EQT": {
+    "impliedMove": "±4.03%",
+    "impliedUpdatedAt": 1776614825655
+  },
+  "GE": {
+    "impliedMove": "±5.08%",
+    "impliedUpdatedAt": 1776614825917
+  },
+  "GPC": {
+    "impliedMove": "±6.58%",
+    "impliedUpdatedAt": 1776614826174
+  },
+  "HAL": {
+    "impliedMove": "±4.71%",
+    "impliedUpdatedAt": 1776614826418
+  },
+  "IBKR": {
+    "impliedMove": "±4.08%",
+    "impliedUpdatedAt": 1776614826678
+  },
+  "ISRG": {
+    "impliedMove": "±5.68%",
+    "impliedUpdatedAt": 1776614826959
+  },
+  "MMM": {
+    "impliedMove": "±4.37%",
+    "impliedUpdatedAt": 1776614827213
+  },
+  "MSCI": {
+    "impliedMove": "±7.15%",
+    "impliedUpdatedAt": 1776614827505
+  },
+  "NOC": {
+    "impliedMove": "±6.22%",
+    "impliedUpdatedAt": 1776614827815
+  },
+  "NTRS": {
+    "impliedMove": "±4.22%",
+    "impliedUpdatedAt": 1776614828071
+  },
+  "RTX": {
+    "impliedMove": "±4.72%",
+    "impliedUpdatedAt": 1776614828376
+  },
+  "SYF": {
+    "impliedMove": "±6.71%",
+    "impliedUpdatedAt": 1776614828689
+  },
+  "TSCO": {
+    "impliedMove": "±5.48%",
+    "impliedUpdatedAt": 1776614828973
+  },
+  "UAL": {
+    "impliedMove": "±6.86%",
+    "impliedUpdatedAt": 1776614829293
+  },
+  "UNH": {
+    "impliedMove": "±5.21%",
+    "impliedUpdatedAt": 1776614829549
+  },
+  "WRB": {
+    "impliedMove": "±5.24%",
+    "impliedUpdatedAt": 1776614829859
+  },
+  "ADC": {
+    "impliedMove": "±1.81%",
+    "impliedUpdatedAt": 1776614971950
+  },
+  "ARR": {
+    "impliedMove": "±5.73%",
+    "impliedUpdatedAt": 1776614972868
+  },
+  "AUB": {
+    "impliedMove": "±8.64%",
+    "impliedUpdatedAt": 1776614973598
+  },
+  "BBNX": {
+    "impliedMove": "±23.05%",
+    "impliedUpdatedAt": 1776614973880
+  },
+  "CALX": {
+    "impliedMove": "±15.76%",
+    "impliedUpdatedAt": 1776614974902
+  },
+  "CBSH": {
+    "impliedMove": "±12.07%",
+    "impliedUpdatedAt": 1776614975174
+  },
+  "CYH": {
+    "impliedMove": "±21.79%",
+    "impliedUpdatedAt": 1776614976159
+  },
+  "CZNC": {
+    "impliedMove": "±4.84%",
+    "impliedUpdatedAt": 1776614976409
+  },
+  "ELS": {
+    "impliedMove": "±4.70%",
+    "impliedUpdatedAt": 1776614977483
+  },
+  "EWBC": {
+    "impliedMove": "±6.09%",
+    "impliedUpdatedAt": 1776614978028
+  },
+  "FOR": {
+    "impliedMove": "±11.33%",
+    "impliedUpdatedAt": 1776614978300
+  },
+  "HAFC": {
+    "impliedMove": "±14.82%",
+    "impliedUpdatedAt": 1776614979294
+  },
+  "HWC": {
+    "impliedMove": "±4.27%",
+    "impliedUpdatedAt": 1776614979563
+  },
+  "KNSA": {
+    "impliedMove": "±11.93%",
+    "impliedUpdatedAt": 1776614980152
+  },
+  "MANH": {
+    "impliedMove": "±13.48%",
+    "impliedUpdatedAt": 1776614980671
+  },
+  "MCB": {
+    "impliedMove": "±6.97%",
+    "impliedUpdatedAt": 1776614981381
+  },
+  "NLY": {
+    "impliedMove": "±2.72%",
+    "impliedUpdatedAt": 1776614983245
+  },
+  "OFG": {
+    "impliedMove": "±5.23%",
+    "impliedUpdatedAt": 1776614984027
+  },
+  "ORRF": {
+    "impliedMove": "±9.33%",
+    "impliedUpdatedAt": 1776614984299
+  },
+  "OZK": {
+    "impliedMove": "±6.72%",
+    "impliedUpdatedAt": 1776614984558
+  },
+  "PEGA": {
+    "impliedMove": "±14.23%",
+    "impliedUpdatedAt": 1776614985073
+  },
+  "PEO": {
+    "impliedMove": "±4.98%",
+    "impliedUpdatedAt": 1776614985329
+  },
+  "RRC": {
+    "impliedMove": "±7.89%",
+    "impliedUpdatedAt": 1776614986042
+  },
+  "SON": {
+    "impliedMove": "±6.60%",
+    "impliedUpdatedAt": 1776614986591
+  },
+  "TFIN": {
+    "impliedMove": "±18.12%",
+    "impliedUpdatedAt": 1776614986899
+  },
+  "TRST": {
+    "impliedMove": "±8.94%",
+    "impliedUpdatedAt": 1776614987266
+  },
+  "VICR": {
+    "impliedMove": "±22.70%",
+    "impliedUpdatedAt": 1776614987783
+  },
+  "VMI": {
+    "impliedMove": "±6.37%",
+    "impliedUpdatedAt": 1776614988079
+  },
+  "WAL": {
+    "impliedMove": "±7.66%",
+    "impliedUpdatedAt": 1776614988353
+  },
+  "WFRD": {
+    "impliedMove": "±8.72%",
+    "impliedUpdatedAt": 1776614988604
+  },
+  "WSBC": {
+    "impliedMove": "±5.03%",
+    "impliedUpdatedAt": 1776614988875
+  },
+  "ZWS": {
+    "impliedMove": "±5.79%",
+    "impliedUpdatedAt": 1776614989214
+  },
+  "ARES": {
+    "impliedMove": "±3.00%",
+    "impliedUpdatedAt": 1776614830365
+  },
+  "CBOE": {
+    "impliedMove": "±1.87%",
+    "impliedUpdatedAt": 1776614830655
+  },
+  "CHD": {
+    "impliedMove": "±5.19%",
+    "impliedUpdatedAt": 1776614830925
+  },
+  "CL": {
+    "impliedMove": "±2.02%",
+    "impliedUpdatedAt": 1776614831195
+  },
+  "CVX": {
+    "impliedMove": "±2.74%",
+    "impliedUpdatedAt": 1776614831462
+  },
+  "D": {
+    "impliedMove": "±4.36%",
+    "impliedUpdatedAt": 1776614831760
+  },
+  "EL": {
+    "impliedMove": "±5.14%",
+    "impliedUpdatedAt": 1776614832015
+  },
+  "EVRG": {
+    "impliedMove": "±3.77%",
+    "impliedUpdatedAt": 1776614832267
+  },
+  "FRT": {
+    "impliedMove": "±2.21%",
+    "impliedUpdatedAt": 1776614832546
+  },
+  "JCI": {
+    "impliedMove": "±7.24%",
+    "impliedUpdatedAt": 1776614832820
+  },
+  "LIN": {
+    "impliedMove": "±4.71%",
+    "impliedUpdatedAt": 1776614833100
+  },
+  "LYB": {
+    "impliedMove": "±10.21%",
+    "impliedUpdatedAt": 1776614833353
+  },
+  "MRNA": {
+    "impliedMove": "±6.60%",
+    "impliedUpdatedAt": 1776614833680
+  },
+  "XOM": {
+    "impliedMove": "±2.97%",
+    "impliedUpdatedAt": 1776614833982
+  },
+  "ABR": {
+    "impliedMove": "±3.18%",
+    "impliedUpdatedAt": 1776615004574
+  },
+  "AMRX": {
+    "impliedMove": "±11.00%",
+    "impliedUpdatedAt": 1776615005131
+  },
+  "AN": {
+    "impliedMove": "±14.86%",
+    "impliedUpdatedAt": 1776615005595
+  },
+  "ASIX": {
+    "impliedMove": "±11.59%",
+    "impliedUpdatedAt": 1776615006132
+  },
+  "ATMU": {
+    "impliedMove": "±16.43%",
+    "impliedUpdatedAt": 1776615006388
+  },
+  "BEPC": {
+    "impliedMove": "±6.95%",
+    "impliedUpdatedAt": 1776615006674
+  },
+  "BTSG": {
+    "impliedMove": "±10.79%",
+    "impliedUpdatedAt": 1776615007383
+  },
+  "CNK": {
+    "impliedMove": "±8.64%",
+    "impliedUpdatedAt": 1776615008796
+  },
+  "DCH": {
+    "impliedMove": "±20.14%",
+    "impliedUpdatedAt": 1776615009058
+  },
+  "DINO": {
+    "impliedMove": "±8.91%",
+    "impliedUpdatedAt": 1776615009478
+  },
+  "EAF": {
+    "impliedMove": "±17.52%",
+    "impliedUpdatedAt": 1776615010030
+  },
+  "FET": {
+    "impliedMove": "±10.90%",
+    "impliedUpdatedAt": 1776615010788
+  },
+  "FLGT": {
+    "impliedMove": "±18.19%",
+    "impliedUpdatedAt": 1776615011056
+  },
+  "GLP": {
+    "impliedMove": "±10.26%",
+    "impliedUpdatedAt": 1776615011787
+  },
+  "GT": {
+    "impliedMove": "±11.92%",
+    "impliedUpdatedAt": 1776615012054
+  },
+  "GTES": {
+    "impliedMove": "±8.64%",
+    "impliedUpdatedAt": 1776615012332
+  },
+  "INTT": {
+    "impliedMove": "±14.39%",
+    "impliedUpdatedAt": 1776615013466
+  },
+  "LBTYA": {
+    "impliedMove": "±6.63%",
+    "impliedUpdatedAt": 1776615015018
+  },
+  "LEA": {
+    "impliedMove": "±6.76%",
+    "impliedUpdatedAt": 1776615015273
+  },
+  "MITT": {
+    "impliedMove": "±11.96%",
+    "impliedUpdatedAt": 1776615015553
+  },
+  "MMI": {
+    "impliedMove": "±9.96%",
+    "impliedUpdatedAt": 1776615015841
+  },
+  "NEXT": {
+    "impliedMove": "±13.05%",
+    "impliedUpdatedAt": 1776615016117
+  },
+  "NHC": {
+    "impliedMove": "±8.04%",
+    "impliedUpdatedAt": 1776615016396
+  },
+  "NWL": {
+    "impliedMove": "±16.69%",
+    "impliedUpdatedAt": 1776615016656
+  },
+  "OCGN": {
+    "impliedMove": "±23.07%",
+    "impliedUpdatedAt": 1776615016920
+  },
+  "OFS": {
+    "impliedMove": "±29.77%",
+    "impliedUpdatedAt": 1776615017181
+  },
+  "OMF": {
+    "impliedMove": "±6.53%",
+    "impliedUpdatedAt": 1776615017452
+  },
+  "POR": {
+    "impliedMove": "±8.60%",
+    "impliedUpdatedAt": 1776615017973
+  },
+  "SHEN": {
+    "impliedMove": "±22.97%",
+    "impliedUpdatedAt": 1776615018871
+  },
+  "SPB": {
+    "impliedMove": "±8.98%",
+    "impliedUpdatedAt": 1776615019672
+  },
+  "SSYS": {
+    "impliedMove": "±5.51%",
+    "impliedUpdatedAt": 1776615019988
+  },
+  "TPG": {
+    "impliedMove": "±10.58%",
+    "impliedUpdatedAt": 1776615020542
+  },
+  "WNC": {
+    "impliedMove": "±8.77%",
+    "impliedUpdatedAt": 1776615021723
+  },
+  "AAPL": {
+    "impliedMove": "±1.07%",
+    "impliedUpdatedAt": 1776614834382
+  },
+  "AES": {
+    "impliedMove": "±0.53%",
+    "impliedUpdatedAt": 1776614834641
+  },
+  "AIG": {
+    "impliedMove": "±1.46%",
+    "impliedUpdatedAt": 1776614834897
+  },
+  "AJG": {
+    "impliedMove": "±6.90%",
+    "impliedUpdatedAt": 1776614835152
+  },
+  "AMGN": {
+    "impliedMove": "±2.22%",
+    "impliedUpdatedAt": 1776614835449
+  },
+  "AOS": {
+    "impliedMove": "±5.47%",
+    "impliedUpdatedAt": 1776614835753
+  },
+  "BAX": {
+    "impliedMove": "±15.90%",
+    "impliedUpdatedAt": 1776614836032
+  },
+  "BLDR": {
+    "impliedMove": "±12.23%",
+    "impliedUpdatedAt": 1776614836281
+  },
+  "BMY": {
+    "impliedMove": "±2.23%",
+    "impliedUpdatedAt": 1776614836538
+  },
+  "CAH": {
+    "impliedMove": "±2.32%",
+    "impliedUpdatedAt": 1776614836865
+  },
+  "CARR": {
+    "impliedMove": "±8.32%",
+    "impliedUpdatedAt": 1776614837151
+  },
+  "CAT": {
+    "impliedMove": "±3.12%",
+    "impliedUpdatedAt": 1776614837432
+  },
+  "CI": {
+    "impliedMove": "±3.20%",
+    "impliedUpdatedAt": 1776614837706
+  },
+  "CLX": {
+    "impliedMove": "±6.39%",
+    "impliedUpdatedAt": 1776614837970
+  },
+  "COP": {
+    "impliedMove": "±3.11%",
+    "impliedUpdatedAt": 1776614838256
+  },
+  "CPT": {
+    "impliedMove": "±8.92%",
+    "impliedUpdatedAt": 1776614838552
+  },
+  "CRH": {
+    "impliedMove": "±6.17%",
+    "impliedUpdatedAt": 1776614838850
+  },
+  "CTRA": {
+    "impliedMove": "±3.69%",
+    "impliedUpdatedAt": 1776614839120
+  },
+  "DDOG": {
+    "impliedMove": "±5.61%",
+    "impliedUpdatedAt": 1776614839380
+  },
+  "DTE": {
+    "impliedMove": "±3.56%",
+    "impliedUpdatedAt": 1776614839659
+  },
+  "DVA": {
+    "impliedMove": "±8.34%",
+    "impliedUpdatedAt": 1776614839935
+  },
+  "DXCM": {
+    "impliedMove": "±4.32%",
+    "impliedUpdatedAt": 1776614840216
+  },
+  "FSLR": {
+    "impliedMove": "±4.64%",
+    "impliedUpdatedAt": 1776614840482
+  },
+  "FTV": {
+    "impliedMove": "±12.09%",
+    "impliedUpdatedAt": 1776614840754
+  },
+  "GDDY": {
+    "impliedMove": "±3.97%",
+    "impliedUpdatedAt": 1776614841068
+  },
+  "HSY": {
+    "impliedMove": "±2.07%",
+    "impliedUpdatedAt": 1776614841351
+  },
+  "HUBB": {
+    "impliedMove": "±8.14%",
+    "impliedUpdatedAt": 1776614841634
+  },
+  "ICE": {
+    "impliedMove": "±0.69%",
+    "impliedUpdatedAt": 1776614841908
+  },
+  "IP": {
+    "impliedMove": "±4.46%",
+    "impliedUpdatedAt": 1776614842198
+  },
+  "IRM": {
+    "impliedMove": "±1.01%",
+    "impliedUpdatedAt": 1776614842519
+  },
+  "ITW": {
+    "impliedMove": "±5.01%",
+    "impliedUpdatedAt": 1776614842797
+  },
+  "KIM": {
+    "impliedMove": "±9.70%",
+    "impliedUpdatedAt": 1776614843087
+  },
+  "LH": {
+    "impliedMove": "±6.61%",
+    "impliedUpdatedAt": 1776614843434
+  },
+  "LHX": {
+    "impliedMove": "±3.37%",
+    "impliedUpdatedAt": 1776614843699
+  },
+  "LLY": {
+    "impliedMove": "±3.12%",
+    "impliedUpdatedAt": 1776614843974
+  },
+  "LNT": {
+    "impliedMove": "±2.80%",
+    "impliedUpdatedAt": 1776614844232
+  },
+  "LYV": {
+    "impliedMove": "±2.79%",
+    "impliedUpdatedAt": 1776614844480
+  },
+  "MA": {
+    "impliedMove": "±1.91%",
+    "impliedUpdatedAt": 1776614844767
+  },
+  "MNST": {
+    "impliedMove": "±6.92%",
+    "impliedUpdatedAt": 1776614845053
+  },
+  "MO": {
+    "impliedMove": "±1.83%",
+    "impliedUpdatedAt": 1776614845356
+  },
+  "MPWR": {
+    "impliedMove": "±12.39%",
+    "impliedUpdatedAt": 1776614845676
+  },
+  "MRK": {
+    "impliedMove": "±2.61%",
+    "impliedUpdatedAt": 1776614846039
+  },
+  "MSI": {
+    "impliedMove": "±5.71%",
+    "impliedUpdatedAt": 1776614846300
+  },
+  "PH": {
+    "impliedMove": "±6.95%",
+    "impliedUpdatedAt": 1776614846572
+  },
+  "PPL": {
+    "impliedMove": "±3.12%",
+    "impliedUpdatedAt": 1776614846833
+  },
+  "PWR": {
+    "impliedMove": "±8.49%",
+    "impliedUpdatedAt": 1776614847116
+  },
+  "RCL": {
+    "impliedMove": "±4.62%",
+    "impliedUpdatedAt": 1776614847382
+  },
+  "RMD": {
+    "impliedMove": "±8.23%",
+    "impliedUpdatedAt": 1776614847686
+  },
+  "SNDK": {
+    "impliedMove": "±8.40%",
+    "impliedUpdatedAt": 1776614847967
+  },
+  "SO": {
+    "impliedMove": "±1.71%",
+    "impliedUpdatedAt": 1776614848276
+  },
+  "SRE": {
+    "impliedMove": "±5.33%",
+    "impliedUpdatedAt": 1776614848592
+  },
+  "SW": {
+    "impliedMove": "±8.45%",
+    "impliedUpdatedAt": 1776614848878
+  },
+  "SYK": {
+    "impliedMove": "±5.43%",
+    "impliedUpdatedAt": 1776614849160
+  },
+  "TAP": {
+    "impliedMove": "±6.86%",
+    "impliedUpdatedAt": 1776614849420
+  },
+  "TRGP": {
+    "impliedMove": "±6.05%",
+    "impliedUpdatedAt": 1776614849673
+  },
+  "TROW": {
+    "impliedMove": "±5.70%",
+    "impliedUpdatedAt": 1776614849955
+  },
+  "TT": {
+    "impliedMove": "±6.58%",
+    "impliedUpdatedAt": 1776614850228
+  },
+  "VLO": {
+    "impliedMove": "±3.65%",
+    "impliedUpdatedAt": 1776614850538
+  },
+  "WDC": {
+    "impliedMove": "±6.39%",
+    "impliedUpdatedAt": 1776614850822
+  },
+  "WTW": {
+    "impliedMove": "±6.17%",
+    "impliedUpdatedAt": 1776614851086
+  },
+  "WY": {
+    "impliedMove": "±5.57%",
+    "impliedUpdatedAt": 1776614851355
+  },
+  "XEL": {
+    "impliedMove": "±4.15%",
+    "impliedUpdatedAt": 1776614851624
+  },
+  "AAMI": {
+    "impliedMove": "±6.24%",
+    "impliedUpdatedAt": 1776615022338
+  },
+  "AAOI": {
+    "impliedMove": "±11.52%",
+    "impliedUpdatedAt": 1776615022609
+  },
+  "AAON": {
+    "impliedMove": "±9.75%",
+    "impliedUpdatedAt": 1776615022871
+  },
+  "ABUS": {
+    "impliedMove": "±5.40%",
+    "impliedUpdatedAt": 1776615023150
+  },
+  "ACCO": {
+    "impliedMove": "±29.69%",
+    "impliedUpdatedAt": 1776615023427
+  },
+  "ACIW": {
+    "impliedMove": "±11.24%",
+    "impliedUpdatedAt": 1776615023991
+  },
+  "AD": {
+    "impliedMove": "±7.72%",
+    "impliedUpdatedAt": 1776615024277
+  },
+  "AIP": {
+    "impliedMove": "±36.10%",
+    "impliedUpdatedAt": 1776615024834
+  },
+  "ALEC": {
+    "impliedMove": "±18.52%",
+    "impliedUpdatedAt": 1776615025372
+  },
+  "ALHC": {
+    "impliedMove": "±12.30%",
+    "impliedUpdatedAt": 1776615025683
+  },
+  "ALNY": {
+    "impliedMove": "±8.04%",
+    "impliedUpdatedAt": 1776615025959
+  },
+  "ANGX": {
+    "impliedMove": "±21.74%",
+    "impliedUpdatedAt": 1776615026235
+  },
+  "AORT": {
+    "impliedMove": "±6.99%",
+    "impliedUpdatedAt": 1776615026509
+  },
+  "APG": {
+    "impliedMove": "±13.73%",
+    "impliedUpdatedAt": 1776615026786
+  },
+  "APLS": {
+    "impliedMove": "±1.29%",
+    "impliedUpdatedAt": 1776615027067
+  },
+  "APPN": {
+    "impliedMove": "±15.77%",
+    "impliedUpdatedAt": 1776615027350
+  },
+  "ARDX": {
+    "impliedMove": "±14.50%",
+    "impliedUpdatedAt": 1776615027634
+  },
+  "ARVN": {
+    "impliedMove": "±15.38%",
+    "impliedUpdatedAt": 1776615027925
+  },
+  "ARW": {
+    "impliedMove": "±7.06%",
+    "impliedUpdatedAt": 1776615028204
+  },
+  "ATEC": {
+    "impliedMove": "±7.27%",
+    "impliedUpdatedAt": 1776615028482
+  },
+  "ATI": {
+    "impliedMove": "±10.01%",
+    "impliedUpdatedAt": 1776615028753
+  },
+  "ATR": {
+    "impliedMove": "±9.73%",
+    "impliedUpdatedAt": 1776615029010
+  },
+  "ATRO": {
+    "impliedMove": "±11.71%",
+    "impliedUpdatedAt": 1776615029325
+  },
+  "AUPH": {
+    "impliedMove": "±10.96%",
+    "impliedUpdatedAt": 1776615029586
+  },
+  "AX": {
+    "impliedMove": "±7.94%",
+    "impliedUpdatedAt": 1776615029845
+  },
+  "AXTA": {
+    "impliedMove": "±5.95%",
+    "impliedUpdatedAt": 1776615030122
+  },
+  "AXTI": {
+    "impliedMove": "±11.62%",
+    "impliedUpdatedAt": 1776615030405
+  },
+  "BAND": {
+    "impliedMove": "±5.17%",
+    "impliedUpdatedAt": 1776615030942
+  },
+  "BBIO": {
+    "impliedMove": "±10.30%",
+    "impliedUpdatedAt": 1776615031212
+  },
+  "BC": {
+    "impliedMove": "±8.77%",
+    "impliedUpdatedAt": 1776615031520
+  },
+  "BCC": {
+    "impliedMove": "±5.11%",
+    "impliedUpdatedAt": 1776615031806
+  },
+  "BCPC": {
+    "impliedMove": "±5.22%",
+    "impliedUpdatedAt": 1776615032081
+  },
+  "BDC": {
+    "impliedMove": "±8.24%",
+    "impliedUpdatedAt": 1776615032365
+  },
+  "BFLY": {
+    "impliedMove": "±17.00%",
+    "impliedUpdatedAt": 1776615032651
+  },
+  "BFS": {
+    "impliedMove": "±6.32%",
+    "impliedUpdatedAt": 1776615032954
+  },
+  "BILL": {
+    "impliedMove": "±6.90%",
+    "impliedUpdatedAt": 1776615033218
+  },
+  "BIO": {
+    "impliedMove": "±7.35%",
+    "impliedUpdatedAt": 1776615033494
+  },
+  "BL": {
+    "impliedMove": "±13.60%",
+    "impliedUpdatedAt": 1776615033777
+  },
+  "BOOM": {
+    "impliedMove": "±15.59%",
+    "impliedUpdatedAt": 1776615034028
+  },
+  "BZH": {
+    "impliedMove": "±12.44%",
+    "impliedUpdatedAt": 1776615034606
+  },
+  "CARS": {
+    "impliedMove": "±9.55%",
+    "impliedUpdatedAt": 1776615035152
+  },
+  "CCC": {
+    "impliedMove": "±5.88%",
+    "impliedUpdatedAt": 1776615035426
+  },
+  "CCLD": {
+    "impliedMove": "±39.32%",
+    "impliedUpdatedAt": 1776615035722
+  },
+  "CERS": {
+    "impliedMove": "±17.57%",
+    "impliedUpdatedAt": 1776615036249
+  },
+  "CFR": {
+    "impliedMove": "±6.64%",
+    "impliedUpdatedAt": 1776615036560
+  },
+  "CGNX": {
+    "impliedMove": "±11.90%",
+    "impliedUpdatedAt": 1776615036854
+  },
+  "CHH": {
+    "impliedMove": "±5.42%",
+    "impliedUpdatedAt": 1776615037136
+  },
+  "CHKP": {
+    "impliedMove": "±9.04%",
+    "impliedUpdatedAt": 1776615037417
+  },
+  "CHRS": {
+    "impliedMove": "±30.91%",
+    "impliedUpdatedAt": 1776615037699
+  },
+  "CLDX": {
+    "impliedMove": "±23.57%",
+    "impliedUpdatedAt": 1776615038197
+  },
+  "CNH": {
+    "impliedMove": "±8.91%",
+    "impliedUpdatedAt": 1776615038470
+  },
+  "CNX": {
+    "impliedMove": "±10.33%",
+    "impliedUpdatedAt": 1776615038745
+  },
+  "COHU": {
+    "impliedMove": "±17.78%",
+    "impliedUpdatedAt": 1776615039321
+  },
+  "COLM": {
+    "impliedMove": "±7.97%",
+    "impliedUpdatedAt": 1776615039621
+  },
+  "CPS": {
+    "impliedMove": "±15.95%",
+    "impliedUpdatedAt": 1776615039895
+  },
+  "CRAI": {
+    "impliedMove": "±42.92%",
+    "impliedUpdatedAt": 1776615040157
+  },
+  "CRDF": {
+    "impliedMove": "±30.69%",
+    "impliedUpdatedAt": 1776615040438
+  },
+  "CROX": {
+    "impliedMove": "±12.04%",
+    "impliedUpdatedAt": 1776615040723
+  },
+  "CRTO": {
+    "impliedMove": "±16.06%",
+    "impliedUpdatedAt": 1776615041043
+  },
+  "CTMX": {
+    "impliedMove": "±14.99%",
+    "impliedUpdatedAt": 1776615041479
+  },
+  "CTRE": {
+    "impliedMove": "±4.78%",
+    "impliedUpdatedAt": 1776615041765
+  },
+  "CUBE": {
+    "impliedMove": "±5.70%",
+    "impliedUpdatedAt": 1776615042043
+  },
+  "CWST": {
+    "impliedMove": "±5.81%",
+    "impliedUpdatedAt": 1776615042412
+  },
+  "CWT": {
+    "impliedMove": "±6.41%",
+    "impliedUpdatedAt": 1776615042698
+  },
+  "CYRX": {
+    "impliedMove": "±25.79%",
+    "impliedUpdatedAt": 1776615042973
+  },
+  "CYTK": {
+    "impliedMove": "±30.40%",
+    "impliedUpdatedAt": 1776615043238
+  },
+  "DBD": {
+    "impliedMove": "±9.43%",
+    "impliedUpdatedAt": 1776615043752
+  },
+  "DBRG": {
+    "impliedMove": "±3.76%",
+    "impliedUpdatedAt": 1776615044056
+  },
+  "DBX": {
+    "impliedMove": "±2.63%",
+    "impliedUpdatedAt": 1776615044349
+  },
+  "DCO": {
+    "impliedMove": "±6.70%",
+    "impliedUpdatedAt": 1776615044603
+  },
+  "DKNG": {
+    "impliedMove": "±4.99%",
+    "impliedUpdatedAt": 1776615045420
+  },
+  "DLB": {
+    "impliedMove": "±8.22%",
+    "impliedUpdatedAt": 1776615045676
+  },
+  "DLX": {
+    "impliedMove": "±8.19%",
+    "impliedUpdatedAt": 1776615045951
+  },
+  "DMLP": {
+    "impliedMove": "±11.98%",
+    "impliedUpdatedAt": 1776615046209
+  },
+  "DNOW": {
+    "impliedMove": "±11.59%",
+    "impliedUpdatedAt": 1776615046514
+  },
+  "DRH": {
+    "impliedMove": "±87.33%",
+    "impliedUpdatedAt": 1776615046804
+  },
+  "DSGR": {
+    "impliedMove": "±13.66%",
+    "impliedUpdatedAt": 1776615047114
+  },
+  "DYN": {
+    "impliedMove": "±12.91%",
+    "impliedUpdatedAt": 1776615047394
+  },
+  "ECVT": {
+    "impliedMove": "±11.72%",
+    "impliedUpdatedAt": 1776615047663
+  },
+  "EHC": {
+    "impliedMove": "±8.53%",
+    "impliedUpdatedAt": 1776615047925
+  },
+  "EMN": {
+    "impliedMove": "±8.64%",
+    "impliedUpdatedAt": 1776615048205
+  },
+  "ETHE": {
+    "impliedMove": "±5.04%",
+    "impliedUpdatedAt": 1776615048487
+  },
+  "EVC": {
+    "impliedMove": "±34.92%",
+    "impliedUpdatedAt": 1776615048768
+  },
+  "EXPO": {
+    "impliedMove": "±5.31%",
+    "impliedUpdatedAt": 1776615049071
+  },
+  "FCN": {
+    "impliedMove": "±5.92%",
+    "impliedUpdatedAt": 1776615049767
+  },
+  "FDUS": {
+    "impliedMove": "±3.55%",
+    "impliedUpdatedAt": 1776615050060
+  },
+  "FIVN": {
+    "impliedMove": "±16.97%",
+    "impliedUpdatedAt": 1776615050924
+  },
+  "FND": {
+    "impliedMove": "±11.95%",
+    "impliedUpdatedAt": 1776615051246
+  },
+  "FOUR": {
+    "impliedMove": "±13.52%",
+    "impliedUpdatedAt": 1776615051826
+  },
+  "FOXF": {
+    "impliedMove": "±13.95%",
+    "impliedUpdatedAt": 1776615052139
+  },
+  "FTDR": {
+    "impliedMove": "±11.08%",
+    "impliedUpdatedAt": 1776615052541
+  },
+  "FTI": {
+    "impliedMove": "±8.15%",
+    "impliedUpdatedAt": 1776615052837
+  },
+  "FULC": {
+    "impliedMove": "±13.74%",
+    "impliedUpdatedAt": 1776615053101
+  },
+  "GDOT": {
+    "impliedMove": "±5.35%",
+    "impliedUpdatedAt": 1776615053638
+  },
+  "GDYN": {
+    "impliedMove": "±19.86%",
+    "impliedUpdatedAt": 1776615053930
+  },
+  "GH": {
+    "impliedMove": "±14.47%",
+    "impliedUpdatedAt": 1776615054485
+  },
+  "GHI": {
+    "impliedMove": "±12.53%",
+    "impliedUpdatedAt": 1776615054761
+  },
+  "GOGO": {
+    "impliedMove": "±14.91%",
+    "impliedUpdatedAt": 1776615055025
+  },
+  "GOLF": {
+    "impliedMove": "±4.88%",
+    "impliedUpdatedAt": 1776615055307
+  },
+  "GPI": {
+    "impliedMove": "±8.52%",
+    "impliedUpdatedAt": 1776615055567
+  },
+  "GPRO": {
+    "impliedMove": "±26.56%",
+    "impliedUpdatedAt": 1776615055838
+  },
+  "GSIT": {
+    "impliedMove": "±25.71%",
+    "impliedUpdatedAt": 1776615056112
+  },
+  "GTIM": {
+    "impliedMove": "±105.08%",
+    "impliedUpdatedAt": 1776615056369
+  },
+  "GTX": {
+    "impliedMove": "±11.31%",
+    "impliedUpdatedAt": 1776615056652
+  },
+  "GVA": {
+    "impliedMove": "±2.98%",
+    "impliedUpdatedAt": 1776615056913
+  },
+  "H": {
+    "impliedMove": "±7.86%",
+    "impliedUpdatedAt": 1776615057178
+  },
+  "HBIO": {
+    "impliedMove": "±21.49%",
+    "impliedUpdatedAt": 1776615057437
+  },
+  "HCC": {
+    "impliedMove": "±9.84%",
+    "impliedUpdatedAt": 1776615057727
+  },
+  "HG": {
+    "impliedMove": "±8.15%",
+    "impliedUpdatedAt": 1776615057999
+  },
+  "HIPO": {
+    "impliedMove": "±6.77%",
+    "impliedUpdatedAt": 1776615058314
+  },
+  "HR": {
+    "impliedMove": "±3.94%",
+    "impliedUpdatedAt": 1776615059084
+  },
+  "HTGC": {
+    "impliedMove": "±6.39%",
+    "impliedUpdatedAt": 1776615059439
+  },
+  "HUN": {
+    "impliedMove": "±12.99%",
+    "impliedUpdatedAt": 1776615059729
+  },
+  "IBP": {
+    "impliedMove": "±15.05%",
+    "impliedUpdatedAt": 1776615060307
+  },
+  "ICLR": {
+    "impliedMove": "±16.62%",
+    "impliedUpdatedAt": 1776615060620
+  },
+  "IDA": {
+    "impliedMove": "±6.95%",
+    "impliedUpdatedAt": 1776615060892
+  },
+  "IDCC": {
+    "impliedMove": "±20.12%",
+    "impliedUpdatedAt": 1776615061172
+  },
+  "IHRT": {
+    "impliedMove": "±76.50%",
+    "impliedUpdatedAt": 1776615061465
+  },
+  "ILMN": {
+    "impliedMove": "±11.64%",
+    "impliedUpdatedAt": 1776615061725
+  },
+  "IMAX": {
+    "impliedMove": "±9.40%",
+    "impliedUpdatedAt": 1776615062007
+  },
+  "INBK": {
+    "impliedMove": "±4.74%",
+    "impliedUpdatedAt": 1776615062314
+  },
+  "INDV": {
+    "impliedMove": "±15.28%",
+    "impliedUpdatedAt": 1776615062599
+  },
+  "INFU": {
+    "impliedMove": "±12.21%",
+    "impliedUpdatedAt": 1776615062876
+  },
+  "INSW": {
+    "impliedMove": "±9.78%",
+    "impliedUpdatedAt": 1776615064034
+  },
+  "INVE": {
+    "impliedMove": "±38.16%",
+    "impliedUpdatedAt": 1776615064309
+  },
+  "IRTC": {
+    "impliedMove": "±11.06%",
+    "impliedUpdatedAt": 1776615064842
+  },
+  "IRWD": {
+    "impliedMove": "±18.23%",
+    "impliedUpdatedAt": 1776615065132
+  },
+  "ITGR": {
+    "impliedMove": "±11.87%",
+    "impliedUpdatedAt": 1776615065427
+  },
+  "ITT": {
+    "impliedMove": "±8.38%",
+    "impliedUpdatedAt": 1776615065711
+  },
+  "JAKK": {
+    "impliedMove": "±30.06%",
+    "impliedUpdatedAt": 1776615066008
+  },
+  "JLL": {
+    "impliedMove": "±6.69%",
+    "impliedUpdatedAt": 1776615066307
+  },
+  "KEX": {
+    "impliedMove": "±11.58%",
+    "impliedUpdatedAt": 1776615067120
+  },
+  "KPTI": {
+    "impliedMove": "±22.21%",
+    "impliedUpdatedAt": 1776615067687
+  },
+  "KTB": {
+    "impliedMove": "±6.60%",
+    "impliedUpdatedAt": 1776615068247
+  },
+  "KURA": {
+    "impliedMove": "±30.73%",
+    "impliedUpdatedAt": 1776615068512
+  },
+  "KWR": {
+    "impliedMove": "±18.74%",
+    "impliedUpdatedAt": 1776615068815
+  },
+  "KYMR": {
+    "impliedMove": "±22.95%",
+    "impliedUpdatedAt": 1776615069089
+  },
+  "LAUR": {
+    "impliedMove": "±27.50%",
+    "impliedUpdatedAt": 1776615069377
+  },
+  "LECO": {
+    "impliedMove": "±8.80%",
+    "impliedUpdatedAt": 1776615069651
+  },
+  "LFVN": {
+    "impliedMove": "±25.78%",
+    "impliedUpdatedAt": 1776615070235
+  },
+  "LKQ": {
+    "impliedMove": "±9.01%",
+    "impliedUpdatedAt": 1776615070767
+  },
+  "LNTH": {
+    "impliedMove": "±6.61%",
+    "impliedUpdatedAt": 1776615071055
+  },
+  "LOCO": {
+    "impliedMove": "±17.97%",
+    "impliedUpdatedAt": 1776615071326
+  },
+  "LOPE": {
+    "impliedMove": "±7.87%",
+    "impliedUpdatedAt": 1776615071606
+  },
+  "LPLA": {
+    "impliedMove": "±9.21%",
+    "impliedUpdatedAt": 1776615071868
+  },
+  "LXRX": {
+    "impliedMove": "±18.64%",
+    "impliedUpdatedAt": 1776615072143
+  },
+  "MAIN": {
+    "impliedMove": "±5.49%",
+    "impliedUpdatedAt": 1776615072405
+  },
+  "MATW": {
+    "impliedMove": "±10.00%",
+    "impliedUpdatedAt": 1776615072659
+  },
+  "MCHB": {
+    "impliedMove": "±10.63%",
+    "impliedUpdatedAt": 1776615072931
+  },
+  "MCS": {
+    "impliedMove": "±4.03%",
+    "impliedUpdatedAt": 1776615073189
+  },
+  "MD": {
+    "impliedMove": "±14.19%",
+    "impliedUpdatedAt": 1776615073464
+  },
+  "MERC": {
+    "impliedMove": "±44.91%",
+    "impliedUpdatedAt": 1776615073739
+  },
+  "MGEE": {
+    "impliedMove": "±4.61%",
+    "impliedUpdatedAt": 1776615074324
+  },
+  "MGPI": {
+    "impliedMove": "±10.82%",
+    "impliedUpdatedAt": 1776615074687
+  },
+  "MHK": {
+    "impliedMove": "±13.93%",
+    "impliedUpdatedAt": 1776615074980
+  },
+  "MIRM": {
+    "impliedMove": "±17.27%",
+    "impliedUpdatedAt": 1776615075554
+  },
+  "MSGS": {
+    "impliedMove": "±6.61%",
+    "impliedUpdatedAt": 1776615076108
+  },
+  "MTSI": {
+    "impliedMove": "±12.64%",
+    "impliedUpdatedAt": 1776615076374
+  },
+  "MTX": {
+    "impliedMove": "±5.08%",
+    "impliedUpdatedAt": 1776615076670
+  },
+  "MTZ": {
+    "impliedMove": "±10.48%",
+    "impliedUpdatedAt": 1776615076958
+  },
+  "MYGN": {
+    "impliedMove": "±16.23%",
+    "impliedUpdatedAt": 1776615077239
+  },
+  "MZTI": {
+    "impliedMove": "±4.87%",
+    "impliedUpdatedAt": 1776615077512
+  },
+  "NESR": {
+    "impliedMove": "±10.29%",
+    "impliedUpdatedAt": 1776615077800
+  },
+  "NEWT": {
+    "impliedMove": "±13.89%",
+    "impliedUpdatedAt": 1776615078098
+  },
+  "NMIH": {
+    "impliedMove": "±4.36%",
+    "impliedUpdatedAt": 1776615078356
+  },
+  "NNBR": {
+    "impliedMove": "±21.98%",
+    "impliedUpdatedAt": 1776615078940
+  },
+  "NNN": {
+    "impliedMove": "±4.05%",
+    "impliedUpdatedAt": 1776615079194
+  },
+  "NREF": {
+    "impliedMove": "±14.21%",
+    "impliedUpdatedAt": 1776615079769
+  },
+  "NRP": {
+    "impliedMove": "±5.29%",
+    "impliedUpdatedAt": 1776615080084
+  },
+  "NSIT": {
+    "impliedMove": "±13.78%",
+    "impliedUpdatedAt": 1776615080365
+  },
+  "NTLA": {
+    "impliedMove": "±17.17%",
+    "impliedUpdatedAt": 1776615080693
+  },
+  "OGN": {
+    "impliedMove": "±20.20%",
+    "impliedUpdatedAt": 1776615080984
+  },
+  "OLED": {
+    "impliedMove": "±10.63%",
+    "impliedUpdatedAt": 1776615081260
+  },
+  "OLP": {
+    "impliedMove": "±4.56%",
+    "impliedUpdatedAt": 1776615081592
+  },
+  "ONIT": {
+    "impliedMove": "±6.96%",
+    "impliedUpdatedAt": 1776615082152
+  },
+  "OPCH": {
+    "impliedMove": "±8.70%",
+    "impliedUpdatedAt": 1776615082441
+  },
+  "OPEN": {
+    "impliedMove": "±8.52%",
+    "impliedUpdatedAt": 1776615082715
+  },
+  "OPRX": {
+    "impliedMove": "±24.30%",
+    "impliedUpdatedAt": 1776615083069
+  },
+  "OSPN": {
+    "impliedMove": "±17.75%",
+    "impliedUpdatedAt": 1776615083921
+  },
+  "OWL": {
+    "impliedMove": "±5.95%",
+    "impliedUpdatedAt": 1776615084223
+  },
+  "PACK": {
+    "impliedMove": "±35.90%",
+    "impliedUpdatedAt": 1776615084478
+  },
+  "PAX": {
+    "impliedMove": "±8.91%",
+    "impliedUpdatedAt": 1776615084782
+  },
+  "PBF": {
+    "impliedMove": "±14.39%",
+    "impliedUpdatedAt": 1776615085047
+  },
+  "PBH": {
+    "impliedMove": "±2.78%",
+    "impliedUpdatedAt": 1776615085336
+  },
+  "PCRX": {
+    "impliedMove": "±13.75%",
+    "impliedUpdatedAt": 1776615085906
+  },
+  "PCTY": {
+    "impliedMove": "±11.72%",
+    "impliedUpdatedAt": 1776615086154
+  },
+  "PHIN": {
+    "impliedMove": "±9.56%",
+    "impliedUpdatedAt": 1776615087204
+  },
+  "PK": {
+    "impliedMove": "±1.49%",
+    "impliedUpdatedAt": 1776615087460
+  },
+  "POST": {
+    "impliedMove": "±6.38%",
+    "impliedUpdatedAt": 1776615087711
+  },
+  "PRDO": {
+    "impliedMove": "±8.07%",
+    "impliedUpdatedAt": 1776615087992
+  },
+  "PRKS": {
+    "impliedMove": "±11.78%",
+    "impliedUpdatedAt": 1776615088238
+  },
+  "PTLO": {
+    "impliedMove": "±12.66%",
+    "impliedUpdatedAt": 1776615088999
+  },
+  "QLYS": {
+    "impliedMove": "±11.61%",
+    "impliedUpdatedAt": 1776615089947
+  },
+  "RARE": {
+    "impliedMove": "±11.34%",
+    "impliedUpdatedAt": 1776615090227
+  },
+  "RAVE": {
+    "impliedMove": "±21.68%",
+    "impliedUpdatedAt": 1776615090495
+  },
+  "RBLX": {
+    "impliedMove": "±6.07%",
+    "impliedUpdatedAt": 1776615090780
+  },
+  "RDDT": {
+    "impliedMove": "±6.23%",
+    "impliedUpdatedAt": 1776615091044
+  },
+  "REFR": {
+    "impliedMove": "±140.74%",
+    "impliedUpdatedAt": 1776615091321
+  },
+  "RHP": {
+    "impliedMove": "±1.68%",
+    "impliedUpdatedAt": 1776615091595
+  },
+  "RIVN": {
+    "impliedMove": "±5.38%",
+    "impliedUpdatedAt": 1776615091883
+  },
+  "RKT": {
+    "impliedMove": "±5.37%",
+    "impliedUpdatedAt": 1776615092179
+  },
+  "RLAY": {
+    "impliedMove": "±15.47%",
+    "impliedUpdatedAt": 1776615092468
+  },
+  "RMNI": {
+    "impliedMove": "±36.33%",
+    "impliedUpdatedAt": 1776615093018
+  },
+  "ROKU": {
+    "impliedMove": "±3.14%",
+    "impliedUpdatedAt": 1776615093306
+  },
+  "RYAN": {
+    "impliedMove": "±9.01%",
+    "impliedUpdatedAt": 1776615093822
+  },
+  "SAH": {
+    "impliedMove": "±2.64%",
+    "impliedUpdatedAt": 1776615094103
+  },
+  "SAIA": {
+    "impliedMove": "±6.54%",
+    "impliedUpdatedAt": 1776615094420
+  },
+  "SAM": {
+    "impliedMove": "±9.06%",
+    "impliedUpdatedAt": 1776615094719
+  },
+  "SAMG": {
+    "impliedMove": "±12.63%",
+    "impliedUpdatedAt": 1776615095015
+  },
+  "SBGI": {
+    "impliedMove": "±8.66%",
+    "impliedUpdatedAt": 1776615095291
+  },
+  "SBH": {
+    "impliedMove": "±8.19%",
+    "impliedUpdatedAt": 1776615095570
+  },
+  "SEM": {
+    "impliedMove": "±7.00%",
+    "impliedUpdatedAt": 1776615095867
+  },
+  "SHC": {
+    "impliedMove": "±3.34%",
+    "impliedUpdatedAt": 1776615096119
+  },
+  "SIGA": {
+    "impliedMove": "±19.11%",
+    "impliedUpdatedAt": 1776615096736
+  },
+  "SIRI": {
+    "impliedMove": "±2.24%",
+    "impliedUpdatedAt": 1776615097291
+  },
+  "SKT": {
+    "impliedMove": "±2.98%",
+    "impliedUpdatedAt": 1776615097573
+  },
+  "SMC": {
+    "impliedMove": "±8.59%",
+    "impliedUpdatedAt": 1776615097838
+  },
+  "SNDR": {
+    "impliedMove": "±18.48%",
+    "impliedUpdatedAt": 1776615098120
+  },
+  "SPXC": {
+    "impliedMove": "±10.85%",
+    "impliedUpdatedAt": 1776615098692
+  },
+  "SSTK": {
+    "impliedMove": "±13.12%",
+    "impliedUpdatedAt": 1776615099230
+  },
+  "STGW": {
+    "impliedMove": "±13.43%",
+    "impliedUpdatedAt": 1776615099493
+  },
+  "STNG": {
+    "impliedMove": "±8.83%",
+    "impliedUpdatedAt": 1776615099754
+  },
+  "STWD": {
+    "impliedMove": "±3.98%",
+    "impliedUpdatedAt": 1776615100024
+  },
+  "SXI": {
+    "impliedMove": "±6.66%",
+    "impliedUpdatedAt": 1776615100287
+  },
+  "TARA": {
+    "impliedMove": "±16.41%",
+    "impliedUpdatedAt": 1776615100562
+  },
+  "TDAY": {
+    "impliedMove": "±12.21%",
+    "impliedUpdatedAt": 1776615101227
+  },
+  "TDS": {
+    "impliedMove": "±8.51%",
+    "impliedUpdatedAt": 1776615101526
+  },
+  "TEAM": {
+    "impliedMove": "±7.59%",
+    "impliedUpdatedAt": 1776615101823
+  },
+  "TEX": {
+    "impliedMove": "±10.72%",
+    "impliedUpdatedAt": 1776615102077
+  },
+  "TFX": {
+    "impliedMove": "±7.30%",
+    "impliedUpdatedAt": 1776615102364
+  },
+  "TGLS": {
+    "impliedMove": "±12.27%",
+    "impliedUpdatedAt": 1776615102617
+  },
+  "THC": {
+    "impliedMove": "±9.68%",
+    "impliedUpdatedAt": 1776615102875
+  },
+  "THRY": {
+    "impliedMove": "±30.69%",
+    "impliedUpdatedAt": 1776615103137
+  },
+  "TNC": {
+    "impliedMove": "±6.18%",
+    "impliedUpdatedAt": 1776615103954
+  },
+  "TNET": {
+    "impliedMove": "±12.54%",
+    "impliedUpdatedAt": 1776615104261
+  },
+  "TREE": {
+    "impliedMove": "±12.23%",
+    "impliedUpdatedAt": 1776615104528
+  },
+  "TRN": {
+    "impliedMove": "±6.04%",
+    "impliedUpdatedAt": 1776615105034
+  },
+  "TRS": {
+    "impliedMove": "±8.45%",
+    "impliedUpdatedAt": 1776615105321
+  },
+  "TRUP": {
+    "impliedMove": "±15.01%",
+    "impliedUpdatedAt": 1776615105825
+  },
+  "TSEOF": {
+    "impliedMove": "±1499.09%",
+    "impliedUpdatedAt": 1776615106111
+  },
+  "TVTX": {
+    "impliedMove": "±10.42%",
+    "impliedUpdatedAt": 1776615106386
+  },
+  "TWI": {
+    "impliedMove": "±28.82%",
+    "impliedUpdatedAt": 1776615106670
+  },
+  "TWLO": {
+    "impliedMove": "±5.07%",
+    "impliedUpdatedAt": 1776615107022
+  },
+  "TWST": {
+    "impliedMove": "±19.90%",
+    "impliedUpdatedAt": 1776615107319
+  },
+  "TXNM": {
+    "impliedMove": "±3.01%",
+    "impliedUpdatedAt": 1776615107596
+  },
+  "TYRA": {
+    "impliedMove": "±18.74%",
+    "impliedUpdatedAt": 1776615107878
+  },
+  "UEIC": {
+    "impliedMove": "±44.35%",
+    "impliedUpdatedAt": 1776615108440
+  },
+  "ULCC": {
+    "impliedMove": "±10.09%",
+    "impliedUpdatedAt": 1776615108719
+  },
+  "UPBD": {
+    "impliedMove": "±10.80%",
+    "impliedUpdatedAt": 1776615109243
+  },
+  "USPH": {
+    "impliedMove": "±5.00%",
+    "impliedUpdatedAt": 1776615109527
+  },
+  "VAC": {
+    "impliedMove": "±7.39%",
+    "impliedUpdatedAt": 1776615109780
+  },
+  "VEL": {
+    "impliedMove": "±11.96%",
+    "impliedUpdatedAt": 1776615110054
+  },
+  "VGZ": {
+    "impliedMove": "±12.52%",
+    "impliedUpdatedAt": 1776615110322
+  },
+  "VIR": {
+    "impliedMove": "±7.12%",
+    "impliedUpdatedAt": 1776615110572
+  },
+  "VISN": {
+    "impliedMove": "±7.79%",
+    "impliedUpdatedAt": 1776615110829
+  },
+  "VNT": {
+    "impliedMove": "±12.65%",
+    "impliedUpdatedAt": 1776615111095
+  },
+  "VSTS": {
+    "impliedMove": "±14.61%",
+    "impliedUpdatedAt": 1776615111352
+  },
+  "W": {
+    "impliedMove": "±6.24%",
+    "impliedUpdatedAt": 1776615111891
+  },
+  "WCC": {
+    "impliedMove": "±10.76%",
+    "impliedUpdatedAt": 1776615112164
+  },
+  "WD": {
+    "impliedMove": "±10.50%",
+    "impliedUpdatedAt": 1776615112467
+  },
+  "WW": {
+    "impliedMove": "±15.48%",
+    "impliedUpdatedAt": 1776615113336
+  },
+  "XOMA": {
+    "impliedMove": "±17.34%",
+    "impliedUpdatedAt": 1776615113604
+  },
+  "XPO": {
+    "impliedMove": "±14.95%",
+    "impliedUpdatedAt": 1776615114168
+  },
+  "YELP": {
+    "impliedMove": "±16.79%",
+    "impliedUpdatedAt": 1776615114713
+  },
+  "ZGN": {
+    "impliedMove": "±16.65%",
+    "impliedUpdatedAt": 1776615115005
+  },
+  "ABBV": {
+    "impliedMove": "±2.51%",
+    "impliedUpdatedAt": 1776614851891
+  },
+  "ADP": {
+    "impliedMove": "±2.84%",
+    "impliedUpdatedAt": 1776614852168
+  },
+  "AFL": {
+    "impliedMove": "±1.40%",
+    "impliedUpdatedAt": 1776614852472
+  },
+  "ALGN": {
+    "impliedMove": "±3.81%",
+    "impliedUpdatedAt": 1776614852749
+  },
+  "ALL": {
+    "impliedMove": "±4.80%",
+    "impliedUpdatedAt": 1776614853022
+  },
+  "AMZN": {
+    "impliedMove": "±1.36%",
+    "impliedUpdatedAt": 1776614853298
+  },
+  "APD": {
+    "impliedMove": "±5.61%",
+    "impliedUpdatedAt": 1776614853601
+  },
+  "APH": {
+    "impliedMove": "±10.57%",
+    "impliedUpdatedAt": 1776614853870
+  },
+  "AWK": {
+    "impliedMove": "±4.94%",
+    "impliedUpdatedAt": 1776614854147
+  },
+  "BG": {
+    "impliedMove": "±7.53%",
+    "impliedUpdatedAt": 1776614854448
+  },
+  "BIIB": {
+    "impliedMove": "±2.65%",
+    "impliedUpdatedAt": 1776614854773
+  },
+  "CHRW": {
+    "impliedMove": "±9.05%",
+    "impliedUpdatedAt": 1776614855069
+  },
+  "CMG": {
+    "impliedMove": "±3.32%",
+    "impliedUpdatedAt": 1776614855353
+  },
+  "CTSH": {
+    "impliedMove": "±7.96%",
+    "impliedUpdatedAt": 1776614855643
+  },
+  "CVNA": {
+    "impliedMove": "±5.31%",
+    "impliedUpdatedAt": 1776614855930
+  },
+  "EG": {
+    "impliedMove": "±9.63%",
+    "impliedUpdatedAt": 1776614856209
+  },
+  "EME": {
+    "impliedMove": "±10.66%",
+    "impliedUpdatedAt": 1776614856555
+  },
+  "EQIX": {
+    "impliedMove": "±5.22%",
+    "impliedUpdatedAt": 1776614856851
+  },
+  "ETR": {
+    "impliedMove": "±4.58%",
+    "impliedUpdatedAt": 1776614857123
+  },
+  "F": {
+    "impliedMove": "±3.24%",
+    "impliedUpdatedAt": 1776614857450
+  },
+  "FIX": {
+    "impliedMove": "±12.87%",
+    "impliedUpdatedAt": 1776614857808
+  },
+  "GD": {
+    "impliedMove": "±1.88%",
+    "impliedUpdatedAt": 1776614858087
+  },
+  "GEHC": {
+    "impliedMove": "±2.45%",
+    "impliedUpdatedAt": 1776614858342
+  },
+  "GNRC": {
+    "impliedMove": "±3.58%",
+    "impliedUpdatedAt": 1776614858610
+  },
+  "GOOGL": {
+    "impliedMove": "±0.91%",
+    "impliedUpdatedAt": 1776614858931
+  },
+  "GRMN": {
+    "impliedMove": "±7.13%",
+    "impliedUpdatedAt": 1776614859236
+  },
+  "HUM": {
+    "impliedMove": "±4.01%",
+    "impliedUpdatedAt": 1776614859561
+  },
+  "IEX": {
+    "impliedMove": "±6.88%",
+    "impliedUpdatedAt": 1776614859844
+  },
+  "INVH": {
+    "impliedMove": "±5.03%",
+    "impliedUpdatedAt": 1776614860125
+  },
+  "LII": {
+    "impliedMove": "±9.34%",
+    "impliedUpdatedAt": 1776614860410
+  },
+  "MAA": {
+    "impliedMove": "±4.25%",
+    "impliedUpdatedAt": 1776614860699
+  },
+  "META": {
+    "impliedMove": "±1.10%",
+    "impliedUpdatedAt": 1776614860982
+  },
+  "MGM": {
+    "impliedMove": "±3.50%",
+    "impliedUpdatedAt": 1776614861270
+  },
+  "MSFT": {
+    "impliedMove": "±0.85%",
+    "impliedUpdatedAt": 1776614861543
+  },
+  "ODFL": {
+    "impliedMove": "±12.30%",
+    "impliedUpdatedAt": 1776614861806
+  },
+  "ORLY": {
+    "impliedMove": "±5.62%",
+    "impliedUpdatedAt": 1776614862098
+  },
+  "PSX": {
+    "impliedMove": "±3.07%",
+    "impliedUpdatedAt": 1776614862383
+  },
+  "QCOM": {
+    "impliedMove": "±3.16%",
+    "impliedUpdatedAt": 1776614862672
+  },
+  "REGN": {
+    "impliedMove": "±3.80%",
+    "impliedUpdatedAt": 1776614863207
+  },
+  "SBAC": {
+    "impliedMove": "±6.40%",
+    "impliedUpdatedAt": 1776614863461
+  },
+  "SWK": {
+    "impliedMove": "±8.55%",
+    "impliedUpdatedAt": 1776614863744
+  },
+  "TYL": {
+    "impliedMove": "±10.27%",
+    "impliedUpdatedAt": 1776614864033
+  },
+  "UDR": {
+    "impliedMove": "±4.53%",
+    "impliedUpdatedAt": 1776614864312
+  },
+  "VICI": {
+    "impliedMove": "±4.19%",
+    "impliedUpdatedAt": 1776614864584
+  },
+  "VMC": {
+    "impliedMove": "±5.66%",
+    "impliedUpdatedAt": 1776614864899
+  },
+  "VRSK": {
+    "impliedMove": "±8.23%",
+    "impliedUpdatedAt": 1776614865183
+  },
+  "YUM": {
+    "impliedMove": "±6.20%",
+    "impliedUpdatedAt": 1776614865480
+  },
+  "ACHC": {
+    "impliedMove": "±14.73%",
+    "impliedUpdatedAt": 1776615115314
+  },
+  "ACR": {
+    "impliedMove": "±13.63%",
+    "impliedUpdatedAt": 1776615115603
+  },
+  "ADAM": {
+    "impliedMove": "±6.15%",
+    "impliedUpdatedAt": 1776615115883
+  },
+  "AER": {
+    "impliedMove": "±6.69%",
+    "impliedUpdatedAt": 1776615116419
+  },
+  "AFG": {
+    "impliedMove": "±3.15%",
+    "impliedUpdatedAt": 1776615116723
+  },
+  "AGIO": {
+    "impliedMove": "±12.60%",
+    "impliedUpdatedAt": 1776615117018
+  },
+  "ALKS": {
+    "impliedMove": "±8.20%",
+    "impliedUpdatedAt": 1776615117299
+  },
+  "ALKT": {
+    "impliedMove": "±15.06%",
+    "impliedUpdatedAt": 1776615117569
+  },
+  "ALSN": {
+    "impliedMove": "±5.29%",
+    "impliedUpdatedAt": 1776615118120
+  },
+  "AM": {
+    "impliedMove": "±5.71%",
+    "impliedUpdatedAt": 1776615118380
+  },
+  "AMRN": {
+    "impliedMove": "±19.12%",
+    "impliedUpdatedAt": 1776615118646
+  },
+  "AMRZ": {
+    "impliedMove": "±7.88%",
+    "impliedUpdatedAt": 1776615118906
+  },
+  "AMWL": {
+    "impliedMove": "±4.72%",
+    "impliedUpdatedAt": 1776615119244
+  },
+  "ANIK": {
+    "impliedMove": "±14.40%",
+    "impliedUpdatedAt": 1776615119558
+  },
+  "AR": {
+    "impliedMove": "±4.17%",
+    "impliedUpdatedAt": 1776615119838
+  },
+  "ASND": {
+    "impliedMove": "±11.85%",
+    "impliedUpdatedAt": 1776615120442
+  },
+  "ATOM": {
+    "impliedMove": "±25.90%",
+    "impliedUpdatedAt": 1776615120993
+  },
+  "AVT": {
+    "impliedMove": "±3.90%",
+    "impliedUpdatedAt": 1776615121245
+  },
+  "AVTR": {
+    "impliedMove": "±15.06%",
+    "impliedUpdatedAt": 1776615121548
+  },
+  "AXS": {
+    "impliedMove": "±9.90%",
+    "impliedUpdatedAt": 1776615122111
+  },
+  "BBT": {
+    "impliedMove": "±15.22%",
+    "impliedUpdatedAt": 1776615122659
+  },
+  "BCYC": {
+    "impliedMove": "±14.19%",
+    "impliedUpdatedAt": 1776615122924
+  },
+  "BIP": {
+    "impliedMove": "±6.56%",
+    "impliedUpdatedAt": 1776615123754
+  },
+  "BIPC": {
+    "impliedMove": "±7.05%",
+    "impliedUpdatedAt": 1776615124021
+  },
+  "BJRI": {
+    "impliedMove": "±9.80%",
+    "impliedUpdatedAt": 1776615124277
+  },
+  "BLCO": {
+    "impliedMove": "±4.35%",
+    "impliedUpdatedAt": 1776615124558
+  },
+  "BMRN": {
+    "impliedMove": "±7.39%",
+    "impliedUpdatedAt": 1776615125098
+  },
+  "BNL": {
+    "impliedMove": "±8.98%",
+    "impliedUpdatedAt": 1776615125359
+  },
+  "BXMT": {
+    "impliedMove": "±4.20%",
+    "impliedUpdatedAt": 1776615125898
+  },
+  "CAKE": {
+    "impliedMove": "±7.93%",
+    "impliedUpdatedAt": 1776615126159
+  },
+  "CBU": {
+    "impliedMove": "±11.43%",
+    "impliedUpdatedAt": 1776615126594
+  },
+  "CBZ": {
+    "impliedMove": "±15.53%",
+    "impliedUpdatedAt": 1776615126879
+  },
+  "CFFN": {
+    "impliedMove": "±22.93%",
+    "impliedUpdatedAt": 1776615127149
+  },
+  "CHEF": {
+    "impliedMove": "±6.39%",
+    "impliedUpdatedAt": 1776615127413
+  },
+  "CLB": {
+    "impliedMove": "±7.26%",
+    "impliedUpdatedAt": 1776615127669
+  },
+  "CLVT": {
+    "impliedMove": "±26.32%",
+    "impliedUpdatedAt": 1776615128184
+  },
+  "CMPR": {
+    "impliedMove": "±7.43%",
+    "impliedUpdatedAt": 1776615128623
+  },
+  "CNMD": {
+    "impliedMove": "±19.10%",
+    "impliedUpdatedAt": 1776615128878
+  },
+  "COCO": {
+    "impliedMove": "±14.16%",
+    "impliedUpdatedAt": 1776615129650
+  },
+  "CRS": {
+    "impliedMove": "±9.92%",
+    "impliedUpdatedAt": 1776615130191
+  },
+  "CSTM": {
+    "impliedMove": "±11.06%",
+    "impliedUpdatedAt": 1776615130488
+  },
+  "CTS": {
+    "impliedMove": "±13.60%",
+    "impliedUpdatedAt": 1776615130734
+  },
+  "CUZ": {
+    "impliedMove": "±5.05%",
+    "impliedUpdatedAt": 1776615131048
+  },
+  "CVRX": {
+    "impliedMove": "±16.17%",
+    "impliedUpdatedAt": 1776615131547
+  },
+  "DAN": {
+    "impliedMove": "±9.52%",
+    "impliedUpdatedAt": 1776615131828
+  },
+  "DK": {
+    "impliedMove": "±10.23%",
+    "impliedUpdatedAt": 1776615132123
+  },
+  "DKL": {
+    "impliedMove": "±5.50%",
+    "impliedUpdatedAt": 1776615132436
+  },
+  "DQ": {
+    "impliedMove": "±12.83%",
+    "impliedUpdatedAt": 1776615132908
+  },
+  "EEFT": {
+    "impliedMove": "±9.33%",
+    "impliedUpdatedAt": 1776615133186
+  },
+  "ESRT": {
+    "impliedMove": "±8.65%",
+    "impliedUpdatedAt": 1776615134573
+  },
+  "ETD": {
+    "impliedMove": "±8.61%",
+    "impliedUpdatedAt": 1776615134830
+  },
+  "ETSY": {
+    "impliedMove": "±3.52%",
+    "impliedUpdatedAt": 1776615135309
+  },
+  "EVR": {
+    "impliedMove": "±8.63%",
+    "impliedUpdatedAt": 1776615135564
+  },
+  "EXTR": {
+    "impliedMove": "±8.13%",
+    "impliedUpdatedAt": 1776615136058
+  },
+  "FBRT": {
+    "impliedMove": "±9.68%",
+    "impliedUpdatedAt": 1776615136566
+  },
+  "FIBK": {
+    "impliedMove": "±4.57%",
+    "impliedUpdatedAt": 1776615137651
+  },
+  "FLS": {
+    "impliedMove": "±10.17%",
+    "impliedUpdatedAt": 1776615137902
+  },
+  "FMBH": {
+    "impliedMove": "±24.25%",
+    "impliedUpdatedAt": 1776615138190
+  },
+  "FMC": {
+    "impliedMove": "±14.60%",
+    "impliedUpdatedAt": 1776615138448
+  },
+  "FORM": {
+    "impliedMove": "±15.86%",
+    "impliedUpdatedAt": 1776615139541
+  },
+  "FSS": {
+    "impliedMove": "±9.84%",
+    "impliedUpdatedAt": 1776615140360
+  },
+  "FTAI": {
+    "impliedMove": "±7.00%",
+    "impliedUpdatedAt": 1776615140930
+  },
+  "FTCI": {
+    "impliedMove": "±5.50%",
+    "impliedUpdatedAt": 1776615141206
+  },
+  "FVRR": {
+    "impliedMove": "±13.48%",
+    "impliedUpdatedAt": 1776615141758
+  },
+  "GKOS": {
+    "impliedMove": "±9.67%",
+    "impliedUpdatedAt": 1776615142267
+  },
+  "GRBK": {
+    "impliedMove": "±8.20%",
+    "impliedUpdatedAt": 1776615143026
+  },
+  "GTE": {
+    "impliedMove": "±15.26%",
+    "impliedUpdatedAt": 1776615143333
+  },
+  "HAYW": {
+    "impliedMove": "±4.79%",
+    "impliedUpdatedAt": 1776615143580
+  },
+  "HSDT": {
+    "impliedMove": "±36.08%",
+    "impliedUpdatedAt": 1776615144109
+  },
+  "IART": {
+    "impliedMove": "±10.30%",
+    "impliedUpdatedAt": 1776615145175
+  },
+  "IONS": {
+    "impliedMove": "±7.86%",
+    "impliedUpdatedAt": 1776615146008
+  },
+  "IRT": {
+    "impliedMove": "±7.47%",
+    "impliedUpdatedAt": 1776615146277
+  },
+  "JOE": {
+    "impliedMove": "±5.40%",
+    "impliedUpdatedAt": 1776615147167
+  },
+  "KRG": {
+    "impliedMove": "±3.37%",
+    "impliedUpdatedAt": 1776615147623
+  },
+  "LAD": {
+    "impliedMove": "±10.21%",
+    "impliedUpdatedAt": 1776615148138
+  },
+  "LMND": {
+    "impliedMove": "±6.29%",
+    "impliedUpdatedAt": 1776615148945
+  },
+  "LUNG": {
+    "impliedMove": "±24.86%",
+    "impliedUpdatedAt": 1776615149458
+  },
+  "LXP": {
+    "impliedMove": "±10.12%",
+    "impliedUpdatedAt": 1776615149711
+  },
+  "LXU": {
+    "impliedMove": "±13.18%",
+    "impliedUpdatedAt": 1776615149966
+  },
+  "MAT": {
+    "impliedMove": "±10.07%",
+    "impliedUpdatedAt": 1776615150241
+  },
+  "MAX": {
+    "impliedMove": "±18.25%",
+    "impliedUpdatedAt": 1776615150539
+  },
+  "MC": {
+    "impliedMove": "±4.98%",
+    "impliedUpdatedAt": 1776615150835
+  },
+  "MKL": {
+    "impliedMove": "±4.03%",
+    "impliedUpdatedAt": 1776615151692
+  },
+  "MORN": {
+    "impliedMove": "±3.21%",
+    "impliedUpdatedAt": 1776615151986
+  },
+  "MPB": {
+    "impliedMove": "±7.80%",
+    "impliedUpdatedAt": 1776615152296
+  },
+  "MRAM": {
+    "impliedMove": "±10.72%",
+    "impliedUpdatedAt": 1776615152562
+  },
+  "MTG": {
+    "impliedMove": "±7.08%",
+    "impliedUpdatedAt": 1776615152851
+  },
+  "MTRN": {
+    "impliedMove": "±6.31%",
+    "impliedUpdatedAt": 1776615153129
+  },
+  "MUSA": {
+    "impliedMove": "±8.54%",
+    "impliedUpdatedAt": 1776615153395
+  },
+  "MVBF": {
+    "impliedMove": "±13.01%",
+    "impliedUpdatedAt": 1776615153648
+  },
+  "MYRG": {
+    "impliedMove": "±8.29%",
+    "impliedUpdatedAt": 1776615153903
+  },
+  "NAVI": {
+    "impliedMove": "±3.35%",
+    "impliedUpdatedAt": 1776615154206
+  },
+  "NBIS": {
+    "impliedMove": "±7.41%",
+    "impliedUpdatedAt": 1776615154762
+  },
+  "NECB": {
+    "impliedMove": "±4.56%",
+    "impliedUpdatedAt": 1776615155046
+  },
+  "NFG": {
+    "impliedMove": "±9.56%",
+    "impliedUpdatedAt": 1776615155352
+  },
+  "NTGR": {
+    "impliedMove": "±15.02%",
+    "impliedUpdatedAt": 1776615155986
+  },
+  "NWPX": {
+    "impliedMove": "±13.43%",
+    "impliedUpdatedAt": 1776615156519
+  },
+  "OGE": {
+    "impliedMove": "±1.34%",
+    "impliedUpdatedAt": 1776615157066
+  },
+  "OTLY": {
+    "impliedMove": "±8.74%",
+    "impliedUpdatedAt": 1776615157333
+  },
+  "PAG": {
+    "impliedMove": "±10.45%",
+    "impliedUpdatedAt": 1776615158036
+  },
+  "PFSI": {
+    "impliedMove": "±15.23%",
+    "impliedUpdatedAt": 1776615159226
+  },
+  "PI": {
+    "impliedMove": "±24.72%",
+    "impliedUpdatedAt": 1776615159477
+  },
+  "PLXS": {
+    "impliedMove": "±4.92%",
+    "impliedUpdatedAt": 1776615160015
+  },
+  "PMT": {
+    "impliedMove": "±5.27%",
+    "impliedUpdatedAt": 1776615160485
+  },
+  "PPC": {
+    "impliedMove": "±7.17%",
+    "impliedUpdatedAt": 1776615160796
+  },
+  "PRCT": {
+    "impliedMove": "±14.88%",
+    "impliedUpdatedAt": 1776615161051
+  },
+  "PRG": {
+    "impliedMove": "±1.97%",
+    "impliedUpdatedAt": 1776615161320
+  },
+  "PSN": {
+    "impliedMove": "±9.83%",
+    "impliedUpdatedAt": 1776615161782
+  },
+  "QTWO": {
+    "impliedMove": "±12.45%",
+    "impliedUpdatedAt": 1776615162055
+  },
+  "RES": {
+    "impliedMove": "±17.83%",
+    "impliedUpdatedAt": 1776615162322
+  },
+  "RHI": {
+    "impliedMove": "±14.87%",
+    "impliedUpdatedAt": 1776615162614
+  },
+  "RRR": {
+    "impliedMove": "±8.93%",
+    "impliedUpdatedAt": 1776615163208
+  },
+  "RWT": {
+    "impliedMove": "±8.92%",
+    "impliedUpdatedAt": 1776615163485
+  },
+  "SBRA": {
+    "impliedMove": "±5.10%",
+    "impliedUpdatedAt": 1776615163806
+  },
+  "SF": {
+    "impliedMove": "±5.74%",
+    "impliedUpdatedAt": 1776615164369
+  },
+  "SFM": {
+    "impliedMove": "±11.98%",
+    "impliedUpdatedAt": 1776615164690
+  },
+  "SITE": {
+    "impliedMove": "±7.11%",
+    "impliedUpdatedAt": 1776615164969
+  },
+  "SLAB": {
+    "impliedMove": "±1.84%",
+    "impliedUpdatedAt": 1776615165246
+  },
+  "SLGN": {
+    "impliedMove": "±18.58%",
+    "impliedUpdatedAt": 1776615165557
+  },
+  "SMG": {
+    "impliedMove": "±12.36%",
+    "impliedUpdatedAt": 1776615165849
+  },
+  "SNBR": {
+    "impliedMove": "±39.64%",
+    "impliedUpdatedAt": 1776615166130
+  },
+  "SNCY": {
+    "impliedMove": "±9.23%",
+    "impliedUpdatedAt": 1776615166402
+  },
+  "SNDL": {
+    "impliedMove": "±12.95%",
+    "impliedUpdatedAt": 1776615166678
+  },
+  "SOFI": {
+    "impliedMove": "±5.21%",
+    "impliedUpdatedAt": 1776615166942
+  },
+  "SYBT": {
+    "impliedMove": "±4.22%",
+    "impliedUpdatedAt": 1776615168255
+  },
+  "TDOC": {
+    "impliedMove": "±5.23%",
+    "impliedUpdatedAt": 1776615168544
+  },
+  "TENB": {
+    "impliedMove": "±13.84%",
+    "impliedUpdatedAt": 1776615168839
+  },
+  "THG": {
+    "impliedMove": "±3.06%",
+    "impliedUpdatedAt": 1776615169134
+  },
+  "TPB": {
+    "impliedMove": "±13.41%",
+    "impliedUpdatedAt": 1776615169420
+  },
+  "TTEK": {
+    "impliedMove": "±10.89%",
+    "impliedUpdatedAt": 1776615169719
+  },
+  "TTMI": {
+    "impliedMove": "±21.24%",
+    "impliedUpdatedAt": 1776615170011
+  },
+  "TW": {
+    "impliedMove": "±5.64%",
+    "impliedUpdatedAt": 1776615170264
+  },
+  "TXO": {
+    "impliedMove": "±12.20%",
+    "impliedUpdatedAt": 1776615170548
+  },
+  "TZOO": {
+    "impliedMove": "±21.84%",
+    "impliedUpdatedAt": 1776615170812
+  },
+  "VIAV": {
+    "impliedMove": "±18.10%",
+    "impliedUpdatedAt": 1776615171608
+  },
+  "VIRT": {
+    "impliedMove": "±6.61%",
+    "impliedUpdatedAt": 1776615171866
+  },
+  "VKTX": {
+    "impliedMove": "±7.22%",
+    "impliedUpdatedAt": 1776615172218
+  },
+  "VRE": {
+    "impliedMove": "±8.81%",
+    "impliedUpdatedAt": 1776615172531
+  },
+  "VSEC": {
+    "impliedMove": "±11.86%",
+    "impliedUpdatedAt": 1776615172790
+  },
+  "WAY": {
+    "impliedMove": "±14.07%",
+    "impliedUpdatedAt": 1776615173064
+  },
+  "WH": {
+    "impliedMove": "±7.47%",
+    "impliedUpdatedAt": 1776615173331
+  },
+  "WING": {
+    "impliedMove": "±16.56%",
+    "impliedUpdatedAt": 1776615173858
+  },
+  "WSC": {
+    "impliedMove": "±8.95%",
+    "impliedUpdatedAt": 1776615174124
+  },
+  "WWD": {
+    "impliedMove": "±10.00%",
+    "impliedUpdatedAt": 1776615174383
+  },
+  "YUMC": {
+    "impliedMove": "±7.00%",
+    "impliedUpdatedAt": 1776615174996
+  },
+  "ACGL": {
+    "impliedMove": "±5.84%",
+    "impliedUpdatedAt": 1776614865779
+  },
+  "ALLE": {
+    "impliedMove": "±3.62%",
+    "impliedUpdatedAt": 1776614866023
+  },
+  "AMT": {
+    "impliedMove": "±5.76%",
+    "impliedUpdatedAt": 1776614866266
+  },
+  "AVY": {
+    "impliedMove": "±5.52%",
+    "impliedUpdatedAt": 1776614866522
+  },
+  "BEN": {
+    "impliedMove": "±9.57%",
+    "impliedUpdatedAt": 1776614866832
+  },
+  "BKNG": {
+    "impliedMove": "±4.52%",
+    "impliedUpdatedAt": 1776614867219
+  },
+  "BXP": {
+    "impliedMove": "±13.00%",
+    "impliedUpdatedAt": 1776614867566
+  },
+  "CMS": {
+    "impliedMove": "±1.59%",
+    "impliedUpdatedAt": 1776614867879
+  },
+  "CNC": {
+    "impliedMove": "±4.43%",
+    "impliedUpdatedAt": 1776614868173
+  },
+  "CSGP": {
+    "impliedMove": "±11.98%",
+    "impliedUpdatedAt": 1776614868453
+  },
+  "EBAY": {
+    "impliedMove": "±1.92%",
+    "impliedUpdatedAt": 1776614868726
+  },
+  "ECL": {
+    "impliedMove": "±3.68%",
+    "impliedUpdatedAt": 1776614869063
+  },
+  "EIX": {
+    "impliedMove": "±5.47%",
+    "impliedUpdatedAt": 1776614869396
+  },
+  "EQR": {
+    "impliedMove": "±3.43%",
+    "impliedUpdatedAt": 1776614869721
+  },
+  "ESS": {
+    "impliedMove": "±4.58%",
+    "impliedUpdatedAt": 1776614870113
+  },
+  "EXE": {
+    "impliedMove": "±6.03%",
+    "impliedUpdatedAt": 1776614870447
+  },
+  "EXR": {
+    "impliedMove": "±5.19%",
+    "impliedUpdatedAt": 1776614870759
+  },
+  "FE": {
+    "impliedMove": "±4.29%",
+    "impliedUpdatedAt": 1776614871161
+  },
+  "FFIV": {
+    "impliedMove": "±9.32%",
+    "impliedUpdatedAt": 1776614871495
+  },
+  "FISV": {
+    "impliedMove": "±4.94%",
+    "impliedUpdatedAt": 1776614871809
+  },
+  "GM": {
+    "impliedMove": "±3.05%",
+    "impliedUpdatedAt": 1776614872210
+  },
+  "HLT": {
+    "impliedMove": "±2.62%",
+    "impliedUpdatedAt": 1776614872542
+  },
+  "HOOD": {
+    "impliedMove": "±5.70%",
+    "impliedUpdatedAt": 1776614872858
+  },
+  "INCY": {
+    "impliedMove": "±7.71%",
+    "impliedUpdatedAt": 1776614873259
+  },
+  "IR": {
+    "impliedMove": "±7.21%",
+    "impliedUpdatedAt": 1776614873590
+  },
+  "IVZ": {
+    "impliedMove": "±8.39%",
+    "impliedUpdatedAt": 1776614873901
+  },
+  "KMB": {
+    "impliedMove": "±2.32%",
+    "impliedUpdatedAt": 1776614874362
+  },
+  "KO": {
+    "impliedMove": "±1.59%",
+    "impliedUpdatedAt": 1776614874718
+  },
+  "MDLZ": {
+    "impliedMove": "±2.08%",
+    "impliedUpdatedAt": 1776614874983
+  },
+  "NXPI": {
+    "impliedMove": "±8.77%",
+    "impliedUpdatedAt": 1776614875357
+  },
+  "OKE": {
+    "impliedMove": "±6.04%",
+    "impliedUpdatedAt": 1776614875685
+  },
+  "OMC": {
+    "impliedMove": "±6.91%",
+    "impliedUpdatedAt": 1776614876053
+  },
+  "PCAR": {
+    "impliedMove": "±6.70%",
+    "impliedUpdatedAt": 1776614876406
+  },
+  "PNR": {
+    "impliedMove": "±6.63%",
+    "impliedUpdatedAt": 1776614876736
+  },
+  "PPG": {
+    "impliedMove": "±14.64%",
+    "impliedUpdatedAt": 1776614877096
+  },
+  "SBUX": {
+    "impliedMove": "±2.51%",
+    "impliedUpdatedAt": 1776614877452
+  },
+  "SHW": {
+    "impliedMove": "±5.36%",
+    "impliedUpdatedAt": 1776614877783
+  },
+  "SPGI": {
+    "impliedMove": "±6.18%",
+    "impliedUpdatedAt": 1776614878124
+  },
+  "STX": {
+    "impliedMove": "±6.26%",
+    "impliedUpdatedAt": 1776614878501
+  },
+  "SYY": {
+    "impliedMove": "±5.42%",
+    "impliedUpdatedAt": 1776614878833
+  },
+  "TER": {
+    "impliedMove": "±5.70%",
+    "impliedUpdatedAt": 1776614879161
+  },
+  "TMUS": {
+    "impliedMove": "±2.91%",
+    "impliedUpdatedAt": 1776614879549
+  },
+  "UPS": {
+    "impliedMove": "±2.31%",
+    "impliedUpdatedAt": 1776614879882
+  },
+  "V": {
+    "impliedMove": "±2.08%",
+    "impliedUpdatedAt": 1776614880150
+  },
+  "VLTO": {
+    "impliedMove": "±6.63%",
+    "impliedUpdatedAt": 1776614880494
+  },
+  "WELL": {
+    "impliedMove": "±4.97%",
+    "impliedUpdatedAt": 1776614880758
+  },
+  "WM": {
+    "impliedMove": "±5.13%",
+    "impliedUpdatedAt": 1776614881059
+  },
+  "XYL": {
+    "impliedMove": "±10.90%",
+    "impliedUpdatedAt": 1776614881322
+  },
+  "ZBH": {
+    "impliedMove": "±6.76%",
+    "impliedUpdatedAt": 1776614881601
+  },
+  "AB": {
+    "impliedMove": "±6.16%",
+    "impliedUpdatedAt": 1776615175821
+  },
+  "ABG": {
+    "impliedMove": "±6.03%",
+    "impliedUpdatedAt": 1776615176097
+  },
+  "AIT": {
+    "impliedMove": "±9.45%",
+    "impliedUpdatedAt": 1776615176911
+  },
+  "APAM": {
+    "impliedMove": "±1.74%",
+    "impliedUpdatedAt": 1776615178184
+  },
+  "ARCB": {
+    "impliedMove": "±6.17%",
+    "impliedUpdatedAt": 1776615178718
+  },
+  "ARCC": {
+    "impliedMove": "±4.05%",
+    "impliedUpdatedAt": 1776615178987
+  },
+  "ARI": {
+    "impliedMove": "±8.99%",
+    "impliedUpdatedAt": 1776615179254
+  },
+  "ASH": {
+    "impliedMove": "±6.22%",
+    "impliedUpdatedAt": 1776615179860
+  },
+  "ATEN": {
+    "impliedMove": "±9.66%",
+    "impliedUpdatedAt": 1776615180166
+  },
+  "AWI": {
+    "impliedMove": "±3.59%",
+    "impliedUpdatedAt": 1776615180719
+  },
+  "AXGN": {
+    "impliedMove": "±16.91%",
+    "impliedUpdatedAt": 1776615180995
+  },
+  "BE": {
+    "impliedMove": "±7.31%",
+    "impliedUpdatedAt": 1776615181284
+  },
+  "BRSP": {
+    "impliedMove": "±16.35%",
+    "impliedUpdatedAt": 1776615182390
+  },
+  "BUSE": {
+    "impliedMove": "±8.22%",
+    "impliedUpdatedAt": 1776615182983
+  },
+  "BVN": {
+    "impliedMove": "±8.04%",
+    "impliedUpdatedAt": 1776615183265
+  },
+  "CCEP": {
+    "impliedMove": "±4.49%",
+    "impliedUpdatedAt": 1776615184107
+  },
+  "CDNA": {
+    "impliedMove": "±20.71%",
+    "impliedUpdatedAt": 1776615184912
+  },
+  "CECO": {
+    "impliedMove": "±13.44%",
+    "impliedUpdatedAt": 1776615185189
+  },
+  "CLW": {
+    "impliedMove": "±10.31%",
+    "impliedUpdatedAt": 1776615186335
+  },
+  "CTO": {
+    "impliedMove": "±7.41%",
+    "impliedUpdatedAt": 1776615186876
+  },
+  "CVLT": {
+    "impliedMove": "±18.40%",
+    "impliedUpdatedAt": 1776615187404
+  },
+  "CZR": {
+    "impliedMove": "±4.31%",
+    "impliedUpdatedAt": 1776615187714
+  },
+  "ENPH": {
+    "impliedMove": "±6.10%",
+    "impliedUpdatedAt": 1776615188774
+  },
+  "ENTG": {
+    "impliedMove": "±13.55%",
+    "impliedUpdatedAt": 1776615189050
+  },
+  "EPD": {
+    "impliedMove": "±1.67%",
+    "impliedUpdatedAt": 1776615189600
+  },
+  "ESI": {
+    "impliedMove": "±6.62%",
+    "impliedUpdatedAt": 1776615189883
+  },
+  "EXLS": {
+    "impliedMove": "±9.20%",
+    "impliedUpdatedAt": 1776615190160
+  },
+  "FFIC": {
+    "impliedMove": "±10.70%",
+    "impliedUpdatedAt": 1776615191268
+  },
+  "GLXY": {
+    "impliedMove": "±7.83%",
+    "impliedUpdatedAt": 1776615192893
+  },
+  "GROV": {
+    "impliedMove": "±84.36%",
+    "impliedUpdatedAt": 1776615193186
+  },
+  "HIW": {
+    "impliedMove": "±6.03%",
+    "impliedUpdatedAt": 1776615193455
+  },
+  "HRI": {
+    "impliedMove": "±15.41%",
+    "impliedUpdatedAt": 1776615194060
+  },
+  "HTLD": {
+    "impliedMove": "±2.19%",
+    "impliedUpdatedAt": 1776615194339
+  },
+  "ITRI": {
+    "impliedMove": "±12.18%",
+    "impliedUpdatedAt": 1776615195221
+  },
+  "JBLU": {
+    "impliedMove": "±7.67%",
+    "impliedUpdatedAt": 1776615196052
+  },
+  "LCNB": {
+    "impliedMove": "±3.72%",
+    "impliedUpdatedAt": 1776615197142
+  },
+  "LGIH": {
+    "impliedMove": "±14.34%",
+    "impliedUpdatedAt": 1776615197407
+  },
+  "LRN": {
+    "impliedMove": "±21.07%",
+    "impliedUpdatedAt": 1776615197672
+  },
+  "LSTR": {
+    "impliedMove": "±9.54%",
+    "impliedUpdatedAt": 1776615197950
+  },
+  "MLI": {
+    "impliedMove": "±7.21%",
+    "impliedUpdatedAt": 1776615198468
+  },
+  "NAUT": {
+    "impliedMove": "±66.49%",
+    "impliedUpdatedAt": 1776615199014
+  },
+  "NBR": {
+    "impliedMove": "±15.29%",
+    "impliedUpdatedAt": 1776615199325
+  },
+  "NEO": {
+    "impliedMove": "±17.92%",
+    "impliedUpdatedAt": 1776615199924
+  },
+  "NOG": {
+    "impliedMove": "±8.45%",
+    "impliedUpdatedAt": 1776615200475
+  },
+  "NTB": {
+    "impliedMove": "±1.61%",
+    "impliedUpdatedAt": 1776615201008
+  },
+  "NXRT": {
+    "impliedMove": "±11.73%",
+    "impliedUpdatedAt": 1776615201563
+  },
+  "OHI": {
+    "impliedMove": "±4.59%",
+    "impliedUpdatedAt": 1776615202125
+  },
+  "OI": {
+    "impliedMove": "±12.49%",
+    "impliedUpdatedAt": 1776615202409
+  },
+  "OMCL": {
+    "impliedMove": "±16.96%",
+    "impliedUpdatedAt": 1776615202750
+  },
+  "OPRA": {
+    "impliedMove": "±11.12%",
+    "impliedUpdatedAt": 1776615203427
+  },
+  "ORN": {
+    "impliedMove": "±8.88%",
+    "impliedUpdatedAt": 1776615203852
+  },
+  "PEB": {
+    "impliedMove": "±3.40%",
+    "impliedUpdatedAt": 1776615204421
+  },
+  "PII": {
+    "impliedMove": "±12.18%",
+    "impliedUpdatedAt": 1776615205428
+  },
+  "QUAD": {
+    "impliedMove": "±23.33%",
+    "impliedUpdatedAt": 1776615206237
+  },
+  "RBBN": {
+    "impliedMove": "±22.08%",
+    "impliedUpdatedAt": 1776615206517
+  },
+  "RITM": {
+    "impliedMove": "±5.02%",
+    "impliedUpdatedAt": 1776615206786
+  },
+  "RNR": {
+    "impliedMove": "±2.40%",
+    "impliedUpdatedAt": 1776615207059
+  },
+  "RNST": {
+    "impliedMove": "±2.04%",
+    "impliedUpdatedAt": 1776615207346
+  },
+  "RSI": {
+    "impliedMove": "±13.37%",
+    "impliedUpdatedAt": 1776615207904
+  },
+  "SBCF": {
+    "impliedMove": "±5.58%",
+    "impliedUpdatedAt": 1776615208718
+  },
+  "SBSI": {
+    "impliedMove": "±8.66%",
+    "impliedUpdatedAt": 1776615208972
+  },
+  "SCL": {
+    "impliedMove": "±3.14%",
+    "impliedUpdatedAt": 1776615209236
+  },
+  "SEVN": {
+    "impliedMove": "±11.84%",
+    "impliedUpdatedAt": 1776615209755
+  },
+  "SFD": {
+    "impliedMove": "±7.24%",
+    "impliedUpdatedAt": 1776615210334
+  },
+  "SIMO": {
+    "impliedMove": "±11.38%",
+    "impliedUpdatedAt": 1776615210614
+  },
+  "SLDE": {
+    "impliedMove": "±10.91%",
+    "impliedUpdatedAt": 1776615210907
+  },
+  "SPFI": {
+    "impliedMove": "±10.05%",
+    "impliedUpdatedAt": 1776615211168
+  },
+  "SPOT": {
+    "impliedMove": "±4.11%",
+    "impliedUpdatedAt": 1776615211450
+  },
+  "ST": {
+    "impliedMove": "±9.82%",
+    "impliedUpdatedAt": 1776615212506
+  },
+  "STAG": {
+    "impliedMove": "±9.71%",
+    "impliedUpdatedAt": 1776615212758
+  },
+  "TIPT": {
+    "impliedMove": "±7.52%",
+    "impliedUpdatedAt": 1776615213291
+  },
+  "TR": {
+    "impliedMove": "±7.50%",
+    "impliedUpdatedAt": 1776615213590
+  },
+  "TRMK": {
+    "impliedMove": "±6.16%",
+    "impliedUpdatedAt": 1776615213864
+  },
+  "TRTX": {
+    "impliedMove": "±6.41%",
+    "impliedUpdatedAt": 1776615214466
+  },
+  "TRU": {
+    "impliedMove": "±11.05%",
+    "impliedUpdatedAt": 1776615214745
+  },
+  "TWO": {
+    "impliedMove": "±3.13%",
+    "impliedUpdatedAt": 1776615215278
+  },
+  "UCTT": {
+    "impliedMove": "±13.33%",
+    "impliedUpdatedAt": 1776615215550
+  },
+  "UFI": {
+    "impliedMove": "±6.85%",
+    "impliedUpdatedAt": 1776615215816
+  },
+  "UMBF": {
+    "impliedMove": "±7.29%",
+    "impliedUpdatedAt": 1776615216114
+  },
+  "UNM": {
+    "impliedMove": "±5.03%",
+    "impliedUpdatedAt": 1776615216530
+  },
+  "USLM": {
+    "impliedMove": "±4.62%",
+    "impliedUpdatedAt": 1776615216822
+  },
+  "VRNS": {
+    "impliedMove": "±16.67%",
+    "impliedUpdatedAt": 1776615217414
+  },
+  "VYX": {
+    "impliedMove": "±49.56%",
+    "impliedUpdatedAt": 1776615217671
+  },
+  "WERN": {
+    "impliedMove": "±6.39%",
+    "impliedUpdatedAt": 1776615218232
+  },
+  "WPC": {
+    "impliedMove": "±1.62%",
+    "impliedUpdatedAt": 1776615218497
+  },
+  "WSBF": {
+    "impliedMove": "±8.48%",
+    "impliedUpdatedAt": 1776615218761
+  },
+  "WSO": {
+    "impliedMove": "±14.18%",
+    "impliedUpdatedAt": 1776615219030
+  },
+  "XRX": {
+    "impliedMove": "±21.62%",
+    "impliedUpdatedAt": 1776615219298
+  },
+  "ARE": {
+    "impliedMove": "±8.56%",
+    "impliedUpdatedAt": 1776658463045
+  },
+  "AVB": {
+    "impliedMove": "±4.30%",
+    "impliedUpdatedAt": 1776658463333
+  },
+  "BRO": {
+    "impliedMove": "±6.11%",
+    "impliedUpdatedAt": 1776658463643
+  },
+  "CDNS": {
+    "impliedMove": "±4.18%",
+    "impliedUpdatedAt": 1776658463940
+  },
+  "CINF": {
+    "impliedMove": "±4.86%",
+    "impliedUpdatedAt": 1776658464195
+  },
+  "DPZ": {
+    "impliedMove": "±7.11%",
+    "impliedUpdatedAt": 1776658464447
+  },
+  "NUE": {
+    "impliedMove": "±6.76%",
+    "impliedUpdatedAt": 1776658464711
+  },
+  "PSA": {
+    "impliedMove": "±4.64%",
+    "impliedUpdatedAt": 1776658464989
+  },
+  "UHS": {
+    "impliedMove": "±8.06%",
+    "impliedUpdatedAt": 1776658465282
+  },
+  "VTR": {
+    "impliedMove": "±4.84%",
+    "impliedUpdatedAt": 1776658465569
+  },
+  "VZ": {
+    "impliedMove": "±2.25%",
+    "impliedUpdatedAt": 1776658465837
+  },
+  "AMBR": {
+    "impliedMove": "±40.90%",
+    "impliedUpdatedAt": 1776658466711
+  },
+  "AMKR": {
+    "impliedMove": "±16.91%",
+    "impliedUpdatedAt": 1776658466997
+  },
+  "ARLP": {
+    "impliedMove": "±7.01%",
+    "impliedUpdatedAt": 1776658467277
+  },
+  "BBBY": {
+    "impliedMove": "±19.10%",
+    "impliedUpdatedAt": 1776658467841
+  },
+  "BFST": {
+    "impliedMove": "±12.60%",
+    "impliedUpdatedAt": 1776615221971
+  },
+  "BMRC": {
+    "impliedMove": "±11.91%",
+    "impliedUpdatedAt": 1776658469302
+  },
+  "BRX": {
+    "impliedMove": "±6.24%",
+    "impliedUpdatedAt": 1776658469564
+  },
+  "CBNK": {
+    "impliedMove": "±18.10%",
+    "impliedUpdatedAt": 1776658471861
+  },
+  "CCBG": {
+    "impliedMove": "±7.44%",
+    "impliedUpdatedAt": 1776658472123
+  },
+  "CCK": {
+    "impliedMove": "±6.98%",
+    "impliedUpdatedAt": 1776658472397
+  },
+  "CR": {
+    "impliedMove": "±9.77%",
+    "impliedUpdatedAt": 1776658473425
+  },
+  "CTOS": {
+    "impliedMove": "±15.08%",
+    "impliedUpdatedAt": 1776615227654
+  },
+  "DEA": {
+    "impliedMove": "±5.42%",
+    "impliedUpdatedAt": 1776658474547
+  },
+  "EAT": {
+    "impliedMove": "±10.70%",
+    "impliedUpdatedAt": 1776658474813
+  },
+  "FSBC": {
+    "impliedMove": "±5.44%",
+    "impliedUpdatedAt": 1776658477748
+  },
+  "GABC": {
+    "impliedMove": "±6.64%",
+    "impliedUpdatedAt": 1776658478786
+  },
+  "KFRC": {
+    "impliedMove": "±9.71%",
+    "impliedUpdatedAt": 1776658481890
+  },
+  "KIDZ": {
+    "impliedMove": "±77.50%",
+    "impliedUpdatedAt": 1776658482153
+  },
+  "KRC": {
+    "impliedMove": "±14.19%",
+    "impliedUpdatedAt": 1776658482412
+  },
+  "LC": {
+    "impliedMove": "±13.16%",
+    "impliedUpdatedAt": 1776658482699
+  },
+  "NOV": {
+    "impliedMove": "±9.12%",
+    "impliedUpdatedAt": 1776658484929
+  },
+  "NWBI": {
+    "impliedMove": "±11.38%",
+    "impliedUpdatedAt": 1776658485476
+  },
+  "RMBS": {
+    "impliedMove": "±16.30%",
+    "impliedUpdatedAt": 1776658487021
+  },
+  "RNGR": {
+    "impliedMove": "±5.23%",
+    "impliedUpdatedAt": 1776658487311
+  },
+  "SEI": {
+    "impliedMove": "±18.54%",
+    "impliedUpdatedAt": 1776658488336
+  },
+  "SSD": {
+    "impliedMove": "±1.63%",
+    "impliedUpdatedAt": 1776658489455
+  },
+  "SUI": {
+    "impliedMove": "±4.79%",
+    "impliedUpdatedAt": 1776658490015
+  },
+  "TBI": {
+    "impliedMove": "±28.54%",
+    "impliedUpdatedAt": 1776658490268
+  },
+  "TTI": {
+    "impliedMove": "±15.82%",
+    "impliedUpdatedAt": 1776658490823
+  },
+  "WHR": {
+    "impliedMove": "±12.37%",
+    "impliedUpdatedAt": 1776658492071
+  },
+  "BCBP": {
+    "impliedMove": "±9.34%",
+    "impliedUpdatedAt": 1776643227378
+  },
+  "HBCP": {
+    "impliedMove": "±4.40%",
+    "impliedUpdatedAt": 1776643233523
+  },
+  "BLX": {
+    "impliedMove": "±5.47%",
+    "impliedUpdatedAt": 1776658469028
+  },
+  "CDP": {
+    "impliedMove": "±5.31%",
+    "impliedUpdatedAt": 1776658472676
+  },
+  "HLMN": {
+    "impliedMove": "±16.00%",
+    "impliedUpdatedAt": 1776658479887
   }
 }

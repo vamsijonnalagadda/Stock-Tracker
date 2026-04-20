@@ -2,3 +2,9 @@ node_modules/
 .DS_Store
 npm-debug.log*
 .env
+logs/
+.node_pid
+.yf_pid
+# Local data backups and temporary files
+data/*backup*.json
+*.bak

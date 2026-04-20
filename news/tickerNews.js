@@ -317,9 +317,19 @@ export async function fetchGoogleTickerNewsRaw(ticker, companyName = "", options
       return ageMs >= 0 && ageMs <= DIRECT_FEED_PREFERRED_WINDOW_MS;
     });
 
-    const effectiveItems = preferredDirectInWindow.length > 0
-      ? preferredDirectInWindow
-      : sourcePriorityItems.filter((item) => item.sourceType === "google");
+    let effectiveItems;
+    if (preferredDirectInWindow.length > 0) {
+      // Keep preferred direct items at the front but allow other sourcePriorityItems
+      // (including other direct and google) to fill remaining slots so we can reach maxItems.
+      const prefKeys = new Set(preferredDirectInWindow.map(i => (i.url || '') + '::' + (i.publishedTs || 0)));
+      effectiveItems = [
+        ...sourcePriorityItems.filter(i => prefKeys.has((i.url || '') + '::' + (i.publishedTs || 0))),
+        ...sourcePriorityItems.filter(i => !prefKeys.has((i.url || '') + '::' + (i.publishedTs || 0)))
+      ];
+    } else {
+      // No preferred direct items — use all source-priority items (includes direct and google)
+      effectiveItems = sourcePriorityItems;
+    }
 
     const groups = [];
     for (const article of effectiveItems) {

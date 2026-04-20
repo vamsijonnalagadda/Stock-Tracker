@@ -15,4 +15,14 @@ for i in $(seq 1 20); do
 done
 
 # Start Node.js API server (foreground — keeps container alive)
+NODE_VER=$(node -v 2>/dev/null || true)
+if [ -z "$NODE_VER" ]; then
+  echo "ERROR: node not found in PATH. Require Node 22+ to run server."
+  exit 1
+fi
+MAJOR=$(echo "$NODE_VER" | sed 's/^v//' | awk -F. '{print $1}')
+if [ "$MAJOR" -lt 22 ]; then
+  echo "ERROR: Node version $NODE_VER detected. Server requires Node 22 or higher."
+  exit 1
+fi
 exec node server.js

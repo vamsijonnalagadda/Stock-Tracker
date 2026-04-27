@@ -4332,9 +4332,37 @@ app.get('/api/earnings/next-week', async (_req, res) => {
       return res.json({ updatedAt: nextWeekEarningsCache.updatedAt, weekStart: nextWeekEarningsCache.weekStart, days: nextWeekEarningsCache.days });
     }
 
+    // If in-memory cache is empty, prefer on-disk enriched payload when available.
+    if (!nextWeekEarningsCache.updatedAt || Object.keys(nextWeekEarningsCache.days || {}).length === 0) {
+      try {
+        const rawDisk = await fs.readFile(EARNINGS_NEXT_JSON_PATH, 'utf8');
+        const parsedDisk = JSON.parse(rawDisk);
+        if (parsedDisk && typeof parsedDisk.days === 'object' && parsedDisk.weekStart === nextWeekStartIso && Object.keys(parsedDisk.days || {}).length > 0) {
+          nextWeekEarningsCache = { updatedAt: Date.now(), weekStart: parsedDisk.weekStart, days: parsedDisk.days };
+          return res.json({ updatedAt: nextWeekEarningsCache.updatedAt, weekStart: nextWeekEarningsCache.weekStart, days: nextWeekEarningsCache.days });
+        }
+      } catch (_) {
+        // ignore disk read errors and fall through to live fetch
+      }
+    }
+
     const { fromIso, toIso } = getWeekRangeFromStart(nextMonday);
     const rawRows = await fetchFinnhubEarningsCalendar(fromIso, toIso);
     if (!rawRows.length) {
+      // If the provider returned no rows, prefer any enriched on-disk payload
+      // so the UI doesn't show an empty "Next Week" when we have persisted data.
+      try {
+        const rawDisk = await fs.readFile(EARNINGS_NEXT_JSON_PATH, 'utf8');
+        const parsedDisk = JSON.parse(rawDisk);
+        if (parsedDisk && typeof parsedDisk.days === 'object' && parsedDisk.weekStart === nextWeekStartIso && Object.keys(parsedDisk.days || {}).length > 0) {
+          nextWeekEarningsCache = { updatedAt: Date.now(), weekStart: parsedDisk.weekStart, days: parsedDisk.days };
+          // persist current caches so on-disk and memory stay in sync
+          await saveEarningsCachesToDisk();
+          return res.json({ updatedAt: nextWeekEarningsCache.updatedAt, weekStart: nextWeekEarningsCache.weekStart, days: nextWeekEarningsCache.days });
+        }
+      } catch (_) {
+        // ignore read/parse errors and fall through to returning an empty payload
+      }
       nextWeekEarningsCache = { updatedAt: Date.now(), weekStart: nextWeekStartIso, days: {} };
       return res.json({ updatedAt: nextWeekEarningsCache.updatedAt, weekStart: nextWeekEarningsCache.weekStart, days: nextWeekEarningsCache.days });
     }
@@ -5330,6 +5358,79 @@ app.listen(PORT, () => {
         setInterval(() => {
           fetch(warmUrl).catch(() => {});
         }, 5 * 60 * 1000);
+
+        // Schedule: run a Sunday 7pm Central job to ensure `nextWeekEarningsCache` is populated
+        // Runs once per Sunday after the configured hour (default 19 = 7pm Central)
+        try {
+          let sunday7LastRun = null;
+          setInterval(async () => {
+            try {
+              const now = new Date();
+              const ct = getTimeInCentral(now);
+              const ctIso = isoDateInCentral(now);
+              const refreshHour = EARNINGS_IMPLIED_REFRESH_HOUR_CT || 19;
+              if (ct.weekday === 'Sunday' && ct.hour >= refreshHour && sunday7LastRun !== ctIso) {
+                sunday7LastRun = ctIso;
+                try {
+                  const raw = await fs.readFile(EARNINGS_NEXT_JSON_PATH, 'utf8');
+                  const parsed = JSON.parse(raw || '{}');
+                  if (parsed && typeof parsed.days === 'object' && Object.keys(parsed.days || {}).length > 0) {
+                    // Load into next-week cache
+                    nextWeekEarningsCache = { updatedAt: Date.now(), weekStart: parsed.weekStart || null, days: parsed.days };
+                    console.log('[EarningsSync] Sunday 7pm job: loaded next-week from disk');
+
+                    // If weekly cache is not yet advanced, promote next-week -> weekly
+                    try {
+                      if (!weeklyEarningsCache.weekStart || weeklyEarningsCache.weekStart !== nextWeekEarningsCache.weekStart) {
+                        weeklyEarningsCache = {
+                          updatedAt: Date.now(),
+                          weekStart: nextWeekEarningsCache.weekStart,
+                          days: nextWeekEarningsCache.days
+                        };
+                        earningsRefreshState.lastWeeklyRefreshWeekStart = nextWeekEarningsCache.weekStart;
+                        console.log('[EarningsSync] Sunday 7pm job: promoted next-week to weekly cache (weekStart=' + nextWeekEarningsCache.weekStart + ')');
+                      }
+                    } catch (e) {
+                      console.error('[EarningsSync] Sunday 7pm promotion failed:', e?.message || e);
+                    }
+
+                    // Persist caches before attempting prewarm
+                    try { await saveEarningsCachesToDisk(); } catch (_) {}
+
+                    // Prewarm the week after the promoted week (so Next Week is ready)
+                    try {
+                      const promotedMonday = new Date(nextWeekEarningsCache.weekStart ? new Date(nextWeekEarningsCache.weekStart) : new Date());
+                      promotedMonday.setDate(promotedMonday.getDate() + 7);
+                      const twoWeeksStartIso = isoDateLocal(promotedMonday);
+                      const range2 = getWeekRangeFromStart(promotedMonday);
+                      const rawRows2 = await fetchFinnhubEarningsCalendar(range2.fromIso, range2.toIso).catch(() => []);
+                      const byDay2 = rawRows2.length > 0
+                        ? await buildEarningsDaysFromRows(rawRows2, { syncMoveHistory: false, reason: 'sunday-scheduled-prewarm-next', maxNameSymbols: 60, maxNameDurationMs: 3000 })
+                        : {};
+                      nextWeekEarningsCache = { updatedAt: Date.now(), weekStart: twoWeeksStartIso, days: byDay2 };
+                      await saveEarningsCachesToDisk();
+                      console.log('[EarningsSync] Sunday 7pm job: prewarmed next-week for', twoWeeksStartIso);
+                    } catch (e) {
+                      console.error('[EarningsSync] Sunday 7pm prewarm failed:', e?.message || e);
+                    }
+                  }
+                } catch (e) {
+                  console.error('[EarningsSync] Sunday 7pm job failed loading next-week from disk:', e?.message || e);
+                }
+                try {
+                  await refreshImpliedMovesForNextTwoWeeks('sunday-scheduled');
+                  console.log('[EarningsSync] Sunday 7pm job: implied moves refreshed for next two weeks');
+                } catch (e) {
+                  console.error('[EarningsSync] Sunday 7pm job implied-refresh failed:', e?.message || e);
+                }
+              }
+            } catch (e) {
+              // swallow
+            }
+          }, 5 * 60 * 1000);
+        } catch (e) {
+          console.error('[EarningsSync] Failed to start Sunday scheduler:', e?.message || e);
+        }
         // Do an initial warm after startup
         fetch(warmUrl).catch(() => {});
       } catch (e) {}

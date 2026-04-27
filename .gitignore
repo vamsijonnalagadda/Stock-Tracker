@@ -8,3 +8,4 @@ logs/
 # Local data backups and temporary files
 data/*backup*.json
 *.bak
+stock-tracker-local.tar

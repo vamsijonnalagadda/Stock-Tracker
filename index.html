@@ -194,7 +194,7 @@
     }
 
     /* ── Tab content area ── */
-    .panel-inner-overflow { overflow: hidden; }
+    .panel-inner-overflow { overflow: visible; }
     .panel-inner {
       background: #111827;
       border: 1.5px solid #1e293b;
@@ -227,6 +227,102 @@
     .metric:hover { border-color: #334155; transform: translateY(-1px); }
     .m-label { font-size: 0.7rem; font-weight: 600; color: #475569; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 5px; }
     .m-value { font-size: 1rem; font-weight: 700; color: #f1f5f9; }
+    .reason-hl {
+      display: inline-block;
+      padding: 0 6px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      line-height: 1.35;
+      margin: 0 1px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+    }
+    .reason-hl-strategy {
+      color: #e9d5ff;
+      background: rgba(147, 51, 234, 0.15);
+      border-color: rgba(147, 51, 234, 0.35);
+      font-family: "Trebuchet MS", "Avenir Next", sans-serif;
+    }
+    .reason-hl-month {
+      color: #67e8f9;
+      background: rgba(14, 165, 233, 0.16);
+      border-color: rgba(14, 165, 233, 0.35);
+      font-family: "Trebuchet MS", "Avenir Next", sans-serif;
+    }
+    .reason-hl-strike {
+      color: #86efac;
+      background: rgba(34, 197, 94, 0.16);
+      border-color: rgba(34, 197, 94, 0.35);
+      font-family: "Trebuchet MS", "Avenir Next", sans-serif;
+    }
+    .reason-hl-premium {
+      color: #facc15;
+      background: rgba(250, 204, 21, 0.14);
+      border-color: rgba(250, 204, 21, 0.35);
+      font-family: "Trebuchet MS", "Avenir Next", sans-serif;
+    }
+    .reason-metric {
+      width: 100%;
+      margin-top: 10px;
+    }
+    .reason-metric .m-value {
+      white-space: normal;
+      word-break: break-word;
+      line-height: 1.5;
+      font-size: 0.92rem;
+      font-weight: 650;
+    }
+    .reason-bullets {
+      margin: 0;
+      padding-left: 1.1rem;
+      display: grid;
+      gap: 6px;
+    }
+    .reason-bullets li::marker {
+      color: #67e8f9;
+    }
+    .tip-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: help;
+    }
+    .tip {
+      border-bottom: 1px dotted #64748b;
+    }
+    .tip-icon {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid #334155;
+      background: #0b1220;
+      color: #94a3b8;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    #g-tip {
+      position: fixed;
+      z-index: 9999;
+      background: #0b1220;
+      color: #dbeafe;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.72rem;
+      line-height: 1.45;
+      max-width: 300px;
+      pointer-events: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,.45);
+      display: none;
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: normal;
+    }
 
     /* ── JSON pre ── */
     pre {
@@ -675,6 +771,11 @@
   let inFlight = false, _poll = null, _prevClose = null, _cur = '';
   let _currentTicker = '', _currentCompanyName = '', _newsLoadedFor = '', _newsLoading = false;
   let _currentEarningsDate = null;
+  let _recommendationLoadedFor = '';
+  let _recommendationRiskMode = 'balanced';
+  let _recommendationTrack = '';
+  let _recommendationHorizon = 'all';
+  let _recommendationCache = {};
   let _initialTrendingConsumed = false;
   let _tickerOptionsLoadedFor = '';
   let _insightsStripMode = null;
@@ -731,6 +832,62 @@
     return isNaN(d.getTime()) ? '\u2014' : d.toLocaleDateString(undefined, {year:'numeric',month:'short',day:'numeric'});
   };
   const m     = (lbl, val) => '<div class="metric"><div class="m-label">'+lbl+'</div><div class="m-value">'+val+'</div></div>';
+  const tl    = (label, help) => '<span class="tip-wrap" tabindex="0" data-tip="'+escapeHtml(help)+'"><span class="tip">'+label+'</span><span class="tip-icon" aria-hidden="true">i</span></span>';
+  const formatRecommendationReason = (reason, overallVerdict) => {
+    const raw = String(reason || 'Insufficient data to build reason string.');
+    let html = escapeHtml(raw);
+
+    // Emphasize key strategy terms so traders can scan reasoning quickly.
+    if (String(overallVerdict || '').toUpperCase() === 'BULLISH (SELL PUT SPREADS)') {
+      html = html
+        .replace(/Sell\s+([A-Za-z]+)\s+Bull Put Spreads/i,
+          '<span class="reason-hl reason-hl-strategy">Sell</span> <span class="reason-hl reason-hl-month">$1</span> <span class="reason-hl reason-hl-strategy">Bull Put Spreads</span>')
+        .replace(/targeting the\s+(\$\d+(?:\.\d+)?)\s+structural support zone/i,
+          'targeting the <span class="reason-hl reason-hl-strike">$1</span> structural support zone')
+        .replace(/premium yield\s*\((\$\d+(?:\.\d+)?)\)/i,
+          '<span class="reason-hl reason-hl-premium">premium yield</span> (<span class="reason-hl reason-hl-premium">$1</span>)')
+        .replace(/premium yield/i, '<span class="reason-hl reason-hl-premium">premium yield</span>');
+    } else if (String(overallVerdict || '').toUpperCase() === 'BULLISH (BUY CALLS)') {
+      html = html
+        .replace(/Buy the\s+([A-Za-z]+)\s+(\$\d+(?:\.\d+)?)\s+Call outright/i,
+          '<span class="reason-hl reason-hl-strategy">Buy</span> the <span class="reason-hl reason-hl-month">$1</span> <span class="reason-hl reason-hl-strike">$2</span> <span class="reason-hl reason-hl-strategy">Call outright</span>')
+        .replace(/targeting the overhead\s+(\$\d+(?:\.\d+)?)\s+Call Wall/i,
+          'targeting the overhead <span class="reason-hl reason-hl-strike">$1</span> <span class="reason-hl reason-hl-strategy">Call Wall</span>')
+        .replace(/estimated\s+(\d+(?:\.\d+)?%)\s+chance/i,
+          'estimated <span class="reason-hl reason-hl-premium">$1</span> chance');
+    } else if (String(overallVerdict || '').toUpperCase() === 'NEUTRAL (IRON CONDORS)') {
+      html = html
+        .replace(/Expect\s+range(?:-|\u2010|\u2011|\u2012|\u2013|\u2014|\u2015)bound\s+consolidation\s+between\s+(\$\d+(?:\.\d+)?)\s+and\s+(\$\d+(?:\.\d+)?)([.!?])?/i,
+          '<span class="reason-hl reason-hl-strategy">Expect range-bound consolidation</span> between <span class="reason-hl reason-hl-strike">$1</span> and <span class="reason-hl reason-hl-strike">$2</span>')
+        .replace(/Deploy\s+Iron Condors/i,
+          '<span class="reason-hl reason-hl-strategy">Deploy Iron Condors</span>');
+    }
+
+    // Fallback highlight pass (verdict-independent) for neutral range phrases.
+    html = html
+      .replace(/Spot\s*\((\$\d+(?:\.\d+)?)\)\s*is pinned within\s*(\d+(?:\.\d+)?%)\s*of Max Pain\s*\((\$\d+(?:\.\d+)?)\)/i,
+        'Spot <span class="reason-hl reason-hl-strike">($1)</span> is pinned within <span class="reason-hl reason-hl-premium">$2</span> of Max Pain <span class="reason-hl reason-hl-strike">($3)</span>')
+      .replace(/Expect\s+range(?:-|\u2010|\u2011|\u2012|\u2013|\u2014|\u2015)bound\s+consolidation\s+between\s+(\$\d+(?:\.\d+)?)\s+and\s+(\$\d+(?:\.\d+)?)([.!?])?/i,
+        '<span class="reason-hl reason-hl-strategy">Expect range-bound consolidation</span> between <span class="reason-hl reason-hl-strike">$1</span> and <span class="reason-hl reason-hl-strike">$2</span>')
+      .replace(/Expect\s+range\s*[-\u2010\u2011\u2012\u2013\u2014\u2015]?\s*bound\s+consolidation\s+between\s+(\$\d+(?:\.\d+)?)\s+and\s+(\$\d+(?:\.\d+)?)([.!?])?/i,
+        '<span class="reason-hl reason-hl-strategy">Expect range-bound consolidation</span> between <span class="reason-hl reason-hl-strike">$1</span> and <span class="reason-hl reason-hl-strike">$2</span>')
+      .replace(/Deploy\s+Iron Condors/i,
+        '<span class="reason-hl reason-hl-strategy">Deploy Iron Condors</span>');
+
+    const bulletItems = html
+      .split(/\n+/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => line.replace(/^[-•]\s*/, ''));
+
+    const finalItems = bulletItems.length
+      ? bulletItems.slice(0, 4)
+      : [html];
+
+    return '<ul class="reason-bullets">'
+      + finalItems.map((line) => '<li>' + line + '</li>').join('')
+      + '</ul>';
+  };
   const newsHtml = (news) => {
     if (!Array.isArray(news) || news.length === 0) {
       return '<p class="dimtext">No recent news found.</p>';
@@ -1595,6 +1752,350 @@
       + '</tr></thead><tbody>'+rows+'</tbody></table>';
   }
 
+  function recommendationPanelHtml(report) {
+    if (!report || report.error) {
+      return '<p class="dimtext">Recommendation data is unavailable for this symbol.</p>';
+    }
+
+    const triad = report.triadVerdict || {};
+    const overallVerdict = report.overallVerdict || '';
+    const verdictReason = report.verdictReason || '';
+    const card = report.engineScorecard || {};
+    const ladder = report.gammaLadder || {};
+    const flow = report.flowTells || {};
+    const iv = report.ivContext || {};
+    const recs = Array.isArray(report.topTrades) && report.topTrades.length
+      ? report.topTrades
+      : (Array.isArray(report.recommendations) ? report.recommendations : []);
+    const currentMode = ['conservative', 'balanced', 'aggressive'].includes(String(_recommendationRiskMode || '').toLowerCase())
+      ? String(_recommendationRiskMode).toLowerCase()
+      : (['conservative', 'balanced', 'aggressive'].includes(String(report?.riskMode || '').toLowerCase())
+        ? String(report.riskMode).toLowerCase()
+        : 'balanced');
+    const currentTrack = ['trading', 'investor'].includes(String(_recommendationTrack || '').toLowerCase())
+      ? String(_recommendationTrack).toLowerCase()
+      : (String(report?.track || '').toUpperCase() === 'INVESTOR' ? 'investor' : 'trading');
+    const currentHorizon = ['short', 'medium', 'long', 'all'].includes(String(_recommendationHorizon || '').toLowerCase())
+      ? String(_recommendationHorizon).toLowerCase()
+      : (['short', 'medium', 'long', 'all'].includes(String(report?.horizon || '').toLowerCase())
+        ? String(report.horizon).toLowerCase()
+        : 'all');
+
+    const modePill = currentMode === 'conservative'
+      ? 'Conservative'
+      : currentMode === 'aggressive'
+        ? 'Aggressive'
+        : 'Balanced';
+
+    const controlsHtml = '<div style="position:sticky;top:8px;z-index:12;margin:0 0 14px 0;padding:6px 0 8px;background:linear-gradient(to bottom, rgba(2,6,23,0.95), rgba(2,6,23,0.78) 70%, rgba(2,6,23,0));backdrop-filter: blur(2px)">'
+      + '<div class="panel-label" style="margin-bottom:8px">Recommendation Controls</div>'
+      + '<div style="display:flex;align-items:center;justify-content:flex-start;gap:12px;flex-wrap:wrap;padding:8px 10px;border:1px solid #1e293b;border-radius:12px;background:#0b1220">'
+      + '<div id="recommendationTrackModes" style="display:inline-flex;gap:6px">'
+      + '<button class="track-mode-btn" data-track="trading" style="border:1px solid '+(currentTrack === 'trading' ? '#0ea5e9' : '#334155')+';background:'+(currentTrack === 'trading' ? '#0b3a4a' : '#0b1220')+';color:'+(currentTrack === 'trading' ? '#e0f2fe' : '#cbd5e1')+';border-radius:999px;padding:5px 12px;font-size:0.74rem;cursor:pointer">Trader</button>'
+      + '<button class="track-mode-btn" data-track="investor" style="border:1px solid '+(currentTrack === 'investor' ? '#0ea5e9' : '#334155')+';background:'+(currentTrack === 'investor' ? '#0b3a4a' : '#0b1220')+';color:'+(currentTrack === 'investor' ? '#e0f2fe' : '#cbd5e1')+';border-radius:999px;padding:5px 12px;font-size:0.74rem;cursor:pointer">Investor</button>'
+      + '</div>'
+      + (currentTrack === 'trading'
+        ? ('<span class="dimtext" style="font-size:0.72rem">Mode: <strong style="color:#dbeafe">'+modePill+'</strong></span>'
+          + '<div id="recommendationRiskModes" style="display:inline-flex;gap:6px">'
+          + '<button class="risk-mode-btn" data-mode="conservative" style="border:1px solid '+(currentMode === 'conservative' ? '#0ea5e9' : '#334155')+';background:'+(currentMode === 'conservative' ? '#0b3a4a' : '#0b1220')+';color:'+(currentMode === 'conservative' ? '#e0f2fe' : '#cbd5e1')+';border-radius:999px;padding:5px 12px;font-size:0.74rem;cursor:pointer">Conservative</button>'
+          + '<button class="risk-mode-btn" data-mode="balanced" style="border:1px solid '+(currentMode === 'balanced' ? '#0ea5e9' : '#334155')+';background:'+(currentMode === 'balanced' ? '#0b3a4a' : '#0b1220')+';color:'+(currentMode === 'balanced' ? '#e0f2fe' : '#cbd5e1')+';border-radius:999px;padding:5px 12px;font-size:0.74rem;cursor:pointer">Balanced</button>'
+          + '<button class="risk-mode-btn" data-mode="aggressive" style="border:1px solid '+(currentMode === 'aggressive' ? '#0ea5e9' : '#334155')+';background:'+(currentMode === 'aggressive' ? '#0b3a4a' : '#0b1220')+';color:'+(currentMode === 'aggressive' ? '#e0f2fe' : '#cbd5e1')+';border-radius:999px;padding:5px 12px;font-size:0.74rem;cursor:pointer">Aggressive</button>'
+          + '</div>')
+        : ('<div id="recommendationHorizonModes" style="display:inline-flex;gap:6px">'
+          + '<button class="horizon-mode-btn" data-horizon="short" style="border:1px solid '+(currentHorizon === 'short' ? '#0ea5e9' : '#334155')+';background:'+(currentHorizon === 'short' ? '#0b3a4a' : '#0b1220')+';color:'+(currentHorizon === 'short' ? '#e0f2fe' : '#cbd5e1')+';border-radius:999px;padding:5px 12px;font-size:0.74rem;cursor:pointer">Short</button>'
+          + '<button class="horizon-mode-btn" data-horizon="medium" style="border:1px solid '+(currentHorizon === 'medium' ? '#0ea5e9' : '#334155')+';background:'+(currentHorizon === 'medium' ? '#0b3a4a' : '#0b1220')+';color:'+(currentHorizon === 'medium' ? '#e0f2fe' : '#cbd5e1')+';border-radius:999px;padding:5px 12px;font-size:0.74rem;cursor:pointer">Medium</button>'
+          + '<button class="horizon-mode-btn" data-horizon="long" style="border:1px solid '+(currentHorizon === 'long' ? '#0ea5e9' : '#334155')+';background:'+(currentHorizon === 'long' ? '#0b3a4a' : '#0b1220')+';color:'+(currentHorizon === 'long' ? '#e0f2fe' : '#cbd5e1')+';border-radius:999px;padding:5px 12px;font-size:0.74rem;cursor:pointer">Long</button>'
+          + '<button class="horizon-mode-btn" data-horizon="all" style="border:1px solid '+(currentHorizon === 'all' ? '#0ea5e9' : '#334155')+';background:'+(currentHorizon === 'all' ? '#0b3a4a' : '#0b1220')+';color:'+(currentHorizon === 'all' ? '#e0f2fe' : '#cbd5e1')+';border-radius:999px;padding:5px 12px;font-size:0.74rem;cursor:pointer">All</button>'
+          + '</div>'))
+      + '</div>'
+      + '</div>'
+      + '</div>';
+
+    if (currentTrack === 'investor' || String(report?.track || '').toUpperCase() === 'INVESTOR') {
+      const metrics = report.metrics || {};
+      const timeline = report.timeline || {};
+      const strategicDipValue = Number.isFinite(+metrics.strategicDipTarget) ? (+metrics.strategicDipTarget).toFixed(2) : null;
+      const strategicDipZone = strategicDipValue ? ('$' + strategicDipValue) : null;
+      const over = String(report.overallVerdict || '').toUpperCase();
+      const investorCls = over.includes('BUY')
+        ? 'color:#16a34a;font-weight:700'
+        : over.includes('SELL')
+          ? 'color:#dc2626;font-weight:700'
+          : 'color:#f59e0b;font-weight:700';
+      return controlsHtml
+        + '<div class="panel-label" style="margin-bottom:6px">Macro Verdict</div>'
+        + '<div class="grid">'
+        + m(tl('Overall', 'Investor recommendation from horizon-specific valuation, technical, and structural logic.'), '<span style="'+investorCls+'">'+escapeHtml(report.overallVerdict || 'HOLD')+'</span>')
+        + '</div>'
+        + '<div class="metric reason-metric">'
+        + '<div class="m-label">'+tl('Reason', 'Natural-language investor guidance for current price context and horizon.')+'</div>'
+        + '<div class="m-value">'+formatRecommendationReason(report.reason || 'No investor reason available.', report.overallVerdict || 'HOLD')+'</div>'
+        + '</div>'
+        + '<div class="panel-label" style="margin-top:10px">Investor Scorecard</div>'
+        + '<div class="grid">'
+        + m('Spot Price', Number.isFinite(+metrics.spotPrice) ? '$'+(+metrics.spotPrice).toFixed(2) : 'N/A')
+        + m('Street Target', Number.isFinite(+metrics.targetPrice) ? '$'+(+metrics.targetPrice).toFixed(2) : 'N/A')
+        + m('Strategic Dip', strategicDipZone || 'N/A')
+        + m('P/E Ratio', Number.isFinite(+metrics.peRatio) ? (+metrics.peRatio).toFixed(2) : 'N/A')
+        + m('YoY Growth', Number.isFinite(+metrics.yoyRevenueGrowthPct) ? (+metrics.yoyRevenueGrowthPct).toFixed(1) + '%' : 'N/A')
+        + m('RSI (14)', Number.isFinite(+metrics.rsi14) ? (+metrics.rsi14).toFixed(1) : 'N/A')
+        + '</div>'
+        + '<div class="panel-label" style="margin-top:10px">Timeline Action Engine</div>'
+        + '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:0.8rem">'
+        + '<thead><tr style="color:#64748b;font-size:0.7rem;text-transform:uppercase;border-bottom:1px solid #334155">'
+        + '<th style="text-align:left;padding:4px 6px">Timeframe</th><th style="text-align:left;padding:4px 6px">Verdict</th><th style="text-align:left;padding:4px 6px">Allocation</th><th style="text-align:left;padding:4px 6px">Target Zone</th>'
+        + '</tr></thead><tbody>'
+        + ['short','medium','long'].map((k) => {
+          const row = timeline[k] || {};
+          const syncedTargetZone = (k === 'long' && strategicDipZone)
+            ? strategicDipZone
+            : String(row.targetZone || '—');
+          return '<tr style="border-bottom:1px solid #1e293b">'
+            + '<td style="padding:4px 6px">'+escapeHtml(k.charAt(0).toUpperCase() + k.slice(1))+'</td>'
+            + '<td style="padding:4px 6px">'+escapeHtml(String(row.verdict || 'HOLD'))+'</td>'
+            + '<td style="padding:4px 6px">'+escapeHtml(String(row.allocation || '—'))+'</td>'
+            + '<td style="padding:4px 6px">'+escapeHtml(syncedTargetZone)+'</td>'
+            + '</tr>';
+        }).join('')
+        + '</tbody></table></div>'
+        + '<div class="panel-label" style="margin-top:10px">Portfolio Guidance</div>'
+        + '<div class="grid">'
+        + m('Current Holders', escapeHtml(String((report.portfolioGuidance || {}).currentHolders || 'Maintain core allocation')))
+        + m('Side-Line Capital', escapeHtml(strategicDipZone ? ('Wait for pullback near ' + strategicDipZone) : String((report.portfolioGuidance || {}).sideLineCapital || 'Use staged entries near support levels')))
+        + '</div>';
+    }
+
+    const verdictCls = triad.verdict === 'Bullish'
+      ? 'color:#16a34a;font-weight:700'
+      : triad.verdict === 'Bearish'
+        ? 'color:#dc2626;font-weight:700'
+        : 'color:#f59e0b;font-weight:700';
+
+    const macroVerdictCls = String(overallVerdict).startsWith('BULLISH')
+      ? 'color:#16a34a;font-weight:700'
+      : String(overallVerdict).startsWith('BEARISH')
+        ? 'color:#dc2626;font-weight:700'
+        : 'color:#f59e0b;font-weight:700';
+
+    const recRows = recs.length
+      ? recs.map((r, i) => {
+          const rType = String(r.type || '').toLowerCase();
+          const typeCls = rType === 'call'
+            ? 'color:#4ade80;font-weight:700'
+            : rType === 'put'
+              ? 'color:#f87171;font-weight:700'
+              : 'color:#f59e0b;font-weight:700';
+          const priceFmt = String(r.priceLabel || '').trim()
+            ? escapeHtml(String(r.priceLabel))
+            : (Number.isFinite(+r.currentPrice) ? '$' + (+r.currentPrice).toFixed(2) : '--');
+          const expiryLabel = (() => {
+            const exp = r.expiration || '--';
+            const d = new Date(exp);
+            if (!exp || exp === '--' || Number.isNaN(d.getTime())) return escapeHtml(exp);
+            const month = d.toLocaleString('en-US', { month: 'long' });
+            return escapeHtml(exp + ' (' + month + ')');
+          })();
+          const strikeLabel = Number.isFinite(+r.strike)
+            ? fv(r.strike)
+            : escapeHtml(String(r.strike || '--'));
+          const typeLabel = rType === 'iron-condor'
+            ? escapeHtml(String(r.strategy || 'IRON CONDOR'))
+            : escapeHtml(String(r.type || '').toUpperCase());
+          return '<tr style="border-bottom:1px solid #1e293b">'
+            + '<td style="padding:4px 6px">'+(i + 1)+'</td>'
+            + '<td style="padding:4px 6px;'+typeCls+'">'+typeLabel+'</td>'
+            + '<td style="padding:4px 6px">'+strikeLabel+'</td>'
+            + '<td style="padding:4px 6px">'+expiryLabel+'</td>'
+            + '<td style="padding:4px 6px;color:#facc15;font-weight:600">'+priceFmt+'</td>'
+            + '<td style="padding:4px 6px">'+(Number.isFinite(+r.volume) ? Math.round(+r.volume).toLocaleString() : '--')+'</td>'
+            + '<td style="padding:4px 6px">'+(Number.isFinite(+r.openInterest) ? Math.round(+r.openInterest).toLocaleString() : '--')+'</td>'
+            + '<td style="padding:4px 6px">'+(Number.isFinite(+r.chanceOfProfit) ? Math.round(+r.chanceOfProfit) + '%' : '--')+'</td>'
+            + '<td style="padding:4px 6px">'+(Number.isFinite(+r.score) ? (+r.score).toFixed(1) : '--')+'</td>'
+            + '</tr>';
+        }).join('')
+          : '<tr><td colspan="9" class="dimtext" style="padding:8px">No contracts match the current thesis filters.</td></tr>';
+
+    const unusual = Array.isArray(flow.unusualContracts) ? flow.unusualContracts : [];
+    const unusualHtml = unusual.length
+      ? '<div style="display:flex;flex-wrap:wrap;gap:6px">'
+        + unusual.map((u) => {
+          const side = String(u.type || '').toLowerCase() === 'call' ? 'CALL' : 'PUT';
+          const cls = side === 'CALL' ? 'color:#4ade80' : 'color:#f87171';
+          return '<span class="meta-chip" style="font-size:0.72rem">'
+            + '<span class="meta-value" style="'+cls+';font-weight:700">'+side+'</span> '
+            + '<span class="meta-value">'+fv(u.strike)+'</span> '
+            + '<span class="meta-value">vol/oi '+fv(u.volumeOiRatio)+'</span>'
+            + '</span>';
+        }).join('')
+        + '</div>'
+      : '<p class="dimtext">No unusual volume/oi contracts detected.</p>';
+
+    const tradeCtx = report.tradeCardContext || null;
+    const tradeCtxHtml = tradeCtx
+      ? ('<div class="panel-label" style="margin-top:10px">Execution Profile</div>'
+        + '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:0.8rem">'
+        + '<thead><tr style="color:#64748b;font-size:0.7rem;text-transform:uppercase;border-bottom:1px solid #334155">'
+        + '<th style="text-align:left;padding:4px 6px">Live Spot</th>'
+        + '<th style="text-align:left;padding:4px 6px">Strike</th>'
+        + '<th style="text-align:left;padding:4px 6px">Premium</th>'
+        + '<th style="text-align:left;padding:4px 6px">Net Cost If Assigned</th>'
+        + '</tr></thead><tbody><tr style="border-bottom:1px solid #1e293b">'
+        + '<td style="padding:4px 6px">'+(Number.isFinite(+tradeCtx.executionProfile?.spotPrice) ? '$'+(+tradeCtx.executionProfile.spotPrice).toFixed(2) : 'N/A')+'</td>'
+        + '<td style="padding:4px 6px">'+(Number.isFinite(+tradeCtx.executionProfile?.strikePrice) ? '$'+(+tradeCtx.executionProfile.strikePrice).toFixed(2) : 'N/A')+'</td>'
+        + '<td style="padding:4px 6px;color:#22c55e;font-weight:700">'+(Number.isFinite(+tradeCtx.executionProfile?.premiumCollected) ? '$'+(+tradeCtx.executionProfile.premiumCollected).toFixed(2) : 'N/A')+'</td>'
+        + '<td style="padding:4px 6px;color:#facc15;font-weight:700">'+(Number.isFinite(+tradeCtx.executionProfile?.netCostIfAssignedContract) ? '$'+Math.round(+tradeCtx.executionProfile.netCostIfAssignedContract).toLocaleString() : (Number.isFinite(+tradeCtx.executionProfile?.netCostIfAssigned) ? '$'+Math.round((+tradeCtx.executionProfile.netCostIfAssigned) * 100).toLocaleString() : 'N/A'))+'</td>'
+        + '</tr></tbody></table></div>'
+        + '<div class="panel-label" style="margin-top:10px">Why This Trade</div>'
+        + '<div style="display:grid;gap:8px">'
+        + '<div style="border:1px solid #1e293b;border-radius:10px;padding:10px;background:#0b1220">'
+        + '<div style="font-weight:700;color:#86efac;margin-bottom:4px">'+escapeHtml(String(tradeCtx.point1?.heading || 'Structural Context'))+'</div>'
+        + '<div class="dimtext" style="font-size:0.82rem">'+escapeHtml(String(tradeCtx.point1?.body || ''))+'</div>'
+        + '</div>'
+        + '<div style="border:1px solid #1e293b;border-radius:10px;padding:10px;background:#0b1220">'
+        + '<div style="font-weight:700;color:#67e8f9;margin-bottom:4px">'+escapeHtml(String(tradeCtx.point4?.heading || 'Timeline Context'))+'</div>'
+        + '<div class="dimtext" style="font-size:0.82rem">'+escapeHtml(String(tradeCtx.point4?.body || ''))+'</div>'
+        + '</div>'
+        + '</div>')
+      : '';
+
+    return controlsHtml
+      + '<div class="panel-label" style="margin-bottom:6px">Macro Verdict</div>'
+      + '<div class="grid">'
+      + m(tl('Overall', 'Primary strategy decision produced by the engine after combining regime, flow, and IV context.'), '<span style="'+macroVerdictCls+'">'+escapeHtml(overallVerdict || 'NEUTRAL (PREMIUM SELLING)')+'</span>')
+      + '</div>'
+      + '<div class="metric reason-metric">'
+      + '<div class="m-label">'+tl('Reason', 'Natural-language explanation of why this macro strategy was selected for current market structure.')+'</div>'
+      + '<div class="m-value">'+formatRecommendationReason(verdictReason, overallVerdict)+'</div>'
+      + '</div>'
+      + '<div class="panel-label" style="margin-top:10px">Triad Verdict</div>'
+      + '<div class="grid">'
+      + m(tl('Verdict', 'Directional read from the triad model (Bullish / Bearish / Neutral).'), '<span style="'+verdictCls+'">'+escapeHtml(triad.verdict || 'Neutral')+'</span>')
+      + m(tl('Confidence', 'Triad confidence score from 0 to 100 based on alignment of core signals.'), Number.isFinite(+triad.confidence) ? (+triad.confidence).toFixed(0) + '/100' : 'N/A')
+      + m(tl('Spot', 'Current underlying spot price used for all model calculations.'), fv(report.spotPrice))
+      + m(tl('IV Rank', 'Implied volatility percentile versus recent historical range. High values indicate expensive options.'), Number.isFinite(+iv.ivRank) ? (+iv.ivRank).toFixed(1) + '%' : 'N/A')
+      + '</div>'
+      + '<div class="panel-label" style="margin-top:10px">Engine Scorecard</div>'
+      + '<div class="grid">'
+      + m(tl('Regime', 'Composite regime score blending velocity, reversion, volatility context, and liquidity.'), Number.isFinite(+card.regime) ? (+card.regime).toFixed(0) : 'N/A')
+      + m(tl('Velocity', 'Momentum pressure score. Higher values indicate stronger directional continuation.'), Number.isFinite(+card.velocity) ? (+card.velocity).toFixed(0) : 'N/A')
+      + m(tl('Reversion', 'Mean-reversion tendency score. Higher values imply pullback/centering behavior.'), Number.isFinite(+card.reversion) ? (+card.reversion).toFixed(0) : 'N/A')
+      + m(tl('Volatility', 'Volatility suitability score based on IV context.'), Number.isFinite(+card.volatility) ? (+card.volatility).toFixed(0) : 'N/A')
+      + m(tl('Liquidity', 'Execution quality score derived from option volume and open interest depth.'), Number.isFinite(+card.liquidity) ? (+card.liquidity).toFixed(0) : 'N/A')
+      + m(tl('Dist to Max Pain', 'Percent distance between spot and estimated max pain strike.'), Number.isFinite(+card.distanceToMaxPainPct) ? (+card.distanceToMaxPainPct).toFixed(2) + '%' : 'N/A')
+      + '</div>'
+      + '<div class="panel-label" style="margin-top:10px">Gamma Ladder</div>'
+      + '<div class="grid">'
+      + m(tl('Call Wall', 'Strike with highest call open interest; often acts as overhead magnet/resistance.'), fv(ladder.callWall))
+      + m(tl('Max Pain', 'Strike where total option holder payout is minimized at expiration.'), fv(ladder.maxPain))
+      + m(tl('Gamma Flip (est.)', 'Estimated transition level where dealer hedging behavior can change regime.'), fv(ladder.gammaFlip))
+      + m(tl('Put Wall', 'Strike with highest put open interest; often acts as downside support zone.'), fv(ladder.putWall))
+      + m(tl('Call/Put Vol Ratio', 'Call volume divided by put volume. >1 suggests call-side flow dominance.'), Number.isFinite(+flow.callPutVolumeRatio) ? (+flow.callPutVolumeRatio).toFixed(2) : 'N/A')
+      + m(tl('Put/Call OI Ratio', 'Put open interest divided by call open interest. Higher values imply stronger put positioning.'), Number.isFinite(+flow.putCallOIRatio) ? (+flow.putCallOIRatio).toFixed(2) : 'N/A')
+      + '</div>'
+      + '<div class="panel-label" style="margin-top:10px">Flow Tells</div>'
+      + unusualHtml
+      + '<div class="panel-label" style="margin-top:10px">Top Contracts</div>'
+      + '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:0.8rem">'
+      + '<thead><tr style="color:#64748b;font-size:0.7rem;text-transform:uppercase;border-bottom:1px solid #334155">'
+      + '<th style="text-align:left;padding:4px 6px" title="Rank position among top contracts after filtering and scoring.">#</th><th style="text-align:left;padding:4px 6px" title="Option side: CALL or PUT.">Type</th><th style="text-align:left;padding:4px 6px" title="Option strike price.">Strike</th>'
+        + '<th style="text-align:left;padding:4px 6px" title="Contract expiration date.">Expiry</th><th style="text-align:left;padding:4px 6px" title="Current premium: last traded price, or (bid+ask)/2 midpoint if last is unavailable.">Price</th><th style="text-align:left;padding:4px 6px" title="Today\'s traded contract volume.">Volume</th><th style="text-align:left;padding:4px 6px" title="Open interest: currently open contracts.">OI</th><th style="text-align:left;padding:4px 6px" title="Estimated chance of profitability, primarily derived from delta when available.">Chance</th><th style="text-align:left;padding:4px 6px" title="Execution quality score combining liquidity, spread quality, and target proximity.">Score</th>'
+      + '</tr></thead><tbody>' + recRows + '</tbody></table></div>'
+        + tradeCtxHtml
+      + '<p class="dimtext" style="margin-top:6px;font-size:0.72rem">Score example: <strong style="color:#dbeafe">78</strong> means the contract is relatively easy to trade (strong volume/OI, tighter spread, better strike placement). Lower scores indicate weaker liquidity or wider spreads.</p>'
+      + '<p class="dimtext" style="margin-top:8px;font-size:0.72rem">Gamma Flip and IV Rank are estimates based on currently available data feeds.</p>';
+  }
+
+  async function loadRecommendationForCurrentTicker() {
+    const container = document.getElementById('recommendationContainer');
+    if (!container || !_currentTicker) return;
+
+    const track = ['trading', 'investor'].includes(String(_recommendationTrack || '').toLowerCase())
+      ? String(_recommendationTrack).toLowerCase()
+      : '';
+    if (!track) {
+      container.innerHTML = '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'
+        + '<span class="dimtext">Choose recommendation mode:</span>'
+        + '<button id="recChooseTrading" style="border:1px solid #334155;background:#0b1220;color:#cbd5e1;border-radius:999px;padding:5px 10px;font-size:0.75rem;cursor:pointer">Trader</button>'
+        + '<button id="recChooseInvestor" style="border:1px solid #334155;background:#0b1220;color:#cbd5e1;border-radius:999px;padding:5px 10px;font-size:0.75rem;cursor:pointer">Investor</button>'
+        + '</div>';
+      const tBtn = document.getElementById('recChooseTrading');
+      const iBtn = document.getElementById('recChooseInvestor');
+      if (tBtn) tBtn.onclick = async () => { _recommendationTrack = 'trading'; _recommendationLoadedFor = ''; await loadRecommendationForCurrentTicker(); };
+      if (iBtn) iBtn.onclick = async () => { _recommendationTrack = 'investor'; _recommendationLoadedFor = ''; await loadRecommendationForCurrentTicker(); };
+      return;
+    }
+
+    const mode = ['conservative', 'balanced', 'aggressive'].includes(String(_recommendationRiskMode || '').toLowerCase())
+      ? String(_recommendationRiskMode).toLowerCase()
+      : 'balanced';
+    const horizon = ['short', 'medium', 'long', 'all'].includes(String(_recommendationHorizon || '').toLowerCase())
+      ? String(_recommendationHorizon).toLowerCase()
+      : 'all';
+    const recommendationKey = _currentTicker + ':' + mode + ':' + track + ':' + horizon;
+
+    if (_recommendationLoadedFor === recommendationKey && _recommendationCache[recommendationKey]) {
+      container.innerHTML = recommendationPanelHtml(_recommendationCache[recommendationKey]);
+      wireRecommendationModeSelector();
+      return;
+    }
+
+    container.innerHTML = '<p class="dimtext">Building recommendation scorecard…</p>';
+    try {
+      const res = await fetch('/api/options/' + encodeURIComponent(_currentTicker)
+        + '/recommendation?riskMode=' + encodeURIComponent(mode)
+        + '&track=' + encodeURIComponent(track)
+        + '&horizon=' + encodeURIComponent(horizon));
+      const data = await res.json();
+      if (data.error) {
+        container.innerHTML = '<p class="dimtext">'+escapeHtml(data.error)+'</p>';
+        return;
+      }
+      _recommendationCache[recommendationKey] = data;
+      _recommendationLoadedFor = recommendationKey;
+      container.innerHTML = recommendationPanelHtml(data);
+      wireRecommendationModeSelector();
+    } catch (_) {
+      container.innerHTML = '<p class="dimtext">Unable to load recommendation engine output.</p>';
+    }
+  }
+
+  function wireRecommendationModeSelector() {
+    const modeBtns = Array.from(document.querySelectorAll('.risk-mode-btn'));
+    modeBtns.forEach((btn) => {
+      btn.onclick = async () => {
+        const nextMode = String(btn?.dataset?.mode || 'balanced').toLowerCase();
+        if (nextMode === _recommendationRiskMode) return;
+        _recommendationRiskMode = ['conservative', 'balanced', 'aggressive'].includes(nextMode)
+          ? nextMode
+          : 'balanced';
+        _recommendationLoadedFor = '';
+        await loadRecommendationForCurrentTicker();
+      };
+    });
+
+    const trackBtns = Array.from(document.querySelectorAll('.track-mode-btn'));
+    trackBtns.forEach((btn) => {
+      btn.onclick = async () => {
+        const nextTrack = String(btn?.dataset?.track || 'trading').toLowerCase();
+        if (nextTrack === _recommendationTrack) return;
+        _recommendationTrack = ['trading', 'investor'].includes(nextTrack) ? nextTrack : 'trading';
+        _recommendationLoadedFor = '';
+        await loadRecommendationForCurrentTicker();
+      };
+    });
+
+    const horizonBtns = Array.from(document.querySelectorAll('.horizon-mode-btn'));
+    horizonBtns.forEach((btn) => {
+      btn.onclick = async () => {
+        const nextHorizon = String(btn?.dataset?.horizon || 'all').toLowerCase();
+        if (nextHorizon === _recommendationHorizon) return;
+        _recommendationHorizon = ['short', 'medium', 'long', 'all'].includes(nextHorizon) ? nextHorizon : 'all';
+        _recommendationLoadedFor = '';
+        await loadRecommendationForCurrentTicker();
+      };
+    });
+  }
+
   async function loadHorizonOptions(ticker, bucket) {
     const key = ticker + '_' + bucket;
     const area = document.getElementById('optionsHorizonTableArea');
@@ -2085,6 +2586,7 @@
       area.style.display = 'block';
       if (id === 'news') await loadNewsForCurrentTicker();
       if (id === 'social') await loadSocialForCurrentTicker();
+      if (id === 'recommendation') await loadRecommendationForCurrentTicker();
       if (id === 'options') await loadTickerOptionsForCurrentTicker();
     }
 
@@ -2114,6 +2616,10 @@
     _currentEarningsDate = null;
     _newsLoadedFor = '';
     _newsLoading = false;
+    _recommendationLoadedFor = '';
+    _recommendationTrack = '';
+    _recommendationHorizon = 'all';
+    _recommendationCache = {};
     _tickerOptionsLoadedFor = '';
     _prevClose=null; _cur='';
     setLoading(true);
@@ -2191,8 +2697,8 @@
             m('Avg Price Target',fv(data.avgPriceTarget))+m('High Target',fv(data.highPriceTarget))+m('Low Target',fv(data.lowPriceTarget))+
           '</div>',
         recommendation:
-          '<div class="panel-label">Recommendation Trend</div>'+
-          '<pre>'+JSON.stringify(data.recommendationTrend||'Not available',null,2)+'</pre>',
+          '<div class="panel-label">Recommendation</div>'+
+          '<div id="recommendationContainer"><p class="dimtext">Open this tab to build the options recommendation scorecard.</p></div>',
         news:
           '<div class="panel-label">News</div>'+
           '<div id="newsContainer"><p class="dimtext">Loading…</p></div>',
@@ -2342,6 +2848,44 @@
       setTimeout(() => document.querySelector('.tab-btn[data-tab="'+activeTabId+'"]')?.click(), 200);
     }
   }, 5 * 60 * 1000);
+
+  /* ── Global floating tooltip ── */
+  (function () {
+    const tip = document.createElement('div');
+    tip.id = 'g-tip';
+    document.body.appendChild(tip);
+
+    let _current = null;
+
+    document.addEventListener('mouseover', function (e) {
+      const wrap = e.target.closest('[data-tip]');
+      if (!wrap) {
+        if (_current) { tip.style.display = 'none'; _current = null; }
+        return;
+      }
+      _current = wrap;
+      tip.textContent = wrap.dataset.tip || '';
+      tip.style.display = 'block';
+    });
+
+    document.addEventListener('mousemove', function (e) {
+      if (!_current) return;
+      let x = e.clientX + 14, y = e.clientY - 14;
+      tip.style.left = x + 'px';
+      tip.style.top  = y + 'px';
+      const r = tip.getBoundingClientRect();
+      if (r.right  > window.innerWidth  - 8) tip.style.left = (e.clientX - r.width - 14) + 'px';
+      if (r.bottom > window.innerHeight - 8) tip.style.top  = (e.clientY - r.height - 14) + 'px';
+    });
+
+    document.addEventListener('mouseout', function (e) {
+      if (!_current) return;
+      if (!_current.contains(e.relatedTarget)) {
+        tip.style.display = 'none';
+        _current = null;
+      }
+    });
+  }());
 
 </script>
 </body>

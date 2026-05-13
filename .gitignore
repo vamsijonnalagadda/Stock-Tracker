@@ -5,7 +5,8 @@ npm-debug.log*
 logs/
 .node_pid
 .yf_pid
+# Exclude all data files (large JSON datasets)
+data/
 # Local data backups and temporary files
-data/*backup*.json
 *.bak
 stock-tracker-local.tar

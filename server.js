@@ -11,6 +11,8 @@ import { fetchGoogleTickerNews } from "./news/tickerNews.js";
 import { fetchOverallLatestNews } from "./news/latestNews.js";
 import fs from 'fs/promises';
 import { getSentiment, sentimentEmoji, deviationPercent, chooseMasterMetric } from './sector/sentiment.js';
+import { buildOptionsRecommendationScorecard } from './engines/optionsRecommendationEngine.js';
+import { buildInvestorRecommendationScorecard } from './engines/investorRecommendationEngine.js';
 
 const app = express();
 app.use(cors());
@@ -58,6 +60,7 @@ const EARNINGS_WEEK_JSON_PATH = './data/earnings_week.json';
 const EARNINGS_MOVES_JSON_PATH = './data/earnings_moves.json';
 const EARNINGS_NEXT_JSON_PATH = './data/earnings_next.json';
 const DEFAULT_FINNHUB_KEY = 'd7d3gk1r01qv03eu7vf0';
+
 const EARNINGS_CENTRAL_TZ = 'America/Chicago';
 const EARNINGS_FRIDAY_REFRESH_HOUR_CT = Number(process.env.EARNINGS_FRIDAY_REFRESH_HOUR_CT || 19); // 7 PM CST/CDT
 const EARNINGS_IMPLIED_REFRESH_HOUR_CT = Number(process.env.EARNINGS_IMPLIED_REFRESH_HOUR_CT || 19); // 7 PM CST/CDT
@@ -454,7 +457,6 @@ async function scrapePrimaryData(ticker) {
       computedMetrics: {}
     };
   }
-
   return result;
 }
 
@@ -3684,6 +3686,12 @@ function round2(n) {
   return Math.round(Number(n) * 100) / 100;
 }
 
+function hasFiniteNumber(value) {
+  if (value === null || value === undefined || value === '') return false;
+  const n = Number(value);
+  return Number.isFinite(n);
+}
+
 async function fetchFinnhubEarningsHistory(symbol, fromIso, toIso) {
   const key = getFinnhubKey();
   if (!key) throw new Error('missing_finnhub_api_key');
@@ -3718,6 +3726,76 @@ async function fetchFinnhubDailyCandles(symbol, fromIso, toIso) {
   return points;
 }
 
+async function computeMoveHistoryFromYahoo(symbol, maxEvents = 6) {
+  const summary = await withTimeout(
+    yahooFinanceClient.quoteSummary(symbol, { modules: ['earningsHistory'] }),
+    10000,
+    'yf earnings history'
+  );
+  const history = Array.isArray(summary?.earningsHistory?.history)
+    ? summary.earningsHistory.history
+    : [];
+
+  const events = history
+    .map((row) => {
+      const rawQuarter = row?.quarter;
+      const d = rawQuarter ? new Date(rawQuarter) : null;
+      if (!d || Number.isNaN(d.getTime())) return null;
+      return {
+        dateIso: d.toISOString().slice(0, 10),
+        // Quarter timestamp does not include exact release timing; AMC default is safer.
+        hour: 'amc'
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => String(b.dateIso).localeCompare(String(a.dateIso)))
+    .slice(0, maxEvents);
+
+  if (!events.length) return null;
+
+  const oldest = events[events.length - 1].dateIso;
+  const newest = events[0].dateIso;
+  const chart = await withTimeout(
+    yahooFinanceClient.chart(symbol, {
+      period1: addDaysIso(oldest, -10),
+      period2: addDaysIso(newest, 10),
+      interval: '1d'
+    }),
+    12000,
+    'yf chart earnings moves'
+  );
+
+  const candles = (Array.isArray(chart?.quotes) ? chart.quotes : [])
+    .map((q) => {
+      const date = q?.date ? new Date(q.date) : null;
+      const close = Number(q?.close);
+      if (!date || Number.isNaN(date.getTime()) || !Number.isFinite(close) || close <= 0) return null;
+      return {
+        dateIso: date.toISOString().slice(0, 10),
+        close
+      };
+    })
+    .filter(Boolean);
+
+  if (!candles.length) return null;
+
+  const candleByDate = new Map(candles.map((p) => [p.dateIso, p.close]));
+  const sortedDates = Array.from(new Set(candles.map((p) => p.dateIso))).sort();
+  const moves = [];
+  for (const ev of events) {
+    const mv = computeMoveForEarningsEvent(ev.dateIso, ev.hour, candleByDate, sortedDates);
+    if (Number.isFinite(mv)) moves.push(mv);
+    if (moves.length >= 4) break;
+  }
+
+  if (!moves.length) return null;
+  return {
+    lastMove: moves[0],
+    avg4Move: round2(moves.reduce((sum, v) => sum + Math.abs(v), 0) / moves.length),
+    moves
+  };
+}
+
 function computeMoveForEarningsEvent(eventIso, hour, candleByDate, sortedDates) {
   if (!eventIso) return null;
   let idx = sortedDates.indexOf(eventIso);
@@ -3740,7 +3818,7 @@ function computeMoveForEarningsEvent(eventIso, hour, candleByDate, sortedDates) 
 
 async function syncMoveHistoryForSymbols(symbols, reason = 'job') {
   const list = Array.from(new Set((Array.isArray(symbols) ? symbols : []).map((s) => String(s || '').toUpperCase()).filter(Boolean)));
-  if (list.length === 0) return;
+  if (list.length === 0) return 0;
 
   const todayIso = isoDateLocal(new Date());
   const fromIso = addDaysIso(todayIso, -540);
@@ -3749,8 +3827,10 @@ async function syncMoveHistoryForSymbols(symbols, reason = 'job') {
   for (const symbol of list) {
     const prev = earningsMovesCache[symbol] || {};
     const hasFresh = Number.isFinite(Number(prev?.updatedAt)) && (Date.now() - Number(prev.updatedAt)) < (7 * 24 * 60 * 60_000)
-      && Number.isFinite(Number(prev?.avg4Move)) && Number.isFinite(Number(prev?.lastMove));
+      && hasFiniteNumber(prev?.avg4Move) && hasFiniteNumber(prev?.lastMove);
     if (hasFresh) continue;
+
+    let nextMoveData = null;
 
     try {
       const eventsRaw = await fetchFinnhubEarningsHistory(symbol, fromIso, todayIso);
@@ -3759,12 +3839,12 @@ async function syncMoveHistoryForSymbols(symbols, reason = 'job') {
         .filter((e) => !!e.dateIso)
         .sort((a, b) => String(b.dateIso).localeCompare(String(a.dateIso)))
         .slice(0, 6);
-      if (events.length === 0) continue;
+      if (events.length === 0) throw new Error('finnhub_no_events');
 
       const oldest = events[events.length - 1].dateIso;
       const newest = events[0].dateIso;
       const candles = await fetchFinnhubDailyCandles(symbol, addDaysIso(oldest, -7), addDaysIso(newest, 7));
-      if (!candles.length) continue;
+      if (!candles.length) throw new Error('finnhub_no_candles');
 
       const candleByDate = new Map(candles.map((p) => [p.dateIso, p.close]));
       const sortedDates = Array.from(new Set(candles.map((p) => p.dateIso))).sort();
@@ -3774,18 +3854,36 @@ async function syncMoveHistoryForSymbols(symbols, reason = 'job') {
         if (Number.isFinite(mv)) moves.push(mv);
         if (moves.length >= 4) break;
       }
-      if (!moves.length) continue;
+      if (moves.length) {
+        nextMoveData = {
+          lastMove: moves[0],
+          avg4Move: round2(moves.reduce((sum, v) => sum + Math.abs(v), 0) / moves.length),
+          moves
+        };
+      } else {
+        throw new Error('finnhub_no_moves');
+      }
+    } catch (_) {
+      // best effort per symbol; Yahoo fallback below
+    }
 
+    if (!nextMoveData) {
+      try {
+        nextMoveData = await computeMoveHistoryFromYahoo(symbol, 6);
+      } catch (_) {
+        // best effort fallback
+      }
+    }
+
+    if (nextMoveData && hasFiniteNumber(nextMoveData.avg4Move) && hasFiniteNumber(nextMoveData.lastMove)) {
       earningsMovesCache[symbol] = {
         ...prev,
-        lastMove: moves[0],
-        avg4Move: round2(moves.reduce((sum, v) => sum + Math.abs(v), 0) / moves.length),
-        moves,
+        lastMove: nextMoveData.lastMove,
+        avg4Move: nextMoveData.avg4Move,
+        moves: Array.isArray(nextMoveData.moves) ? nextMoveData.moves : prev?.moves,
         updatedAt: Date.now()
       };
       updated += 1;
-    } catch (_) {
-      // best effort per symbol
     }
 
     await new Promise((r) => setTimeout(r, 90));
@@ -3794,14 +3892,41 @@ async function syncMoveHistoryForSymbols(symbols, reason = 'job') {
   if (updated > 0) {
     console.log(`[EarningsSync] Move history refreshed (${reason}) for ${updated} symbols`);
   }
+  return updated;
+}
+
+async function ensureSp500MoveHistoryCoverage(days, reason = 'request') {
+  const source = days && typeof days === 'object' ? days : {};
+  const missingSymbols = [];
+  const seen = new Set();
+
+  Object.values(source).forEach((rows) => {
+    (Array.isArray(rows) ? rows : []).forEach((row) => {
+      const symbol = String(row?.symbol || '').toUpperCase();
+      if (!symbol || !row?.isSp500 || seen.has(symbol)) return;
+      if (!hasFiniteNumber(row?.avgLast4EarningsMove) || !hasFiniteNumber(row?.lastEarningsMove)) {
+        seen.add(symbol);
+        missingSymbols.push(symbol);
+      }
+    });
+  });
+
+  if (!missingSymbols.length) return 0;
+  // Guardrail so request-time backfill stays responsive.
+  const toSync = missingSymbols.slice(0, 120);
+  const updated = await syncMoveHistoryForSymbols(toSync, `${reason}-sp500-backfill`);
+  if (updated > 0) {
+    hydrateEarningsDaysFromMoveCache(source);
+  }
+  return updated;
 }
 
 function mergeMoveData(symbolUpper) {
   const move = earningsMovesCache[symbolUpper] || null;
   return {
     impliedMove: move?.impliedMove ?? null,
-    avgLast4EarningsMove: Number.isFinite(Number(move?.avg4Move)) ? Number(move.avg4Move) : null,
-    lastEarningsMove: Number.isFinite(Number(move?.lastMove)) ? Number(move.lastMove) : null
+    avgLast4EarningsMove: hasFiniteNumber(move?.avg4Move) ? Number(move.avg4Move) : null,
+    lastEarningsMove: hasFiniteNumber(move?.lastMove) ? Number(move.lastMove) : null
   };
 }
 
@@ -4256,6 +4381,13 @@ app.get('/api/earnings/week', async (_req, res) => {
   try {
     hydrateEarningsDaysFromMoveCache(weeklyEarningsCache.days || {});
   } catch (_) {}
+  try {
+    const updated = await ensureSp500MoveHistoryCoverage(weeklyEarningsCache.days || {}, 'week-request');
+    if (updated > 0) {
+      weeklyEarningsCache.updatedAt = Date.now();
+      await saveEarningsCachesToDisk();
+    }
+  } catch (_) {}
   // Ensure every row has a companyName (best-effort fallback to symbol) so UI sorting works.
   try {
     Object.keys(weeklyEarningsCache.days || {}).forEach((d) => {
@@ -4329,6 +4461,13 @@ app.get('/api/earnings/next-week', async (_req, res) => {
       nextWeekEarningsCache.weekStart === nextWeekStartIso &&
       nextWeekEarningsCache.updatedAt
     ) {
+      try {
+        const updated = await ensureSp500MoveHistoryCoverage(nextWeekEarningsCache.days || {}, 'next-week-request-cached');
+        if (updated > 0) {
+          nextWeekEarningsCache.updatedAt = Date.now();
+          await saveEarningsCachesToDisk();
+        }
+      } catch (_) {}
       return res.json({ updatedAt: nextWeekEarningsCache.updatedAt, weekStart: nextWeekEarningsCache.weekStart, days: nextWeekEarningsCache.days });
     }
 
@@ -4374,6 +4513,13 @@ app.get('/api/earnings/next-week', async (_req, res) => {
     });
 
     nextWeekEarningsCache = { updatedAt: Date.now(), weekStart: nextWeekStartIso, days: byDay };
+    try {
+      const updated = await ensureSp500MoveHistoryCoverage(nextWeekEarningsCache.days || {}, 'next-week-request-live');
+      if (updated > 0) {
+        nextWeekEarningsCache.updatedAt = Date.now();
+        await saveEarningsCachesToDisk();
+      }
+    } catch (_) {}
     return res.json({ updatedAt: nextWeekEarningsCache.updatedAt, weekStart: nextWeekEarningsCache.weekStart, days: nextWeekEarningsCache.days });
   } catch (err) {
     console.error('[EarningsSync] next-week fetch error:', err?.message || err);
@@ -4415,6 +4561,7 @@ const ACTIVE_OPTIONS_TODAY_JSON_PATH = './data/active_options_today.json';
 const TICKER_OPTIONS_JSON_PATH = './data/options_by_ticker.json';
 const OPTIONS_CACHE_TTL_MS = 60 * 60 * 1000;
 const TICKER_OPTIONS_CACHE_TTL_MS = 30 * 60 * 1000;
+const OPTIONS_RECOMMENDATION_CACHE_TTL_MS = Number(process.env.OPTIONS_RECOMMENDATION_CACHE_TTL_MS || (2 * 60 * 1000));
 const ACTIVE_OPTIONS_TODAY_TTL_MS = 30 * 60 * 1000;
 const CENTRAL_TZ = 'America/Chicago';
 const ACTIVE_OPTIONS_REFRESH_START_MIN = 8 * 60 + 30; // 8:30 AM Central
@@ -4439,6 +4586,190 @@ let activeOptionsTodayCache = {
 let activeOptionsTodayRefreshPromise = null;
 let tickerOptionsCache = {};
 const tickerOptionsRefreshPromises = new Map();
+let optionsRecommendationCache = {};
+const optionsRecommendationRefreshPromises = new Map();
+let investorRecommendationCache = {};
+const investorRecommendationRefreshPromises = new Map();
+
+function computeEma(values, period) {
+  const vals = Array.isArray(values) ? values.map((v) => Number(v)).filter((v) => Number.isFinite(v) && v > 0) : [];
+  if (vals.length === 0 || !Number.isFinite(period) || period <= 1) return null;
+  const k = 2 / (period + 1);
+  let ema = vals[0];
+  for (let i = 1; i < vals.length; i += 1) ema = vals[i] * k + ema * (1 - k);
+  return safe(ema);
+}
+
+function computeRsi(values, period = 14) {
+  const vals = Array.isArray(values) ? values.map((v) => Number(v)).filter((v) => Number.isFinite(v) && v > 0) : [];
+  if (vals.length < period + 1) return null;
+  const gains = [];
+  const losses = [];
+  for (let i = vals.length - period; i < vals.length; i += 1) {
+    const prev = vals[i - 1];
+    const cur = vals[i];
+    const diff = cur - prev;
+    gains.push(Math.max(0, diff));
+    losses.push(Math.max(0, -diff));
+  }
+  const avgGain = gains.reduce((s, v) => s + v, 0) / period;
+  const avgLoss = losses.reduce((s, v) => s + v, 0) / period;
+  if (avgLoss === 0) return 100;
+  const rs = avgGain / avgLoss;
+  return safe(100 - (100 / (1 + rs)));
+}
+
+function findPutWallStrike(contracts, spotPrice = null) {
+  const puts = Array.isArray(contracts)
+    ? contracts.filter((c) => String(c?.type || '').toLowerCase() === 'put')
+    : [];
+  if (!puts.length) return null;
+  const spot = safe(spotPrice);
+  let best = null;
+  for (const p of puts) {
+    const strike = safe(p?.strike);
+    const oi = Math.max(0, safe(p?.openInterest) || 0);
+    if (!Number.isFinite(strike)) continue;
+    if (Number.isFinite(spot) && strike > spot * 1.05) continue;
+    if (!best || oi > best.oi) best = { strike, oi };
+  }
+  if (best) return best.strike;
+  const fallback = puts
+    .map((p) => ({ strike: safe(p?.strike), oi: Math.max(0, safe(p?.openInterest) || 0) }))
+    .filter((x) => Number.isFinite(x.strike))
+    .sort((a, b) => b.oi - a.oi)[0];
+  return fallback?.strike ?? null;
+}
+
+function findCallWallStrike(contracts, spotPrice = null) {
+  const calls = Array.isArray(contracts)
+    ? contracts.filter((c) => String(c?.type || '').toLowerCase() === 'call')
+    : [];
+  if (!calls.length) return null;
+  const spot = safe(spotPrice);
+  let best = null;
+  for (const c of calls) {
+    const strike = safe(c?.strike);
+    const oi = Math.max(0, safe(c?.openInterest) || 0);
+    if (!Number.isFinite(strike)) continue;
+    if (Number.isFinite(spot) && strike < spot * 0.95) continue;
+    if (!best || oi > best.oi) best = { strike, oi };
+  }
+  if (best) return best.strike;
+  const fallback = calls
+    .map((c) => ({ strike: safe(c?.strike), oi: Math.max(0, safe(c?.openInterest) || 0) }))
+    .filter((x) => Number.isFinite(x.strike))
+    .sort((a, b) => b.oi - a.oi)[0];
+  return fallback?.strike ?? null;
+}
+
+async function buildInvestorRecommendationForSymbol(symbol, options = {}) {
+  const normalized = String(symbol || '').toUpperCase();
+  const yahooSymbol = normalizeSymbolForYahoo(normalized);
+  const horizonRaw = String(options?.horizon || 'all').toLowerCase();
+  const horizon = ['short', 'medium', 'long', 'all'].includes(horizonRaw) ? horizonRaw : 'all';
+
+  const [quote, summary, recInputs] = await Promise.all([
+    withTimeout(yahooFinanceClient.quote(yahooSymbol), 9000, 'yf quote investor').catch(() => null),
+    withTimeout(
+      yahooFinanceClient.quoteSummary(yahooSymbol, {
+        modules: ['financialData', 'defaultKeyStatistics', 'summaryDetail']
+      }),
+      11000,
+      'yf quoteSummary investor'
+    ).catch(() => null),
+    fetchRecommendationContractsSnapshot(normalized, { minDte: 7, maxDte: 90, maxExpiries: 8 }).catch(() => ({ contracts: [], quotePrice: null }))
+  ]);
+
+  const todayIso = isoDateLocal(new Date());
+  const closes = await withTimeout(
+    yahooFinanceClient.chart(yahooSymbol, {
+      period1: addDaysIso(todayIso, -260),
+      period2: todayIso,
+      interval: '1d'
+    }),
+    12000,
+    'yf chart investor'
+  ).then((chart) => {
+    const quotes = Array.isArray(chart?.quotes) ? chart.quotes : [];
+    return quotes.map((q) => safe(q?.close)).filter((v) => Number.isFinite(v) && v > 0);
+  }).catch(() => []);
+
+  const spot = safe(quote?.regularMarketPrice)
+    ?? safe(quote?.postMarketPrice)
+    ?? safe(quote?.previousClose)
+    ?? safe(recInputs?.quotePrice)
+    ?? null;
+
+  const targetPrice = safe(quote?.targetMeanPrice)
+    ?? safe(summary?.financialData?.targetMeanPrice)
+    ?? safe(summary?.financialData?.targetMeanPrice?.raw)
+    ?? null;
+  const peRatio = safe(quote?.trailingPE)
+    ?? safe(quote?.forwardPE)
+    ?? safe(summary?.defaultKeyStatistics?.forwardPE?.raw)
+    ?? null;
+  const industryPeAvg = safe(summary?.defaultKeyStatistics?.enterpriseToEbitda?.raw)
+    ?? (Number.isFinite(peRatio) ? peRatio : null);
+  const yoyGrowthRaw = safe(summary?.financialData?.revenueGrowth)
+    ?? safe(summary?.financialData?.revenueGrowth?.raw)
+    ?? null;
+  const yoyRevGrowthPct = Number.isFinite(yoyGrowthRaw)
+    ? (Math.abs(yoyGrowthRaw) <= 1 ? yoyGrowthRaw * 100 : yoyGrowthRaw)
+    : null;
+
+  const ema8 = computeEma(closes, 8);
+  const ema50 = safe(quote?.fiftyDayAverage) ?? computeEma(closes, 50);
+  const ema200 = safe(quote?.twoHundredDayAverage) ?? computeEma(closes, 200);
+  const rsi14 = computeRsi(closes, 14);
+
+  const contracts = Array.isArray(recInputs?.contracts) ? recInputs.contracts : [];
+  const putWall = findPutWallStrike(contracts, spot);
+  const callWall = findCallWallStrike(contracts, spot);
+  const maxPain = (() => {
+    const strikes = contracts
+      .map((c) => safe(c?.strike))
+      .filter((v) => Number.isFinite(v))
+      .sort((a, b) => a - b);
+    if (!strikes.length) return null;
+    return strikes[Math.floor(strikes.length / 2)];
+  })();
+  const gammaFlip = (() => {
+    if (Number.isFinite(putWall) && Number.isFinite(callWall)) {
+      return Math.round(((putWall + callWall) / 2) * 100) / 100;
+    }
+    return Number.isFinite(maxPain) ? maxPain : null;
+  })();
+
+  const investor = buildInvestorRecommendationScorecard({
+    horizon,
+    spotPrice: spot,
+    streetTargetPrice: targetPrice,
+    fiftyDayEma: ema50,
+    two00DayEma: ema200,
+    ema8,
+    peRatio,
+    industryPeAvg,
+    yoyRevGrowth: yoyRevGrowthPct,
+    rsi14,
+    putWall,
+    gammaFlip,
+    maxPain
+  });
+
+  return {
+    symbol: normalized,
+    track: 'INVESTOR',
+    horizon,
+    ...investor,
+    asOf: new Date().toISOString(),
+    sourceStatus: {
+      yahooFinance: quote ? 'ok' : 'degraded',
+      fundamentals: summary ? 'ok' : 'degraded',
+      optionsStructure: contracts.length ? 'ok' : 'degraded'
+    }
+  };
+}
 
 function getAlphaVantageKey() {
   return String(process.env.ALPHA_VANTAGE_API_KEY || process.env.ALPHA_VANTAGE_KEY || '').trim();
@@ -4824,6 +5155,111 @@ async function fetchNearestOptionsSnapshot(symbol) {
   return { chain, quotePrice };
 }
 
+async function fetchRecommendationContractsSnapshot(symbol, options = {}) {
+  const normalized = String(symbol || '').toUpperCase();
+  const yahooSymbol = normalizeSymbolForYahoo(normalized);
+  const minDte = Number.isFinite(Number(options.minDte)) ? Number(options.minDte) : 7;
+  const maxDte = Number.isFinite(Number(options.maxDte)) ? Number(options.maxDte) : 90;
+  const maxExpiries = Number.isFinite(Number(options.maxExpiries)) ? Number(options.maxExpiries) : 10;
+
+  const [optMeta, yq] = await Promise.all([
+    withTimeout(yahooFinanceClient.options(yahooSymbol), 12000, 'yahoo-fin options meta'),
+    withTimeout(yahooFinanceClient.quote(yahooSymbol), 7000, 'yahoo-fin quote').catch(() => null)
+  ]);
+
+  const quotePrice = safe(yq?.regularMarketPrice) ?? safe(yq?.previousClose) ?? null;
+  const allExpirDates = Array.isArray(optMeta?.expirationDates) ? optMeta.expirationDates : [];
+  const nowSec = Date.now() / 1000;
+
+  const toEpochSec = (v) => {
+    if (v == null) return null;
+    if (typeof v === 'number') return Number.isFinite(v) ? (v > 1e11 ? v / 1000 : v) : null;
+    if (v instanceof Date) {
+      const t = v.getTime();
+      return Number.isFinite(t) ? t / 1000 : null;
+    }
+    if (typeof v === 'string') {
+      const n = Number(v);
+      if (Number.isFinite(n)) return n > 1e11 ? n / 1000 : n;
+      const d = new Date(v);
+      const t = d.getTime();
+      return Number.isFinite(t) ? t / 1000 : null;
+    }
+    return null;
+  };
+
+  const inWindow = (tsLike) => {
+    const ts = toEpochSec(tsLike);
+    if (!Number.isFinite(ts)) return false;
+    const dte = (ts - nowSec) / (60 * 60 * 24);
+    return Number.isFinite(dte) && dte >= minDte && dte <= maxDte;
+  };
+
+  const datesToFetch = allExpirDates
+    .map((d) => toEpochSec(d))
+    .filter((d) => Number.isFinite(d) && inWindow(d))
+    .slice(0, maxExpiries);
+
+  const contracts = [];
+  const seen = new Set();
+
+  const appendChainContracts = (chain, expTs) => {
+    if (!chain) return;
+    const expirationDate = isoDateOnly(new Date(Number(expTs) * 1000));
+    const calls = Array.isArray(chain.calls) ? chain.calls : [];
+    const puts = Array.isArray(chain.puts) ? chain.puts : [];
+
+    for (const c of calls) {
+      const base = normalizeOptionContract(c, normalized, 'CALL', expirationDate);
+      if (!base) continue;
+      const key = String(base.contract || `call_${expirationDate}_${base.strike}`);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      contracts.push({ ...base, type: 'call', expiration: expirationDate, delta: safe(c?.delta), gamma: safe(c?.gamma) });
+    }
+
+    for (const p of puts) {
+      const base = normalizeOptionContract(p, normalized, 'PUT', expirationDate);
+      if (!base) continue;
+      const key = String(base.contract || `put_${expirationDate}_${base.strike}`);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      contracts.push({ ...base, type: 'put', expiration: expirationDate, delta: safe(p?.delta), gamma: safe(p?.gamma) });
+    }
+  };
+
+  const nearestChain = Array.isArray(optMeta?.options) ? optMeta.options[0] : null;
+  const nearestTs = toEpochSec(nearestChain?.expirationDate);
+  if (nearestChain && Number.isFinite(nearestTs) && inWindow(nearestTs)) {
+    appendChainContracts(nearestChain, nearestTs);
+  }
+
+  for (const expTs of datesToFetch) {
+    try {
+      if (Number.isFinite(nearestTs) && Math.abs(expTs - nearestTs) < 1) continue;
+      const expIso = new Date(Number(expTs) * 1000).toISOString().slice(0, 10);
+      const chainData = await withTimeout(
+        yahooFinanceClient.options(yahooSymbol, { date: expIso }),
+        10000,
+        'yahoo-fin options exp'
+      );
+      const chain = Array.isArray(chainData?.options) ? chainData.options[0] : null;
+      appendChainContracts(chain, expTs);
+      await new Promise((r) => setTimeout(r, 80));
+    } catch (_) {
+      // best effort
+    }
+  }
+
+  // Safety fallback if no contracts found in target DTE window.
+  if (contracts.length === 0 && nearestChain) {
+    const fallbackTs = Number.isFinite(nearestTs) ? nearestTs : nowSec;
+    appendChainContracts(nearestChain, fallbackTs);
+  }
+
+  return { contracts, quotePrice };
+}
+
 async function refreshTickerOptionsForSymbol(symbol, options = {}) {
   const normalized = String(symbol || '').toUpperCase();
   const sourceStatus = { yahooFinance: 'degraded' };
@@ -4833,6 +5269,72 @@ async function refreshTickerOptionsForSymbol(symbol, options = {}) {
   tickerOptionsCache[normalized] = payload;
   await saveTickerOptionsToDisk();
   return payload;
+}
+
+async function buildOptionsRecommendationForSymbol(symbol, options = {}) {
+  const normalized = String(symbol || '').toUpperCase();
+  const yahooSymbol = normalizeSymbolForYahoo(normalized);
+  const riskModeRaw = String(options.riskMode || 'balanced').toLowerCase();
+  const riskMode = ['conservative', 'balanced', 'aggressive'].includes(riskModeRaw)
+    ? riskModeRaw
+    : 'balanced';
+  const { contracts, quotePrice } = await fetchRecommendationContractsSnapshot(normalized, {
+    minDte: 7,
+    maxDte: 90,
+    maxExpiries: 10
+  });
+
+  const [quoteSnap, quoteSummary] = await Promise.all([
+    withTimeout(yahooFinanceClient.quote(yahooSymbol), 7000, 'yf quote recommendation').catch(() => null),
+    withTimeout(
+      yahooFinanceClient.quoteSummary(yahooSymbol, { modules: ['calendarEvents'] }),
+      9000,
+      'yf quoteSummary recommendation'
+    ).catch(() => null)
+  ]);
+
+  if (!Array.isArray(contracts) || contracts.length === 0) {
+    throw new Error(`Unable to build recommendation inputs for ${normalized}`);
+  }
+
+  // Best-effort volatility context using 4 months of daily closes.
+  const todayIso = isoDateLocal(new Date());
+  const closes = await withTimeout(
+    yahooFinanceClient.chart(yahooSymbol, {
+      period1: addDaysIso(todayIso, -120),
+      period2: todayIso,
+      interval: '1d'
+    }),
+    12000,
+    'yf chart recommendation'
+  ).then((chart) => {
+    const quotes = Array.isArray(chart?.quotes) ? chart.quotes : [];
+    return quotes
+      .map((q) => safe(q?.close))
+      .filter((v) => Number.isFinite(v) && v > 0);
+  }).catch(() => []);
+
+  const scorecard = buildOptionsRecommendationScorecard({
+    symbol: normalized,
+    spotPrice: quotePrice,
+    contracts,
+    historicalCloses: closes,
+    riskMode,
+    marketContext: {
+      low52W: safe(quoteSnap?.fiftyTwoWeekLow),
+      earningsDate: quoteSummary?.calendarEvents?.earnings?.earningsDate?.[0] || null,
+      averageInsiderPrice: null
+    }
+  });
+
+  return {
+    ...scorecard,
+    asOf: new Date().toISOString(),
+    sourceStatus: {
+      yahooFinance: 'ok',
+      historicalVolatility: closes.length > 0 ? 'ok' : 'degraded'
+    }
+  };
 }
 
 function getActiveOptionsSnapshot() {
@@ -5022,6 +5524,70 @@ app.get('/api/options/:symbol', async (req, res) => {
     });
   } finally {
     tickerOptionsRefreshPromises.delete(symbol);
+  }
+});
+
+app.get('/api/options/:symbol/recommendation', async (req, res) => {
+  const symbol = String(req.params.symbol || '').toUpperCase();
+  if (!symbol) return res.status(400).json({ error: 'Missing symbol' });
+
+  const trackRaw = String(req.query.track || 'trading').toLowerCase();
+  const track = ['trading', 'investor'].includes(trackRaw) ? trackRaw : 'trading';
+  const horizonRaw = String(req.query.horizon || 'all').toLowerCase();
+  const horizon = ['short', 'medium', 'long', 'all'].includes(horizonRaw) ? horizonRaw : 'all';
+
+  const riskModeRaw = String(req.query.riskMode || 'balanced').toLowerCase();
+  const riskMode = ['conservative', 'balanced', 'aggressive'].includes(riskModeRaw)
+    ? riskModeRaw
+    : 'balanced';
+  const recommendationKey = `${track}:${symbol}:${riskMode}:${horizon}`;
+
+  const cacheBucket = track === 'investor' ? investorRecommendationCache : optionsRecommendationCache;
+  const inFlightBucket = track === 'investor' ? investorRecommendationRefreshPromises : optionsRecommendationRefreshPromises;
+
+  const cached = cacheBucket[recommendationKey];
+  if (isEntryFresh(cached) && cached?.payload) {
+    return res.json({ ...cached.payload, fromCache: true, stale: false });
+  }
+
+  try {
+    if (inFlightBucket.has(recommendationKey)) {
+      await inFlightBucket.get(recommendationKey);
+    } else {
+      const promise = (async () => {
+        const payload = track === 'investor'
+          ? await buildInvestorRecommendationForSymbol(symbol, { horizon })
+          : await buildOptionsRecommendationForSymbol(symbol, { riskMode });
+        cacheBucket[recommendationKey] = {
+          payload,
+          updatedAt: Date.now(),
+          expiresAt: Date.now() + OPTIONS_RECOMMENDATION_CACHE_TTL_MS
+        };
+      })();
+      inFlightBucket.set(recommendationKey, promise);
+      await promise;
+    }
+
+    const fresh = cacheBucket[recommendationKey];
+    if (!fresh?.payload) {
+      throw new Error(`Unable to build ${track} recommendation inputs for ${symbol}`);
+    }
+    return res.json({ ...fresh.payload, fromCache: false, stale: false });
+  } catch (err) {
+    if (cached?.payload) {
+      return res.json({
+        ...cached.payload,
+        fromCache: true,
+        stale: true,
+        warning: err.message || 'recommendation_refresh_failed'
+      });
+    }
+    return res.status(502).json({
+      error: `Unable to build recommendation for ${symbol}`,
+      details: err.message || 'recommendation_failed'
+    });
+  } finally {
+    inFlightBucket.delete(recommendationKey);
   }
 });
 

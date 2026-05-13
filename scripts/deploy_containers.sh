@@ -23,6 +23,14 @@ Environment variables (defaults shown):
   ACR_NAME         - Azure Container Registry name (required to push to ACR)
   ACR_REPO         - ACR repo path (defaults to IMAGE_NAME)
   ACR_TAG          - ACR tag (defaults to IMAGE_TAG)
+  AZ_RESOURCE_GROUP - Azure resource group for Container App (required to deploy)
+  AZ_CONTAINERAPPS_ENV - Azure Container Apps environment name (required to deploy)
+  AZ_CONTAINERAPP_NAME - Container App name to create/update (if set, will deploy)
+  AZ_INGRESS        - ingress type: "external" or "none" (default: external)
+  AZ_TARGET_PORT    - target port for the container app (default: 80)
+  AZ_REGISTRY_SERVER - registry server for private images (default: docker.io)
+  AZ_REGISTRY_USERNAME - registry username (if private Docker Hub)
+  AZ_REGISTRY_PASSWORD - registry password (if private Docker Hub)
 EOF
   exit 0
 fi
@@ -68,6 +76,66 @@ if [ -n "$ACR_NAME" ]; then
   docker push "$ACR_FULL"
 else
   echo "Skipping ACR push (ACR_NAME not set)"
+fi
+
+# Optional: deploy to Azure Container Apps if AZ_CONTAINERAPP_NAME is set
+AZ_RESOURCE_GROUP=${AZ_RESOURCE_GROUP:-}
+AZ_CONTAINERAPPS_ENV=${AZ_CONTAINERAPPS_ENV:-}
+AZ_CONTAINERAPP_NAME=${AZ_CONTAINERAPP_NAME:-}
+AZ_INGRESS=${AZ_INGRESS:-external}
+AZ_TARGET_PORT=${AZ_TARGET_PORT:-80}
+AZ_REGISTRY_SERVER=${AZ_REGISTRY_SERVER:-docker.io}
+AZ_REGISTRY_USERNAME=${AZ_REGISTRY_USERNAME:-}
+AZ_REGISTRY_PASSWORD=${AZ_REGISTRY_PASSWORD:-}
+
+if [ -n "$AZ_CONTAINERAPP_NAME" ]; then
+  # Choose image URI: prefer ACR if pushed there, otherwise Docker Hub
+  if [ -n "$ACR_NAME" ]; then
+    IMAGE_URI="$ACR_FULL"
+  else
+    IMAGE_URI="$DOCKERHUB_FULL"
+  fi
+
+  if [ -z "$AZ_RESOURCE_GROUP" ] || [ -z "$AZ_CONTAINERAPPS_ENV" ]; then
+    echo "ERROR: To deploy to Container Apps set AZ_RESOURCE_GROUP and AZ_CONTAINERAPPS_ENV" >&2
+    exit 3
+  fi
+
+  echo "Deploying image $IMAGE_URI to Azure Container App: $AZ_CONTAINERAPP_NAME"
+
+  # Check if container app exists
+  if az containerapp show --name "$AZ_CONTAINERAPP_NAME" --resource-group "$AZ_RESOURCE_GROUP" >/dev/null 2>&1; then
+    echo "Updating existing Container App $AZ_CONTAINERAPP_NAME"
+    az containerapp update \
+      --name "$AZ_CONTAINERAPP_NAME" \
+      --resource-group "$AZ_RESOURCE_GROUP" \
+      --image "$IMAGE_URI" \
+      --ingress "$AZ_INGRESS" \
+      --target-port "$AZ_TARGET_PORT" || true
+  else
+    echo "Creating Container App $AZ_CONTAINERAPP_NAME"
+    # If registry creds provided, include them; otherwise rely on public image or existing registry access
+    if [ -n "$AZ_REGISTRY_USERNAME" ] && [ -n "$AZ_REGISTRY_PASSWORD" ]; then
+      az containerapp create \
+        --name "$AZ_CONTAINERAPP_NAME" \
+        --resource-group "$AZ_RESOURCE_GROUP" \
+        --environment "$AZ_CONTAINERAPPS_ENV" \
+        --image "$IMAGE_URI" \
+        --ingress "$AZ_INGRESS" \
+        --target-port "$AZ_TARGET_PORT" \
+        --registry-server "$AZ_REGISTRY_SERVER" \
+        --registry-username "$AZ_REGISTRY_USERNAME" \
+        --registry-password "$AZ_REGISTRY_PASSWORD"
+    else
+      az containerapp create \
+        --name "$AZ_CONTAINERAPP_NAME" \
+        --resource-group "$AZ_RESOURCE_GROUP" \
+        --environment "$AZ_CONTAINERAPPS_ENV" \
+        --image "$IMAGE_URI" \
+        --ingress "$AZ_INGRESS" \
+        --target-port "$AZ_TARGET_PORT"
+    fi
+  fi
 fi
 
 echo "Done."

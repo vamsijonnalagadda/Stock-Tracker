@@ -4697,12 +4697,16 @@ const TICKER_OPTIONS_JSON_PATH = './data/options_by_ticker.json';
 const OPTIONS_CACHE_TTL_MS = 60 * 60 * 1000;
 const TICKER_OPTIONS_CACHE_TTL_MS = 30 * 60 * 1000;
 const OPTIONS_RECOMMENDATION_CACHE_TTL_MS = Number(process.env.OPTIONS_RECOMMENDATION_CACHE_TTL_MS || (2 * 60 * 1000));
-const ACTIVE_OPTIONS_TODAY_TTL_MS = 30 * 60 * 1000;
+const ACTIVE_OPTIONS_TODAY_TTL_MS = 60 * 60 * 1000;
 const CENTRAL_TZ = 'America/Chicago';
 const ACTIVE_OPTIONS_REFRESH_START_MIN = 8 * 60 + 30; // 8:30 AM Central
 const ACTIVE_OPTIONS_REFRESH_END_MIN = 15 * 60; // 3:00 PM Central
 const ACTIVE_OPTIONS_TOP_SYMBOLS = 15;
 const ACTIVE_OPTIONS_TOP_CONTRACTS = 15;
+const ACTIVE_OPTIONS_TODAY_FALLBACK_SYMBOLS = [
+  'AAPL', 'MSFT', 'NVDA', 'TSLA', 'AMZN', 'META', 'GOOGL', 'AMD', 'NFLX', 'PLTR',
+  'SPY', 'QQQ', 'IWM', 'DIA', 'COIN', 'MSTR', 'MU', 'AVGO', 'JPM', 'XOM'
+];
 
 let activeOptionsCache = {
   updatedAt: 0,
@@ -5100,6 +5104,63 @@ function normalizeMostActiveStockRow(row) {
   };
 }
 
+function getActiveOptionsTodayFallbackSymbols(maxCount = 40) {
+  const out = [];
+  const seen = new Set();
+
+  const pushSymbol = (value) => {
+    const symbol = normalizeActiveTicker(value);
+    if (!symbol || seen.has(symbol)) return;
+    seen.add(symbol);
+    out.push(symbol);
+  };
+
+  (Array.isArray(trendingCache?.symbols) ? trendingCache.symbols : [])
+    .forEach((row) => pushSymbol(row?.symbol));
+
+  (Array.isArray(activeOptionsCache?.baseSymbols) ? activeOptionsCache.baseSymbols : [])
+    .forEach((symbol) => pushSymbol(symbol));
+
+  ACTIVE_OPTIONS_TODAY_FALLBACK_SYMBOLS.forEach((symbol) => pushSymbol(symbol));
+  return out.slice(0, Math.max(5, Number(maxCount) || 40));
+}
+
+async function fetchYahooMostActiveProxy(limit = 25) {
+  const symbols = getActiveOptionsTodayFallbackSymbols(Math.max(40, limit * 2));
+  if (!symbols.length) return [];
+
+  const settled = await Promise.allSettled(symbols.map(async (symbol) => {
+    const yahooSymbol = normalizeSymbolForYahoo(symbol);
+    const quote = await withTimeout(yahooFinanceClient.quote(yahooSymbol), 7000, 'yf quote active-options proxy');
+    const price = safe(quote?.regularMarketPrice)
+      ?? safe(quote?.postMarketPrice)
+      ?? safe(quote?.previousClose)
+      ?? null;
+    const previousClose = safe(quote?.regularMarketPreviousClose) ?? safe(quote?.previousClose) ?? null;
+    const changeAmount = Number.isFinite(price) && Number.isFinite(previousClose)
+      ? price - previousClose
+      : safe(quote?.regularMarketChange);
+    const changePct = safe(quote?.regularMarketChangePercent);
+    const volume = safe(quote?.regularMarketVolume);
+
+    return {
+      ticker: symbol,
+      price,
+      changeAmount,
+      changePercentage: Number.isFinite(changePct)
+        ? `${changePct >= 0 ? '+' : ''}${changePct.toFixed(2)}%`
+        : null,
+      volume
+    };
+  }));
+
+  return settled
+    .map((r) => (r.status === 'fulfilled' ? r.value : null))
+    .filter((row) => row && Number.isFinite(Number(row.volume)) && Number(row.volume) > 0)
+    .sort((a, b) => (Number(b.volume) || 0) - (Number(a.volume) || 0))
+    .slice(0, Math.max(5, Math.min(50, Number(limit) || 25)));
+}
+
 function extractTopOptionContractFromChain(symbol, chain) {
   const expirationDate = chain?.expirationDate ? isoDateOnly(chain.expirationDate) : null;
   const calls = Array.isArray(chain?.calls) ? chain.calls : [];
@@ -5138,6 +5199,23 @@ function getCentralClockParts(date = new Date()) {
   };
 }
 
+function centralDateKey(date = new Date()) {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: CENTRAL_TZ,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(date);
+}
+
+function isCentralTodayTimestamp(ts, now = new Date()) {
+  const n = Number(ts);
+  if (!Number.isFinite(n) || n <= 0) return false;
+  const d = new Date(n);
+  if (Number.isNaN(d.getTime())) return false;
+  return centralDateKey(d) === centralDateKey(now);
+}
+
 function isActiveOptionsRefreshWindowCST(now = new Date()) {
   const { weekday, hour, minute } = getCentralClockParts(now);
   if (!['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].includes(weekday)) return false;
@@ -5147,14 +5225,14 @@ function isActiveOptionsRefreshWindowCST(now = new Date()) {
 }
 
 async function maybeRefreshActiveOptionsToday(reason = 'job') {
-  const inWindow = isActiveOptionsRefreshWindowCST();
   const cached = getActiveOptionsTodaySnapshot();
   const hasCache = Array.isArray(cached.items) && cached.items.length > 0;
+  const isFresh = isEntryFresh(cached);
+  const isToday = isCentralTodayTimestamp(cached.updatedAt);
 
-  // Off-hours: keep cached data as-is.
-  if (!inWindow && hasCache) return cached;
+  // Serve cache only when it is both within TTL and from today's Central date.
+  if (hasCache && isFresh && isToday) return cached;
 
-  // If no cache exists (e.g., fresh startup), attempt one refresh even off-hours.
   if (activeOptionsTodayRefreshPromise) {
     await activeOptionsTodayRefreshPromise.catch(() => {});
     return getActiveOptionsTodaySnapshot();
@@ -5174,24 +5252,41 @@ async function maybeRefreshActiveOptionsToday(reason = 'job') {
 
 async function refreshActiveOptionsToday() {
   const apiKey = getAlphaVantageKey();
-  if (!apiKey) throw new Error('missing_alpha_vantage_key');
+  let rawItems = [];
+  let alphaVantageStatus = 'degraded';
+  let alphaVantageReason = null;
 
-  const url = `${ALPHA_VANTAGE_API}?function=TOP_GAINERS_LOSERS&apikey=${encodeURIComponent(apiKey)}`;
-  const res = await withTimeout(fetch(url), 10000, 'alpha-vantage top-gainers-losers active-today');
-  const body = await res.json();
-  if (!res.ok) throw new Error(`alpha_vantage_http_${res.status}`);
-  if (body?.['Error Message'] || body?.Information || body?.Note) {
-    throw new Error(body?.Information || body?.Note || body?.['Error Message'] || 'alpha_vantage_api_error');
+  if (apiKey) {
+    try {
+      const url = `${ALPHA_VANTAGE_API}?function=TOP_GAINERS_LOSERS&apikey=${encodeURIComponent(apiKey)}`;
+      const res = await withTimeout(fetch(url), 10000, 'alpha-vantage top-gainers-losers active-today');
+      const body = await res.json();
+      if (!res.ok) throw new Error(`alpha_vantage_http_${res.status}`);
+      if (body?.['Error Message'] || body?.Information || body?.Note) {
+        throw new Error(body?.Information || body?.Note || body?.['Error Message'] || 'alpha_vantage_api_error');
+      }
+      rawItems = Array.isArray(body?.most_actively_traded)
+        ? body.most_actively_traded.map(normalizeMostActiveStockRow).filter(Boolean)
+        : [];
+      alphaVantageStatus = rawItems.length > 0 ? 'ok' : 'degraded';
+      if (rawItems.length === 0) alphaVantageReason = 'alpha_vantage_empty_most_actively_traded';
+    } catch (err) {
+      alphaVantageReason = err?.message || 'alpha_vantage_error';
+    }
+  } else {
+    alphaVantageReason = 'missing_alpha_vantage_key';
   }
 
-  const rawItems = Array.isArray(body?.most_actively_traded)
-    ? body.most_actively_traded.map(normalizeMostActiveStockRow).filter(Boolean)
-    : [];
+  if (rawItems.length === 0) {
+    rawItems = await fetchYahooMostActiveProxy(25);
+  }
 
-  if (rawItems.length === 0) throw new Error('alpha_vantage_empty_most_actively_traded');
+  if (rawItems.length === 0) {
+    throw new Error(alphaVantageReason || 'active_options_today_no_source_data');
+  }
 
   // Enrich each active ticker with one highest-volume option contract (CALL/PUT + expiration).
-  const sourceStatus = { alphaVantage: 'ok', yahooFinance: 'degraded' };
+  const sourceStatus = { alphaVantage: alphaVantageStatus, yahooFinance: 'degraded' };
   const candidates = rawItems.slice(0, 25);
   const enrichedSettled = await Promise.allSettled(candidates.map(async (row) => {
     try {
@@ -6127,19 +6222,9 @@ app.get('/api/options/active', async (_req, res) => {
 // Alpha Vantage "today most active" list (stocks as proxy for options interest)
 app.get('/api/active-options', async (_req, res) => {
   const cached = getActiveOptionsTodaySnapshot();
-  const inRefreshWindow = isActiveOptionsRefreshWindowCST();
+  const cacheIsToday = isCentralTodayTimestamp(cached.updatedAt);
 
-  // Off-hours (after 3:00 PM to before 8:30 AM Central): always use cached data.
-  if (!inRefreshWindow && cached.items.length > 0) {
-    return res.json({
-      ...cached,
-      fromCache: true,
-      stale: !isEntryFresh(cached),
-      offHoursCache: true
-    });
-  }
-
-  if (isEntryFresh(cached) && cached.items.length > 0) {
+  if (isEntryFresh(cached) && cacheIsToday && cached.items.length > 0) {
     return res.json({ ...cached, fromCache: true, stale: false });
   }
   try {
@@ -6600,7 +6685,7 @@ app.listen(PORT, () => {
       await maybeRefreshActiveOptionsToday('startup');
       setInterval(() => {
         maybeRefreshActiveOptionsToday('job').catch(() => {});
-      }, 30 * 60 * 1000);
+      }, 60 * 60 * 1000);
     } catch (err) {
       console.error('[Options] Startup initialization failed:', err.message || err);
     }

@@ -556,8 +556,17 @@
     "impliedUpdatedAt": 1776643234789
   },
   "NNOX": {
-    "impliedMove": "±19.09%",
-    "impliedUpdatedAt": 1776643237923
+    "impliedMove": "±39.27%",
+    "impliedUpdatedAt": 1779540926477,
+    "lastMove": 1.07,
+    "avg4Move": 1.43,
+    "moves": [
+      1.07,
+      -0.27,
+      -1.06,
+      -3.3
+    ],
+    "updatedAt": 1779541681914
   },
   "NVCR": {
     "impliedMove": "±17.16%",
@@ -728,8 +737,17 @@
     "impliedUpdatedAt": 1776614808549
   },
   "HAS": {
-    "impliedMove": "±7.53%",
-    "impliedUpdatedAt": 1776614808837
+    "impliedMove": "±6.87%",
+    "impliedUpdatedAt": 1779235499058,
+    "lastMove": -4.51,
+    "avg4Move": 2.67,
+    "moves": [
+      -4.51,
+      1.18,
+      -0.71,
+      4.29
+    ],
+    "updatedAt": 1779290971935
   },
   "HBAN": {
     "impliedMove": "±5.50%",
@@ -1448,8 +1466,8 @@
     "impliedUpdatedAt": 1776614961562
   },
   "MSB": {
-    "impliedMove": "±18.52%",
-    "impliedUpdatedAt": 1776614961862
+    "impliedMove": "±10.42%",
+    "impliedUpdatedAt": 1779667538783
   },
   "MTH": {
     "impliedMove": "±12.49%",
@@ -2632,8 +2650,17 @@
     "impliedUpdatedAt": 1776615060307
   },
   "ICLR": {
-    "impliedMove": "±16.62%",
-    "impliedUpdatedAt": 1776615060620
+    "impliedMove": "±13.61%",
+    "impliedUpdatedAt": 1779540934969,
+    "lastMove": 9.89,
+    "avg4Move": 4.62,
+    "moves": [
+      9.89,
+      2.36,
+      -4.82,
+      1.39
+    ],
+    "updatedAt": 1779541696708
   },
   "IDA": {
     "impliedMove": "±6.95%",
@@ -4596,8 +4623,8 @@
     "impliedUpdatedAt": 1776658465837
   },
   "AMBR": {
-    "impliedMove": "±40.90%",
-    "impliedUpdatedAt": 1776658466711
+    "impliedMove": "±57.58%",
+    "impliedUpdatedAt": 1779754420485
   },
   "AMKR": {
     "impliedMove": "±16.91%",
@@ -4734,5 +4761,3382 @@
   "HLMN": {
     "impliedMove": "±16.00%",
     "impliedUpdatedAt": 1776658479887
+  },
+  "SY": {
+    "lastMove": 4.3,
+    "avg4Move": 5.14,
+    "moves": [
+      4.3,
+      -1.55,
+      -8.55,
+      6.14
+    ],
+    "updatedAt": 1779143419272,
+    "impliedMove": "±15.92%",
+    "impliedUpdatedAt": 1779408484389
+  },
+  "BJ": {
+    "lastMove": 3.79,
+    "avg4Move": 2.7,
+    "moves": [
+      3.79,
+      2.9,
+      3.85,
+      -0.26
+    ],
+    "updatedAt": 1779143419651,
+    "impliedMove": "±7.88%",
+    "impliedUpdatedAt": 1779408483479
+  },
+  "GSL": {
+    "lastMove": -0.34,
+    "avg4Move": 0.53,
+    "moves": [
+      -0.34,
+      -0.13,
+      -0.53,
+      1.14
+    ],
+    "updatedAt": 1779143420027,
+    "impliedMove": "±6.54%",
+    "impliedUpdatedAt": 1779408483806
+  },
+  "BAH": {
+    "lastMove": 0.63,
+    "avg4Move": 2.25,
+    "moves": [
+      0.63,
+      2.65,
+      3.05,
+      2.66
+    ],
+    "updatedAt": 1779143420515,
+    "impliedMove": "±10.91%",
+    "impliedUpdatedAt": 1779408483112
+  },
+  "BULL": {
+    "lastMove": 5.41,
+    "avg4Move": 5.01,
+    "moves": [
+      5.41,
+      -4.6
+    ],
+    "updatedAt": 1779143421539,
+    "impliedMove": "±8.03%",
+    "impliedUpdatedAt": 1779322383975
+  },
+  "MOV": {
+    "lastMove": 2.95,
+    "avg4Move": 2.14,
+    "moves": [
+      2.95,
+      -0.38,
+      -2.64,
+      2.59
+    ],
+    "updatedAt": 1779143421966,
+    "impliedMove": "±16.91%",
+    "impliedUpdatedAt": 1779322388327
+  },
+  "ZKH": {
+    "lastMove": 0.35,
+    "avg4Move": 1.82,
+    "moves": [
+      0.35,
+      0.33,
+      4.78
+    ],
+    "updatedAt": 1779143422398
+  },
+  "CLGN": {
+    "lastMove": 5.71,
+    "avg4Move": 3.2,
+    "moves": [
+      5.71,
+      -5.95,
+      -0.74,
+      -0.39
+    ],
+    "updatedAt": 1779143423710
+  },
+  "YMM": {
+    "lastMove": 4.85,
+    "avg4Move": 1.52,
+    "moves": [
+      4.85,
+      -0.31,
+      0.76,
+      0.16
+    ],
+    "updatedAt": 1779143424701,
+    "impliedMove": "±12.46%",
+    "impliedUpdatedAt": 1779324184734
+  },
+  "ROST": {
+    "lastMove": 0.53,
+    "avg4Move": 0.59,
+    "moves": [
+      0.53,
+      1.43,
+      0.34,
+      -0.05
+    ],
+    "updatedAt": 1779143425170,
+    "impliedMove": "±5.61%",
+    "impliedUpdatedAt": 1779322380735
+  },
+  "TITN": {
+    "lastMove": 2.13,
+    "avg4Move": 2.14,
+    "moves": [
+      2.13,
+      2.07,
+      -2.38,
+      1.99
+    ],
+    "updatedAt": 1779143425574,
+    "impliedMove": "±22.62%",
+    "impliedUpdatedAt": 1779667543887
+  },
+  "HOV": {
+    "lastMove": 1.75,
+    "avg4Move": 2.3,
+    "moves": [
+      1.75,
+      3.78,
+      -0.37,
+      -3.32
+    ],
+    "updatedAt": 1779143425949
+  },
+  "BKE": {
+    "lastMove": 1.74,
+    "avg4Move": 0.95,
+    "moves": [
+      1.74,
+      0.62,
+      -0.28,
+      1.15
+    ],
+    "updatedAt": 1779143426346,
+    "impliedMove": "±19.79%",
+    "impliedUpdatedAt": 1779322383661
+  },
+  "CPRT": {
+    "lastMove": -1.86,
+    "avg4Move": 0.79,
+    "moves": [
+      -1.86,
+      -0.02,
+      0.4,
+      -0.87
+    ],
+    "updatedAt": 1779143426771
+  },
+  "AAP": {
+    "lastMove": -1.04,
+    "avg4Move": 2.19,
+    "moves": [
+      -1.04,
+      0.81,
+      6.41,
+      -0.48
+    ],
+    "updatedAt": 1779143427174,
+    "impliedMove": "±10.04%",
+    "impliedUpdatedAt": 1779322382096
+  },
+  "WMT": {
+    "lastMove": 2.94,
+    "avg4Move": 1.01,
+    "moves": [
+      2.94,
+      0.41,
+      0.52,
+      0.16
+    ],
+    "updatedAt": 1779143427692,
+    "impliedMove": "±3.83%",
+    "impliedUpdatedAt": 1779322381731
+  },
+  "LION": {
+    "lastMove": 1.86,
+    "avg4Move": 1.52,
+    "moves": [
+      1.86,
+      -1.74,
+      -0.86,
+      -1.61
+    ],
+    "updatedAt": 1779143428093,
+    "impliedMove": "±14.50%",
+    "impliedUpdatedAt": 1779322388015
+  },
+  "NIO": {
+    "lastMove": 0.78,
+    "avg4Move": 1.27,
+    "moves": [
+      0.78,
+      0.39,
+      2.33,
+      1.57
+    ],
+    "updatedAt": 1779143428403,
+    "impliedMove": "±6.39%",
+    "impliedUpdatedAt": 1779322388935
+  },
+  "NTES": {
+    "lastMove": 7.22,
+    "avg4Move": 3,
+    "moves": [
+      7.22,
+      -1.3,
+      0.15,
+      3.33
+    ],
+    "updatedAt": 1779143428749,
+    "impliedMove": "±7.42%",
+    "impliedUpdatedAt": 1779322389241
+  },
+  "WDAY": {
+    "lastMove": -7.04,
+    "avg4Move": 2.94,
+    "moves": [
+      -7.04,
+      -0.93,
+      -3.12,
+      0.66
+    ],
+    "updatedAt": 1779143429117,
+    "impliedMove": "±9.66%",
+    "impliedUpdatedAt": 1779322381380
+  },
+  "DAO": {
+    "lastMove": 11.31,
+    "avg4Move": 4.03,
+    "moves": [
+      11.31,
+      0.12,
+      0.66
+    ],
+    "updatedAt": 1779143429418,
+    "impliedMove": "±21.25%",
+    "impliedUpdatedAt": 1779322384981
+  },
+  "ZM": {
+    "lastMove": -4.45,
+    "avg4Move": 2.52,
+    "moves": [
+      -4.45,
+      -1.09,
+      -4.16,
+      -0.37
+    ],
+    "updatedAt": 1779143429806,
+    "impliedMove": "±7.88%",
+    "impliedUpdatedAt": 1779324185407
+  },
+  "THR": {
+    "lastMove": 1.26,
+    "avg4Move": 1.57,
+    "moves": [
+      1.26,
+      2.1,
+      1.89,
+      1.04
+    ],
+    "updatedAt": 1779143430151,
+    "impliedMove": "±9.69%",
+    "impliedUpdatedAt": 1779324183395
+  },
+  "FLO": {
+    "lastMove": -0.83,
+    "avg4Move": 0.75,
+    "moves": [
+      -0.83,
+      0.31,
+      1.5,
+      -0.37
+    ],
+    "updatedAt": 1779143430597,
+    "impliedMove": "±12.09%",
+    "impliedUpdatedAt": 1779322385886
+  },
+  "CVCO": {
+    "lastMove": 0.14,
+    "avg4Move": 1.53,
+    "moves": [
+      0.14,
+      1.1,
+      4.19,
+      -0.67
+    ],
+    "updatedAt": 1779143430925,
+    "impliedMove": "±8.42%",
+    "impliedUpdatedAt": 1779322384685
+  },
+  "DE": {
+    "lastMove": 2.4,
+    "avg4Move": 2.62,
+    "moves": [
+      2.4,
+      0.07,
+      -4.46,
+      3.55
+    ],
+    "updatedAt": 1779143431470,
+    "impliedMove": "±4.71%",
+    "impliedUpdatedAt": 1779322379776
+  },
+  "AMWD": {
+    "lastMove": 4.15,
+    "avg4Move": 1.61,
+    "moves": [
+      4.15,
+      -1.51,
+      -0.32,
+      0.44
+    ],
+    "updatedAt": 1779143431807,
+    "impliedMove": "±11.67%",
+    "impliedUpdatedAt": 1779322382388
+  },
+  "DAVA": {
+    "lastMove": -3.64,
+    "avg4Move": 2.62,
+    "moves": [
+      -3.64,
+      2.53,
+      2.55,
+      -1.74
+    ],
+    "updatedAt": 1779143432187,
+    "impliedMove": "±25.29%",
+    "impliedUpdatedAt": 1779322385284
+  },
+  "STRZ": {
+    "lastMove": 3.48,
+    "avg4Move": 1.47,
+    "moves": [
+      3.48,
+      -0.77,
+      -1.02,
+      0.62
+    ],
+    "updatedAt": 1779143432669
+  },
+  "FRO": {
+    "lastMove": -5.68,
+    "avg4Move": 1.95,
+    "moves": [
+      -5.68,
+      0.35,
+      0.55,
+      1.21
+    ],
+    "updatedAt": 1779143433097,
+    "impliedMove": "±13.32%",
+    "impliedUpdatedAt": 1779322386492
+  },
+  "TEN": {
+    "lastMove": -2.36,
+    "avg4Move": 1.13,
+    "moves": [
+      -2.36,
+      0.27,
+      1.67,
+      0.23
+    ],
+    "updatedAt": 1779143433540,
+    "impliedMove": "±9.87%",
+    "impliedUpdatedAt": 1779324183076
+  },
+  "WMS": {
+    "lastMove": 3.31,
+    "avg4Move": 2.31,
+    "moves": [
+      3.31,
+      1.47,
+      4.14,
+      0.3
+    ],
+    "updatedAt": 1779143433915,
+    "impliedMove": "±10.39%",
+    "impliedUpdatedAt": 1779324184404
+  },
+  "HLNE": {
+    "lastMove": 1.75,
+    "avg4Move": 2.57,
+    "moves": [
+      1.75,
+      -4.44,
+      1.88,
+      2.19
+    ],
+    "updatedAt": 1779143434291,
+    "impliedMove": "±12.58%",
+    "impliedUpdatedAt": 1779322387406
+  },
+  "SOTK": {
+    "lastMove": 3.5,
+    "avg4Move": 2.93,
+    "moves": [
+      3.5,
+      7.16,
+      -0.54,
+      -0.54
+    ],
+    "updatedAt": 1779143434600
+  },
+  "RAMP": {
+    "lastMove": 0.04,
+    "avg4Move": 2.03,
+    "moves": [
+      0.04,
+      -6.64,
+      -1.07,
+      0.36
+    ],
+    "updatedAt": 1779143435025,
+    "impliedMove": "±1.13%",
+    "impliedUpdatedAt": 1779322389551
+  },
+  "RL": {
+    "lastMove": 2.52,
+    "avg4Move": 2.06,
+    "moves": [
+      2.52,
+      1.23,
+      -0.79,
+      3.71
+    ],
+    "updatedAt": 1779143435364,
+    "impliedMove": "±8.91%",
+    "impliedUpdatedAt": 1779322380417
+  },
+  "TTWO": {
+    "lastMove": -1.73,
+    "avg4Move": 1.35,
+    "moves": [
+      -1.73,
+      -1.15,
+      -1.13,
+      1.39
+    ],
+    "updatedAt": 1779143435682,
+    "impliedMove": "±7.62%",
+    "impliedUpdatedAt": 1779322381054
+  },
+  "DECK": {
+    "lastMove": 3.01,
+    "avg4Move": 1.71,
+    "moves": [
+      3.01,
+      -0.19,
+      2.26,
+      1.38
+    ],
+    "updatedAt": 1779143435998,
+    "impliedMove": "±9.91%",
+    "impliedUpdatedAt": 1779322380104
+  },
+  "SYPR": {
+    "lastMove": 7.69,
+    "avg4Move": 3.65,
+    "moves": [
+      7.69,
+      1.9,
+      5,
+      0
+    ],
+    "updatedAt": 1779143439291
+  },
+  "CRVL": {
+    "lastMove": -1.16,
+    "avg4Move": 1.44,
+    "moves": [
+      -1.16,
+      -0.06,
+      1.86,
+      2.69
+    ],
+    "updatedAt": 1779143440072
+  },
+  "ASFH": {
+    "lastMove": 0,
+    "avg4Move": 0,
+    "moves": [
+      0,
+      0
+    ],
+    "updatedAt": 1779143440636
+  },
+  "RLX": {
+    "lastMove": -0.43,
+    "avg4Move": 0.79,
+    "moves": [
+      -0.43,
+      0.38,
+      1.81,
+      0.53
+    ],
+    "updatedAt": 1779143440973,
+    "impliedMove": "±26.31%",
+    "impliedUpdatedAt": 1779235514489
+  },
+  "SCLX": {
+    "lastMove": 7.3,
+    "avg4Move": 4.84,
+    "moves": [
+      7.3,
+      5.08,
+      2.55,
+      -4.42
+    ],
+    "updatedAt": 1779143441341
+  },
+  "BIAF": {
+    "lastMove": -2.03,
+    "avg4Move": 83.14,
+    "moves": [
+      -2.03,
+      -8.01,
+      319.23,
+      3.3
+    ],
+    "updatedAt": 1779143442629
+  },
+  "GLMD": {
+    "lastMove": 9.59,
+    "avg4Move": 6.64,
+    "moves": [
+      9.59,
+      12.32,
+      -3.26,
+      -1.39
+    ],
+    "updatedAt": 1779143443008
+  },
+  "EVGN": {
+    "lastMove": 2.73,
+    "avg4Move": 2.08,
+    "moves": [
+      2.73,
+      0.88,
+      4.69,
+      0
+    ],
+    "updatedAt": 1779143443372
+  },
+  "BTM": {
+    "lastMove": 2.33,
+    "avg4Move": 6.68,
+    "moves": [
+      2.33,
+      13.69,
+      -4.73,
+      -5.96
+    ],
+    "updatedAt": 1779143444409,
+    "impliedMove": "±87.57%",
+    "impliedUpdatedAt": 1779235504907
+  },
+  "TJX": {
+    "lastMove": 1.27,
+    "avg4Move": 0.86,
+    "moves": [
+      1.27,
+      0.19,
+      1.18,
+      -0.82
+    ],
+    "updatedAt": 1779143444850,
+    "impliedMove": "±3.06%",
+    "impliedUpdatedAt": 1779235501261
+  },
+  "HTCR": {
+    "lastMove": -14.29,
+    "avg4Move": 8.48,
+    "moves": [
+      -14.29,
+      2.67
+    ],
+    "updatedAt": 1779143445157
+  },
+  "ARCO": {
+    "lastMove": -0.68,
+    "avg4Move": 1.17,
+    "moves": [
+      -0.68,
+      -0.89,
+      1.01,
+      2.11
+    ],
+    "updatedAt": 1779143445760,
+    "impliedMove": "±11.06%",
+    "impliedUpdatedAt": 1779235502371
+  },
+  "PERI": {
+    "lastMove": -2.4,
+    "avg4Move": 2.99,
+    "moves": [
+      -2.4,
+      -1.56,
+      6.9,
+      1.11
+    ],
+    "updatedAt": 1779143446087,
+    "impliedMove": "±11.55%",
+    "impliedUpdatedAt": 1779235513874
+  },
+  "URBN": {
+    "lastMove": -0.04,
+    "avg4Move": 1.35,
+    "moves": [
+      -0.04,
+      -4.02,
+      1.24,
+      0.09
+    ],
+    "updatedAt": 1779143446483,
+    "impliedMove": "±9.01%",
+    "impliedUpdatedAt": 1779235518559
+  },
+  "TATT": {
+    "lastMove": 6.54,
+    "avg4Move": 2.11,
+    "moves": [
+      6.54,
+      0.55,
+      -0.95,
+      -0.4
+    ],
+    "updatedAt": 1779143446932
+  },
+  "GLNG": {
+    "lastMove": 1.99,
+    "avg4Move": 1.95,
+    "moves": [
+      1.99,
+      -0.72,
+      -2.6,
+      -2.47
+    ],
+    "updatedAt": 1779143447345,
+    "impliedMove": "±7.26%",
+    "impliedUpdatedAt": 1779235510426
+  },
+  "EDRY": {
+    "lastMove": -0.16,
+    "avg4Move": 2.04,
+    "moves": [
+      -0.16,
+      -1.7,
+      -1.12,
+      -5.19
+    ],
+    "updatedAt": 1779143447635
+  },
+  "SBLK": {
+    "lastMove": 0.78,
+    "avg4Move": 0.82,
+    "moves": [
+      0.78,
+      0.7,
+      0.75,
+      1.03
+    ],
+    "updatedAt": 1779143448262,
+    "impliedMove": "±6.71%",
+    "impliedUpdatedAt": 1779235515304
+  },
+  "DRVN": {
+    "lastMove": -1.68,
+    "avg4Move": 1.9,
+    "moves": [
+      -1.68,
+      2.85,
+      -2.33,
+      -0.74
+    ],
+    "updatedAt": 1779143448673,
+    "impliedMove": "±10.34%",
+    "impliedUpdatedAt": 1779235507250
+  },
+  "BORR": {
+    "lastMove": -0.99,
+    "avg4Move": 4.05,
+    "moves": [
+      -0.99,
+      4.09,
+      6.56,
+      4.57
+    ],
+    "updatedAt": 1779143449029,
+    "impliedMove": "±13.80%",
+    "impliedUpdatedAt": 1779235504106
+  },
+  "WSM": {
+    "lastMove": 0.93,
+    "avg4Move": 0.76,
+    "moves": [
+      0.93,
+      -0.89,
+      0.33,
+      0.87
+    ],
+    "updatedAt": 1779143449428,
+    "impliedMove": "±10.84%",
+    "impliedUpdatedAt": 1779235501692
+  },
+  "NVDA": {
+    "lastMove": -2.84,
+    "avg4Move": 2.45,
+    "moves": [
+      -2.84,
+      2.17,
+      -2.33,
+      2.47
+    ],
+    "updatedAt": 1779143449796,
+    "impliedMove": "±5.22%",
+    "impliedUpdatedAt": 1779235500435
+  },
+  "BZ": {
+    "lastMove": 2.6,
+    "avg4Move": 1.77,
+    "moves": [
+      2.6,
+      -2.01,
+      -1.91,
+      -0.57
+    ],
+    "updatedAt": 1779143450201,
+    "impliedMove": "±10.66%",
+    "impliedUpdatedAt": 1779235505242
+  },
+  "ENS": {
+    "lastMove": 2.71,
+    "avg4Move": 2.25,
+    "moves": [
+      2.71,
+      1.84,
+      3.47,
+      0.98
+    ],
+    "updatedAt": 1779143450798,
+    "impliedMove": "±10.13%",
+    "impliedUpdatedAt": 1779235509015
+  },
+  "LOW": {
+    "lastMove": 2.15,
+    "avg4Move": 1.26,
+    "moves": [
+      2.15,
+      -1.05,
+      1.27,
+      -0.55
+    ],
+    "updatedAt": 1779143451243,
+    "impliedMove": "±4.06%",
+    "impliedUpdatedAt": 1779235499738
+  },
+  "ADI": {
+    "lastMove": -1.76,
+    "avg4Move": 0.97,
+    "moves": [
+      -1.76,
+      -0.22,
+      -1.3,
+      -0.61
+    ],
+    "updatedAt": 1779143451640,
+    "impliedMove": "±6.25%",
+    "impliedUpdatedAt": 1779235498632
+  },
+  "INTU": {
+    "lastMove": -10.89,
+    "avg4Move": 3.5,
+    "moves": [
+      -10.89,
+      1.29,
+      -1.14,
+      -0.68
+    ],
+    "updatedAt": 1779143452021,
+    "impliedMove": "±7.68%",
+    "impliedUpdatedAt": 1779235499422
+  },
+  "TGT": {
+    "lastMove": 1.62,
+    "avg4Move": 1.12,
+    "moves": [
+      1.62,
+      -1.37,
+      -0.73,
+      -0.75
+    ],
+    "updatedAt": 1779143452418,
+    "impliedMove": "±6.65%",
+    "impliedUpdatedAt": 1779235500857
+  },
+  "STEP": {
+    "lastMove": 3.8,
+    "avg4Move": 2.24,
+    "moves": [
+      3.8,
+      -1.93,
+      -0.05,
+      3.18
+    ],
+    "updatedAt": 1779143452776,
+    "impliedMove": "±14.03%",
+    "impliedUpdatedAt": 1779235516381
+  },
+  "NDSN": {
+    "lastMove": 0.46,
+    "avg4Move": 1.05,
+    "moves": [
+      0.46,
+      -0.99,
+      -2.32,
+      0.42
+    ],
+    "updatedAt": 1779143453336,
+    "impliedMove": "±6.08%",
+    "impliedUpdatedAt": 1779235500103
+  },
+  "ZIM": {
+    "lastMove": 3.2,
+    "avg4Move": 2.76,
+    "moves": [
+      3.2,
+      1.18,
+      0.68,
+      5.96
+    ],
+    "updatedAt": 1779143453725,
+    "impliedMove": "±5.59%",
+    "impliedUpdatedAt": 1779235520415
+  },
+  "LPG": {
+    "lastMove": 1.68,
+    "avg4Move": 1.54,
+    "moves": [
+      1.68,
+      -2.58,
+      0.9,
+      -0.98
+    ],
+    "updatedAt": 1779143454063,
+    "impliedMove": "±8.48%",
+    "impliedUpdatedAt": 1779235512665
+  },
+  "IMVT": {
+    "lastMove": 1.93,
+    "avg4Move": 3.82,
+    "moves": [
+      1.93,
+      1.36,
+      0.94,
+      -11.06
+    ],
+    "updatedAt": 1779143454429,
+    "impliedMove": "±21.99%",
+    "impliedUpdatedAt": 1779235511697
+  },
+  "REPL": {
+    "lastMove": -8.44,
+    "avg4Move": 6.07,
+    "moves": [
+      -8.44,
+      0.48,
+      -1.51,
+      -13.85
+    ],
+    "updatedAt": 1779143454822,
+    "impliedMove": "±12.84%",
+    "impliedUpdatedAt": 1779235514191
+  },
+  "ELF": {
+    "lastMove": 2.33,
+    "avg4Move": 2.13,
+    "moves": [
+      2.33,
+      2.05,
+      1.79,
+      2.33
+    ],
+    "updatedAt": 1779143455225,
+    "impliedMove": "±11.89%",
+    "impliedUpdatedAt": 1779235508155
+  },
+  "VFC": {
+    "lastMove": 0.44,
+    "avg4Move": 3.67,
+    "moves": [
+      0.44,
+      6.31,
+      4.17,
+      3.74
+    ],
+    "updatedAt": 1779143455658,
+    "impliedMove": "±9.50%",
+    "impliedUpdatedAt": 1779235519263
+  },
+  "HSAI": {
+    "lastMove": 7.5,
+    "avg4Move": 9.03,
+    "moves": [
+      7.5,
+      -1.81,
+      17.77
+    ],
+    "updatedAt": 1779143458322,
+    "impliedMove": "±17.57%",
+    "impliedUpdatedAt": 1779148951614
+  },
+  "SCND": {
+    "lastMove": 0.83,
+    "avg4Move": 0.58,
+    "moves": [
+      0.83,
+      0.83,
+      0,
+      0.65
+    ],
+    "updatedAt": 1779143458659
+  },
+  "CRTD": {
+    "lastMove": 8.99,
+    "avg4Move": 3,
+    "moves": [
+      8.99,
+      0,
+      0
+    ],
+    "updatedAt": 1779143459233
+  },
+  "REEMF": {
+    "lastMove": 0,
+    "avg4Move": 1.92,
+    "moves": [
+      0,
+      0,
+      -6.15,
+      1.54
+    ],
+    "updatedAt": 1779143460273
+  },
+  "WILC": {
+    "lastMove": -1.07,
+    "avg4Move": 0.71,
+    "moves": [
+      -1.07,
+      -0.26,
+      1.1,
+      0.42
+    ],
+    "updatedAt": 1779143461166
+  },
+  "ELTK": {
+    "lastMove": 0.36,
+    "avg4Move": 0.47,
+    "moves": [
+      0.36,
+      1.19,
+      0.32,
+      0
+    ],
+    "updatedAt": 1779143461794
+  },
+  "ILAL": {
+    "lastMove": 17.65,
+    "avg4Move": 6.94,
+    "moves": [
+      17.65,
+      -1.63,
+      0,
+      -8.5
+    ],
+    "updatedAt": 1779143463327
+  },
+  "AUNA": {
+    "lastMove": -3.25,
+    "avg4Move": 1.5,
+    "moves": [
+      -3.25,
+      0.45,
+      1.45,
+      0.84
+    ],
+    "updatedAt": 1779143463728
+  },
+  "RERE": {
+    "lastMove": 2.26,
+    "avg4Move": 1.71,
+    "moves": [
+      2.26,
+      2.39,
+      1.51,
+      0.68
+    ],
+    "updatedAt": 1779143464246
+  },
+  "BMTM": {
+    "lastMove": 0,
+    "avg4Move": 6.67,
+    "moves": [
+      0,
+      13.33
+    ],
+    "updatedAt": 1779143465015
+  },
+  "ECX": {
+    "lastMove": -4.65,
+    "avg4Move": 3.89,
+    "moves": [
+      -4.65,
+      3.48,
+      5.85,
+      -1.59
+    ],
+    "updatedAt": 1779143465804
+  },
+  "RRGB": {
+    "lastMove": 2.22,
+    "avg4Move": 4.85,
+    "moves": [
+      2.22,
+      4.96,
+      11.4,
+      -0.84
+    ],
+    "updatedAt": 1779143467523,
+    "impliedMove": "±32.41%",
+    "impliedUpdatedAt": 1779148956094
+  },
+  "BILI": {
+    "lastMove": 7.24,
+    "avg4Move": 2.44,
+    "moves": [
+      7.24,
+      1.39,
+      -0.51,
+      -0.63
+    ],
+    "updatedAt": 1779143467870,
+    "impliedMove": "±7.32%",
+    "impliedUpdatedAt": 1779148947216
+  },
+  "CAN": {
+    "lastMove": 11.59,
+    "avg4Move": 8.3,
+    "moves": [
+      11.59,
+      17.91,
+      -2.43,
+      -1.25
+    ],
+    "updatedAt": 1779143468238,
+    "impliedMove": "±22.89%",
+    "impliedUpdatedAt": 1779148947750
+  },
+  "CAVA": {
+    "lastMove": 3.17,
+    "avg4Move": 2.11,
+    "moves": [
+      3.17,
+      2.09,
+      -2.27,
+      0.91
+    ],
+    "updatedAt": 1779143468573,
+    "impliedMove": "±11.10%",
+    "impliedUpdatedAt": 1779148948028
+  },
+  "RDCM": {
+    "lastMove": -1.68,
+    "avg4Move": 1.84,
+    "moves": [
+      -1.68,
+      -2.9,
+      1.1,
+      1.66
+    ],
+    "updatedAt": 1779143468966
+  },
+  "CCIF": {
+    "lastMove": 1.07,
+    "avg4Move": 1.8,
+    "moves": [
+      1.07,
+      -1.37,
+      2.96
+    ],
+    "updatedAt": 1779143469341
+  },
+  "ECC": {
+    "lastMove": 2.43,
+    "avg4Move": 1.72,
+    "moves": [
+      2.43,
+      2.42,
+      0.65,
+      1.36
+    ],
+    "updatedAt": 1779143469711
+  },
+  "HD": {
+    "lastMove": 0.79,
+    "avg4Move": 0.85,
+    "moves": [
+      0.79,
+      -0.33,
+      1.67,
+      -0.61
+    ],
+    "updatedAt": 1779143470049,
+    "impliedMove": "±4.15%",
+    "impliedUpdatedAt": 1779148943924
+  },
+  "BBWI": {
+    "lastMove": -0.67,
+    "avg4Move": 1.48,
+    "moves": [
+      -0.67,
+      -1.02,
+      -2.73,
+      -1.51
+    ],
+    "updatedAt": 1779143470662,
+    "impliedMove": "±8.18%",
+    "impliedUpdatedAt": 1779148946944
+  },
+  "AS": {
+    "lastMove": 0.4,
+    "avg4Move": 1.02,
+    "moves": [
+      0.4,
+      0.58,
+      -2.81,
+      0.3
+    ],
+    "updatedAt": 1779143471002,
+    "impliedMove": "±11.90%",
+    "impliedUpdatedAt": 1779148945976
+  },
+  "CRNT": {
+    "lastMove": 4.29,
+    "avg4Move": 2.43,
+    "moves": [
+      4.29,
+      -2.15,
+      2.85,
+      0.43
+    ],
+    "updatedAt": 1779143471310,
+    "impliedMove": "±20.66%",
+    "impliedUpdatedAt": 1779148948911
+  },
+  "TOL": {
+    "lastMove": 0.67,
+    "avg4Move": 1.3,
+    "moves": [
+      0.67,
+      -1.22,
+      3,
+      0.31
+    ],
+    "updatedAt": 1779143471719,
+    "impliedMove": "±8.65%",
+    "impliedUpdatedAt": 1779148957776
+  },
+  "KEYS": {
+    "lastMove": 1.75,
+    "avg4Move": 1.7,
+    "moves": [
+      1.75,
+      1.76,
+      -3.19,
+      0.1
+    ],
+    "updatedAt": 1779143472083,
+    "impliedMove": "±11.86%",
+    "impliedUpdatedAt": 1779148944318
+  },
+  "EGHT": {
+    "lastMove": -4.06,
+    "avg4Move": 2.54,
+    "moves": [
+      -4.06,
+      0,
+      4.08,
+      2
+    ],
+    "updatedAt": 1779143472508,
+    "impliedMove": "±23.83%",
+    "impliedUpdatedAt": 1779148950786
+  },
+  "MMYT": {
+    "lastMove": -0.28,
+    "avg4Move": 1.54,
+    "moves": [
+      -0.28,
+      -1.35,
+      -3.36,
+      1.16
+    ],
+    "updatedAt": 1779143472874,
+    "impliedMove": "±13.66%",
+    "impliedUpdatedAt": 1779148953985
+  },
+  "EXP": {
+    "lastMove": 2.31,
+    "avg4Move": 2.29,
+    "moves": [
+      2.31,
+      -0.88,
+      3.47,
+      2.5
+    ],
+    "updatedAt": 1779143473215,
+    "impliedMove": "±8.94%",
+    "impliedUpdatedAt": 1779148951334
+  },
+  "KEEL": {
+    "lastMove": 1.54,
+    "avg4Move": 3.34,
+    "moves": [
+      1.54,
+      10.64,
+      -0.71,
+      0.48
+    ],
+    "updatedAt": 1779143474719
+  },
+  "AATC": {
+    "lastMove": -12.99,
+    "avg4Move": 4.16,
+    "moves": [
+      -12.99,
+      1.82,
+      0.19,
+      1.62
+    ],
+    "updatedAt": 1779143482324
+  },
+  "OSRH": {
+    "lastMove": 4.43,
+    "avg4Move": 4.43,
+    "moves": [
+      4.43
+    ],
+    "updatedAt": 1779143483550
+  },
+  "AUMN": {
+    "lastMove": 0,
+    "avg4Move": 2.28,
+    "moves": [
+      0,
+      1.85,
+      5
+    ],
+    "updatedAt": 1779143486856
+  },
+  "PRKR": {
+    "lastMove": -12.2,
+    "avg4Move": 5.77,
+    "moves": [
+      -12.2,
+      3.9,
+      1.92,
+      -5.06
+    ],
+    "updatedAt": 1779143489235
+  },
+  "FTFT": {
+    "lastMove": 0,
+    "avg4Move": 6.35,
+    "moves": [
+      0,
+      -12.7
+    ],
+    "updatedAt": 1779143491762
+  },
+  "PRPH": {
+    "lastMove": -2.56,
+    "avg4Move": 6.34,
+    "moves": [
+      -2.56,
+      0,
+      15.79,
+      -7.02
+    ],
+    "updatedAt": 1779143495282
+  },
+  "JOB": {
+    "lastMove": 0,
+    "avg4Move": 3.51,
+    "moves": [
+      0,
+      -3.39,
+      5.88,
+      -4.76
+    ],
+    "updatedAt": 1779143498915
+  },
+  "SACH": {
+    "lastMove": 0,
+    "avg4Move": 2.15,
+    "moves": [
+      0,
+      3.6,
+      -5,
+      0
+    ],
+    "updatedAt": 1779143499980
+  },
+  "BKYI": {
+    "lastMove": 8.33,
+    "avg4Move": 4.45,
+    "moves": [
+      8.33,
+      1.22,
+      -3.8
+    ],
+    "updatedAt": 1779143501194
+  },
+  "FEED": {
+    "lastMove": 0,
+    "avg4Move": 1.53,
+    "moves": [
+      0,
+      -4.08,
+      2.05,
+      0
+    ],
+    "updatedAt": 1779143501874
+  },
+  "IQ": {
+    "lastMove": 2.22,
+    "avg4Move": 2.62,
+    "moves": [
+      2.22,
+      5.73,
+      -1.95,
+      -0.56
+    ],
+    "updatedAt": 1779143502731
+  },
+  "DOYU": {
+    "lastMove": 1.32,
+    "avg4Move": 0.8,
+    "moves": [
+      1.32,
+      -0.27
+    ],
+    "updatedAt": 1779143503515
+  },
+  "BATL": {
+    "lastMove": 10.16,
+    "avg4Move": 8.26,
+    "moves": [
+      10.16,
+      17.2,
+      -1.57,
+      4.12
+    ],
+    "updatedAt": 1779143504518
+  },
+  "NVVE": {
+    "lastMove": -3.19,
+    "avg4Move": 10.4,
+    "moves": [
+      -3.19,
+      -0.84,
+      -14.29,
+      23.27
+    ],
+    "updatedAt": 1779143504846
+  },
+  "GLSI": {
+    "lastMove": 1.61,
+    "avg4Move": 2.33,
+    "moves": [
+      1.61,
+      -0.22,
+      -2.94,
+      4.54
+    ],
+    "updatedAt": 1779143505202
+  },
+  "GDEV": {
+    "lastMove": -1.13,
+    "avg4Move": 3.74,
+    "moves": [
+      -1.13,
+      5.27,
+      0.73,
+      -7.84
+    ],
+    "updatedAt": 1779143505964
+  },
+  "EVTV": {
+    "lastMove": 18.16,
+    "avg4Move": 6.09,
+    "moves": [
+      18.16,
+      0.93,
+      4.89,
+      -0.37
+    ],
+    "updatedAt": 1779143508106
+  },
+  "ONFO": {
+    "lastMove": -2.89,
+    "avg4Move": 2.92,
+    "moves": [
+      -2.89,
+      2.94
+    ],
+    "updatedAt": 1779143508412
+  },
+  "AGPU": {
+    "lastMove": 12.2,
+    "avg4Move": 6.55,
+    "moves": [
+      12.2,
+      -0.89
+    ],
+    "updatedAt": 1779143509882
+  },
+  "STCB": {
+    "lastMove": -6.82,
+    "avg4Move": 4.15,
+    "moves": [
+      -6.82,
+      0,
+      9.24,
+      0.54
+    ],
+    "updatedAt": 1779143511376
+  },
+  "XWEL": {
+    "lastMove": 12.62,
+    "avg4Move": 11.69,
+    "moves": [
+      12.62,
+      10,
+      -13.89,
+      10.26
+    ],
+    "updatedAt": 1779143512396
+  },
+  "IVF": {
+    "lastMove": 3.7,
+    "avg4Move": 3.7,
+    "moves": [
+      3.7
+    ],
+    "updatedAt": 1779143512729
+  },
+  "XP": {
+    "lastMove": -1.16,
+    "avg4Move": 2.26,
+    "moves": [
+      -1.16,
+      -2.98,
+      -1.98,
+      2.91
+    ],
+    "updatedAt": 1779143513116
+  },
+  "ASPI": {
+    "lastMove": 5.23,
+    "avg4Move": 4.6,
+    "moves": [
+      5.23,
+      -5.51,
+      -4.89,
+      2.77
+    ],
+    "updatedAt": 1779143513474
+  },
+  "RVPH": {
+    "lastMove": 10.96,
+    "avg4Move": 6.8,
+    "moves": [
+      10.96,
+      11.11,
+      -2.06,
+      -3.07
+    ],
+    "updatedAt": 1779143513825
+  },
+  "CGEN": {
+    "lastMove": 1.31,
+    "avg4Move": 4.1,
+    "moves": [
+      1.31,
+      8.84,
+      -2.81,
+      -3.42
+    ],
+    "updatedAt": 1779143514265
+  },
+  "BBW": {
+    "lastMove": 0.72,
+    "avg4Move": 1.74,
+    "moves": [
+      0.72,
+      -2.51,
+      -2.66,
+      1.08
+    ],
+    "updatedAt": 1779143514647
+  },
+  "VIPS": {
+    "lastMove": 0.11,
+    "avg4Move": 1.96,
+    "moves": [
+      0.11,
+      5.3,
+      0.33,
+      -2.1
+    ],
+    "updatedAt": 1779143515037
+  },
+  "CBAT": {
+    "lastMove": 2.38,
+    "avg4Move": 3.19,
+    "moves": [
+      2.38,
+      1.12,
+      -4.24,
+      -5
+    ],
+    "updatedAt": 1779143515590
+  },
+  "SB": {
+    "lastMove": 0.21,
+    "avg4Move": 0.95,
+    "moves": [
+      0.21,
+      1.13,
+      0.83,
+      1.63
+    ],
+    "updatedAt": 1779143516009
+  },
+  "PXS": {
+    "lastMove": 0.47,
+    "avg4Move": 1.63,
+    "moves": [
+      0.47,
+      -1.78,
+      2.13,
+      2.14
+    ],
+    "updatedAt": 1779143516392
+  },
+  "OXLC": {
+    "lastMove": -0.24,
+    "avg4Move": 0.85,
+    "moves": [
+      -0.24,
+      1.91,
+      0.39
+    ],
+    "updatedAt": 1779143516733
+  },
+  "BRC": {
+    "lastMove": 0.42,
+    "avg4Move": 0.68,
+    "moves": [
+      0.42,
+      1.61,
+      -0.26,
+      -0.43
+    ],
+    "updatedAt": 1779143517239
+  },
+  "LYRA": {
+    "lastMove": 0.67,
+    "avg4Move": 2.74,
+    "moves": [
+      0.67,
+      -0.73,
+      -4.91,
+      4.65
+    ],
+    "updatedAt": 1779143517574
+  },
+  "EARN": {
+    "lastMove": 0.57,
+    "avg4Move": 1.41,
+    "moves": [
+      0.57,
+      -2.2,
+      -1.22,
+      1.66
+    ],
+    "updatedAt": 1779143518214
+  },
+  "ACLX": {
+    "lastMove": -2.85,
+    "avg4Move": 3.04,
+    "moves": [
+      -2.85,
+      -0.09,
+      -1.76,
+      -7.47
+    ],
+    "updatedAt": 1779143518609
+  },
+  "MDV": {
+    "lastMove": 2.3,
+    "avg4Move": 1.46,
+    "moves": [
+      2.3,
+      0.14,
+      0,
+      3.41
+    ],
+    "updatedAt": 1779143518931
+  },
+  "BIDU": {
+    "lastMove": 0.43,
+    "avg4Move": 5.02,
+    "moves": [
+      0.43,
+      15.03,
+      4.3,
+      0.33
+    ],
+    "updatedAt": 1779143519348
+  },
+  "AGYS": {
+    "lastMove": -2.8,
+    "avg4Move": 1.86,
+    "moves": [
+      -2.8,
+      -3.76,
+      0.48,
+      -0.39
+    ],
+    "updatedAt": 1779143519713
+  },
+  "RNW": {
+    "lastMove": 4.59,
+    "avg4Move": 4.03,
+    "moves": [
+      4.59,
+      3.72,
+      6.36,
+      -1.45
+    ],
+    "updatedAt": 1779143520085
+  },
+  "ADSK": {
+    "lastMove": -5.78,
+    "avg4Move": 2.21,
+    "moves": [
+      -5.78,
+      0.76,
+      -2.01,
+      -0.28
+    ],
+    "updatedAt": 1779145836037,
+    "impliedMove": "±7.97%",
+    "impliedUpdatedAt": 1779540900081
+  },
+  "COST": {
+    "lastMove": 0.5,
+    "avg4Move": 0.72,
+    "moves": [
+      0.5,
+      1.1,
+      1.17,
+      -0.12
+    ],
+    "updatedAt": 1779145836436,
+    "impliedMove": "±3.11%",
+    "impliedUpdatedAt": 1779540900468
+  },
+  "DELL": {
+    "lastMove": -1.69,
+    "avg4Move": 1.78,
+    "moves": [
+      -1.69,
+      -1.17,
+      -4.05,
+      0.21
+    ],
+    "updatedAt": 1779145836758,
+    "impliedMove": "±9.99%",
+    "impliedUpdatedAt": 1779540900813
+  },
+  "DLTR": {
+    "lastMove": 2.11,
+    "avg4Move": 1.38,
+    "moves": [
+      2.11,
+      1.75,
+      1.03,
+      -0.61
+    ],
+    "updatedAt": 1779145837097,
+    "impliedMove": "±8.38%",
+    "impliedUpdatedAt": 1779540901150
+  },
+  "HRL": {
+    "lastMove": 0.65,
+    "avg4Move": 0.75,
+    "moves": [
+      0.65,
+      -0.51,
+      0.11,
+      -1.71
+    ],
+    "updatedAt": 1779145837470,
+    "impliedMove": "±5.92%",
+    "impliedUpdatedAt": 1779540901453
+  },
+  "NTAP": {
+    "lastMove": -2.02,
+    "avg4Move": 1.42,
+    "moves": [
+      -2.02,
+      -0.71,
+      -2.91,
+      -0.02
+    ],
+    "updatedAt": 1779145837843,
+    "impliedMove": "±8.87%",
+    "impliedUpdatedAt": 1779540901756
+  },
+  "A": {
+    "lastMove": -2.4,
+    "avg4Move": 1.44,
+    "moves": [
+      -2.4,
+      -1.14,
+      -1.14,
+      -1.06
+    ],
+    "updatedAt": 1779145838186,
+    "impliedMove": "±7.69%",
+    "impliedUpdatedAt": 1779540902072
+  },
+  "BBY": {
+    "lastMove": -0.5,
+    "avg4Move": 0.8,
+    "moves": [
+      -0.5,
+      -0.75,
+      -1.44,
+      0.52
+    ],
+    "updatedAt": 1779145838532,
+    "impliedMove": "±7.03%",
+    "impliedUpdatedAt": 1779540902373
+  },
+  "CRM": {
+    "lastMove": -6.85,
+    "avg4Move": 2.6,
+    "moves": [
+      -6.85,
+      0.36,
+      -2.94,
+      0.23
+    ],
+    "updatedAt": 1779145838871,
+    "impliedMove": "±7.40%",
+    "impliedUpdatedAt": 1779540902698
+  },
+  "HPQ": {
+    "lastMove": -4.09,
+    "avg4Move": 2.15,
+    "moves": [
+      -4.09,
+      -2.39,
+      -1.41,
+      -0.7
+    ],
+    "updatedAt": 1779145839355,
+    "impliedMove": "±8.82%",
+    "impliedUpdatedAt": 1779540903009
+  },
+  "SNPS": {
+    "lastMove": -8.46,
+    "avg4Move": 3.17,
+    "moves": [
+      -8.46,
+      -1.78,
+      -2.34,
+      0.08
+    ],
+    "updatedAt": 1779145839750,
+    "impliedMove": "±8.71%",
+    "impliedUpdatedAt": 1779540903317
+  },
+  "AZO": {
+    "lastMove": -6.32,
+    "avg4Move": 2.41,
+    "moves": [
+      -6.32,
+      -3.05,
+      0.23,
+      -0.05
+    ],
+    "updatedAt": 1779145840125,
+    "impliedMove": "±6.66%",
+    "impliedUpdatedAt": 1779540903672
+  },
+  "AIFC": {
+    "impliedMove": "±22.46%",
+    "impliedUpdatedAt": 1779148945130
+  },
+  "IRIX": {
+    "impliedMove": "±129.80%",
+    "impliedUpdatedAt": 1779148952388
+  },
+  "LUXE": {
+    "impliedMove": "±16.37%",
+    "impliedUpdatedAt": 1779148953185
+  },
+  "LX": {
+    "impliedMove": "±15.61%",
+    "impliedUpdatedAt": 1779667221326
+  },
+  "BNC": {
+    "impliedMove": "±26.56%",
+    "impliedUpdatedAt": 1779235503772
+  },
+  "BZUN": {
+    "impliedMove": "±7.64%",
+    "impliedUpdatedAt": 1779235505520
+  },
+  "CATO": {
+    "impliedMove": "±14.58%",
+    "impliedUpdatedAt": 1779235505874
+  },
+  "ARQQ": {
+    "impliedMove": "±19.55%",
+    "impliedUpdatedAt": 1779322383090
+  },
+  "CIEN": {
+    "lastMove": 2.99,
+    "avg4Move": 3.52,
+    "moves": [
+      2.99,
+      -0.19,
+      -4.53,
+      6.36
+    ],
+    "updatedAt": 1779540755272,
+    "impliedMove": "±7.07%",
+    "impliedUpdatedAt": 1779667494753
+  },
+  "COO": {
+    "lastMove": -1.64,
+    "avg4Move": 0.67,
+    "moves": [
+      -1.64,
+      -0.13,
+      0.25,
+      -0.65
+    ],
+    "updatedAt": 1779540755640,
+    "impliedMove": "±8.43%",
+    "impliedUpdatedAt": 1779667495076
+  },
+  "AVGO": {
+    "lastMove": -3.26,
+    "avg4Move": 2.36,
+    "moves": [
+      -3.26,
+      -1.92,
+      -1.72,
+      2.53
+    ],
+    "updatedAt": 1779540755974,
+    "impliedMove": "±2.18%",
+    "impliedUpdatedAt": 1779667495417
+  },
+  "CRWD": {
+    "lastMove": -3.9,
+    "avg4Move": 2,
+    "moves": [
+      -3.9,
+      1.64,
+      -1.74,
+      0.7
+    ],
+    "updatedAt": 1779540756332,
+    "impliedMove": "±4.56%",
+    "impliedUpdatedAt": 1779667495755
+  },
+  "LULU": {
+    "lastMove": -4.19,
+    "avg4Move": 2.89,
+    "moves": [
+      -4.19,
+      -2.97,
+      -3.59,
+      -0.8
+    ],
+    "updatedAt": 1779540756658,
+    "impliedMove": "±3.88%",
+    "impliedUpdatedAt": 1779667496061
+  },
+  "MDT": {
+    "lastMove": 0.46,
+    "avg4Move": 0.86,
+    "moves": [
+      0.46,
+      -0.55,
+      -1,
+      -1.42
+    ],
+    "updatedAt": 1779540757025,
+    "impliedMove": "±2.02%",
+    "impliedUpdatedAt": 1779667496363
+  },
+  "VEEV": {
+    "lastMove": -6.17,
+    "avg4Move": 2.09,
+    "moves": [
+      -6.17,
+      0.52,
+      -1,
+      -0.69
+    ],
+    "updatedAt": 1779540757356,
+    "impliedMove": "±11.68%",
+    "impliedUpdatedAt": 1779667496673
+  },
+  "DG": {
+    "lastMove": 3.16,
+    "avg4Move": 2.62,
+    "moves": [
+      3.16,
+      0.52,
+      3.46,
+      -3.35
+    ],
+    "updatedAt": 1779540757692,
+    "impliedMove": "±4.00%",
+    "impliedUpdatedAt": 1779667497001
+  },
+  "PANW": {
+    "lastMove": -5.23,
+    "avg4Move": 1.61,
+    "moves": [
+      -5.23,
+      -0.46,
+      -0.41,
+      -0.35
+    ],
+    "updatedAt": 1779540758016,
+    "impliedMove": "±4.26%",
+    "impliedUpdatedAt": 1779667497325
+  },
+  "ULTA": {
+    "lastMove": 1.17,
+    "avg4Move": 0.93,
+    "moves": [
+      1.17,
+      -0.47,
+      -1.41,
+      -0.68
+    ],
+    "updatedAt": 1779540758351,
+    "impliedMove": "±3.25%",
+    "impliedUpdatedAt": 1779667497648
+  },
+  "HPE": {
+    "lastMove": -1.04,
+    "avg4Move": 1.7,
+    "moves": [
+      -1.04,
+      0.33,
+      -4.25,
+      1.17
+    ],
+    "updatedAt": 1779540758714,
+    "impliedMove": "±5.59%",
+    "impliedUpdatedAt": 1779667497966
+  },
+  "BN": {
+    "impliedMove": "±5.25%",
+    "impliedUpdatedAt": 1779540907771
+  },
+  "GCO": {
+    "impliedMove": "±13.89%",
+    "impliedUpdatedAt": 1779540908067,
+    "lastMove": -1.21,
+    "avg4Move": 1.4,
+    "moves": [
+      -1.21,
+      2.21,
+      -1.75,
+      0.41
+    ],
+    "updatedAt": 1779541664991
+  },
+  "AEO": {
+    "impliedMove": "±11.06%",
+    "impliedUpdatedAt": 1779540909102,
+    "lastMove": -2.56,
+    "avg4Move": 1.43,
+    "moves": [
+      -2.56,
+      -1.08,
+      -0.56,
+      1.52
+    ],
+    "updatedAt": 1779541670947
+  },
+  "AMBA": {
+    "impliedMove": "±10.19%",
+    "impliedUpdatedAt": 1779540909422,
+    "lastMove": -4.21,
+    "avg4Move": 2.05,
+    "moves": [
+      -4.21,
+      0.06,
+      -3.56,
+      0.35
+    ],
+    "updatedAt": 1779541672513
+  },
+  "ARBE": {
+    "impliedMove": "±34.60%",
+    "impliedUpdatedAt": 1779540909717,
+    "lastMove": 1.69,
+    "avg4Move": 2.82,
+    "moves": [
+      1.69,
+      2.42,
+      -6.18,
+      0.97
+    ],
+    "updatedAt": 1779541669904
+  },
+  "ASAN": {
+    "impliedMove": "±16.95%",
+    "impliedUpdatedAt": 1779540910016,
+    "lastMove": -6.66,
+    "avg4Move": 2.98,
+    "moves": [
+      -6.66,
+      -0.14,
+      -4.56,
+      -0.56
+    ],
+    "updatedAt": 1779541672163
+  },
+  "DSX": {
+    "impliedMove": "±17.00%",
+    "impliedUpdatedAt": 1779540911774,
+    "lastMove": 1.2,
+    "avg4Move": 1.2,
+    "moves": [
+      1.2
+    ],
+    "updatedAt": 1779541674113
+  },
+  "ESTC": {
+    "impliedMove": "±16.39%",
+    "impliedUpdatedAt": 1779540912377,
+    "lastMove": -8.34,
+    "avg4Move": 3.77,
+    "moves": [
+      -8.34,
+      1.69,
+      -4.92,
+      0.12
+    ],
+    "updatedAt": 1779541675298
+  },
+  "HQY": {
+    "impliedMove": "±12.15%",
+    "impliedUpdatedAt": 1779540912671,
+    "lastMove": -5.69,
+    "avg4Move": 3.66,
+    "moves": [
+      -5.69,
+      0.24,
+      -6.12,
+      2.6
+    ],
+    "updatedAt": 1779541670249
+  },
+  "MDB": {
+    "impliedMove": "±13.21%",
+    "impliedUpdatedAt": 1779540913451,
+    "lastMove": -7.14,
+    "avg4Move": 4.21,
+    "moves": [
+      -7.14,
+      2.57,
+      -7.11,
+      0.01
+    ],
+    "updatedAt": 1779541673462
+  },
+  "NGL": {
+    "impliedMove": "±13.24%",
+    "impliedUpdatedAt": 1779540913744,
+    "lastMove": -1,
+    "avg4Move": 1.34,
+    "moves": [
+      -1,
+      1,
+      -0.7,
+      2.64
+    ],
+    "updatedAt": 1779541675616
+  },
+  "NRT": {
+    "impliedMove": "±15.04%",
+    "impliedUpdatedAt": 1779540914033
+  },
+  "OKTA": {
+    "impliedMove": "±23.30%",
+    "impliedUpdatedAt": 1779540914626,
+    "lastMove": -6.6,
+    "avg4Move": 2.52,
+    "moves": [
+      -6.6,
+      -0.49,
+      -2.73,
+      -0.27
+    ],
+    "updatedAt": 1779541673150
+  },
+  "PATH": {
+    "impliedMove": "±13.30%",
+    "impliedUpdatedAt": 1779540914940,
+    "lastMove": -3.11,
+    "avg4Move": 2.28,
+    "moves": [
+      -3.11,
+      0.06,
+      -5.45,
+      -0.5
+    ],
+    "updatedAt": 1779541674437
+  },
+  "PD": {
+    "impliedMove": "±16.06%",
+    "impliedUpdatedAt": 1779540915236,
+    "lastMove": -14.07,
+    "avg4Move": 4.7,
+    "moves": [
+      -14.07,
+      0.31,
+      -4.16,
+      0.26
+    ],
+    "updatedAt": 1779541671285
+  },
+  "PLAB": {
+    "impliedMove": "±16.27%",
+    "impliedUpdatedAt": 1779540915535,
+    "lastMove": -2.52,
+    "avg4Move": 1.92,
+    "moves": [
+      -2.52,
+      1.55,
+      -2.8,
+      0.82
+    ],
+    "updatedAt": 1779541670570
+  },
+  "RSVR": {
+    "impliedMove": "±8.00%",
+    "impliedUpdatedAt": 1779540916418,
+    "lastMove": -1.19,
+    "avg4Move": 2.29,
+    "moves": [
+      -1.19,
+      -4.05,
+      0.91,
+      -3.01
+    ],
+    "updatedAt": 1779541674989
+  },
+  "S": {
+    "impliedMove": "±26.35%",
+    "impliedUpdatedAt": 1779540916749,
+    "lastMove": -8.69,
+    "avg4Move": 3.05,
+    "moves": [
+      -8.69,
+      -0.95,
+      -2.18,
+      0.38
+    ],
+    "updatedAt": 1779541672836
+  },
+  "SCVL": {
+    "impliedMove": "±11.28%",
+    "impliedUpdatedAt": 1779540917046,
+    "lastMove": -0.49,
+    "avg4Move": 1.72,
+    "moves": [
+      -0.49,
+      1.6,
+      -2.78,
+      -2
+    ],
+    "updatedAt": 1779541667037
+  },
+  "TIGR": {
+    "impliedMove": "±15.60%",
+    "impliedUpdatedAt": 1779540917343,
+    "lastMove": 9.21,
+    "avg4Move": 4.1,
+    "moves": [
+      9.21,
+      -0.7,
+      -2.38
+    ],
+    "updatedAt": 1779541668168
+  },
+  "XPEV": {
+    "impliedMove": "±7.14%",
+    "impliedUpdatedAt": 1779540917653,
+    "lastMove": 0.74,
+    "avg4Move": 1.31,
+    "moves": [
+      0.74,
+      1.2,
+      2.13,
+      1.16
+    ],
+    "updatedAt": 1779541671843
+  },
+  "BRZE": {
+    "impliedMove": "±17.63%",
+    "impliedUpdatedAt": 1779540917960,
+    "lastMove": -8.73,
+    "avg4Move": 4.25,
+    "moves": [
+      -8.73,
+      -1.64,
+      -5.99,
+      0.64
+    ],
+    "updatedAt": 1779541683846
+  },
+  "BURL": {
+    "impliedMove": "±8.51%",
+    "impliedUpdatedAt": 1779540918262,
+    "lastMove": 0.59,
+    "avg4Move": 0.74,
+    "moves": [
+      0.59,
+      0.96,
+      0.08,
+      1.32
+    ],
+    "updatedAt": 1779541679976
+  },
+  "CAL": {
+    "impliedMove": "±13.66%",
+    "impliedUpdatedAt": 1779540918558,
+    "lastMove": 1.18,
+    "avg4Move": 1.55,
+    "moves": [
+      1.18,
+      -0.27,
+      -4.08,
+      0.66
+    ],
+    "updatedAt": 1779541679081
+  },
+  "CPRI": {
+    "impliedMove": "±13.11%",
+    "impliedUpdatedAt": 1779540919154,
+    "lastMove": -0.04,
+    "avg4Move": 2.54,
+    "moves": [
+      -0.04,
+      5.37,
+      2.88,
+      -1.88
+    ],
+    "updatedAt": 1779541686558
+  },
+  "DY": {
+    "impliedMove": "±12.92%",
+    "impliedUpdatedAt": 1779540919482,
+    "lastMove": 2.12,
+    "avg4Move": 2.01,
+    "moves": [
+      2.12,
+      -0.56,
+      -2.05,
+      3.29
+    ],
+    "updatedAt": 1779541684875
+  },
+  "FNGR": {
+    "impliedMove": "±41.21%",
+    "impliedUpdatedAt": 1779540920558,
+    "lastMove": 2.36,
+    "avg4Move": 3.67,
+    "moves": [
+      2.36,
+      3.13,
+      -5.52
+    ],
+    "updatedAt": 1779541677450
+  },
+  "FUTU": {
+    "impliedMove": "±10.80%",
+    "impliedUpdatedAt": 1779540920885,
+    "lastMove": 8.68,
+    "avg4Move": 3.18,
+    "moves": [
+      8.68,
+      1.45,
+      -1.58,
+      1
+    ],
+    "updatedAt": 1779541667847
+  },
+  "GAP": {
+    "impliedMove": "±12.17%",
+    "impliedUpdatedAt": 1779540921217,
+    "lastMove": -1.15,
+    "avg4Move": 1.28,
+    "moves": [
+      -1.15,
+      -0.18,
+      -3.19,
+      0.59
+    ],
+    "updatedAt": 1779541678713
+  },
+  "GASS": {
+    "impliedMove": "±10.37%",
+    "impliedUpdatedAt": 1779540921513,
+    "lastMove": 0.28,
+    "avg4Move": 0.95,
+    "moves": [
+      0.28,
+      -0.15,
+      0.16,
+      3.19
+    ],
+    "updatedAt": 1779541679641
+  },
+  "HEI": {
+    "impliedMove": "±9.23%",
+    "impliedUpdatedAt": 1779540922019,
+    "lastMove": 0.62,
+    "avg4Move": 1.16,
+    "moves": [
+      0.62,
+      -0.93,
+      -0.52,
+      2.56
+    ],
+    "updatedAt": 1779541684546
+  },
+  "KC": {
+    "impliedMove": "±17.69%",
+    "impliedUpdatedAt": 1779540923051,
+    "lastMove": 5.71,
+    "avg4Move": 2.96,
+    "moves": [
+      5.71,
+      1.14,
+      -1.52,
+      -3.48
+    ],
+    "updatedAt": 1779541682889
+  },
+  "KSS": {
+    "impliedMove": "±11.85%",
+    "impliedUpdatedAt": 1779540923718,
+    "lastMove": 0.67,
+    "avg4Move": 2.52,
+    "moves": [
+      0.67,
+      0.8,
+      -1.01,
+      7.61
+    ],
+    "updatedAt": 1779541678019
+  },
+  "MANU": {
+    "impliedMove": "±14.41%",
+    "impliedUpdatedAt": 1779540924300,
+    "lastMove": -0.88,
+    "avg4Move": 1.57,
+    "moves": [
+      -0.88,
+      0.73,
+      -4.6,
+      0.08
+    ],
+    "updatedAt": 1779541680646
+  },
+  "MDWD": {
+    "impliedMove": "±6.36%",
+    "impliedUpdatedAt": 1779540924910,
+    "lastMove": -0.22,
+    "avg4Move": 1.9,
+    "moves": [
+      -0.22,
+      -2.94,
+      -0.88,
+      3.54
+    ],
+    "updatedAt": 1779541678350
+  },
+  "MNRO": {
+    "impliedMove": "±16.59%",
+    "impliedUpdatedAt": 1779540925522,
+    "lastMove": -1.7,
+    "avg4Move": 2.75,
+    "moves": [
+      -1.7,
+      1.34,
+      7.11,
+      0.83
+    ],
+    "updatedAt": 1779541685564
+  },
+  "MRVL": {
+    "impliedMove": "±11.61%",
+    "impliedUpdatedAt": 1779540925888,
+    "lastMove": -3.97,
+    "avg4Move": 4.84,
+    "moves": [
+      -3.97,
+      -3.6,
+      -7.37,
+      4.42
+    ],
+    "updatedAt": 1779541682258
+  },
+  "NCNO": {
+    "impliedMove": "±15.55%",
+    "impliedUpdatedAt": 1779540926182,
+    "lastMove": -10.56,
+    "avg4Move": 3.76,
+    "moves": [
+      -10.56,
+      0.26,
+      -2.78,
+      -1.42
+    ],
+    "updatedAt": 1779541683207
+  },
+  "NTNX": {
+    "impliedMove": "±15.06%",
+    "impliedUpdatedAt": 1779540926829,
+    "lastMove": -8.08,
+    "avg4Move": 3.87,
+    "moves": [
+      -8.08,
+      -0.11,
+      -4.07,
+      3.22
+    ],
+    "updatedAt": 1779541685210
+  },
+  "P": {
+    "impliedMove": "±16.21%",
+    "impliedUpdatedAt": 1779540927443,
+    "lastMove": -2.8,
+    "avg4Move": 3.44,
+    "moves": [
+      -2.8,
+      -0.1,
+      -8.42,
+      2.43
+    ],
+    "updatedAt": 1779541682581
+  },
+  "PHR": {
+    "impliedMove": "±16.10%",
+    "impliedUpdatedAt": 1779540927734,
+    "lastMove": -3.26,
+    "avg4Move": 1.76,
+    "moves": [
+      -3.26,
+      0.4,
+      -2.3,
+      1.08
+    ],
+    "updatedAt": 1779541684179
+  },
+  "PLUS": {
+    "impliedMove": "±7.97%",
+    "impliedUpdatedAt": 1779540928031,
+    "lastMove": -1.21,
+    "avg4Move": 0.93,
+    "moves": [
+      -1.21,
+      1.18,
+      -0.9,
+      0.44
+    ],
+    "updatedAt": 1779541681607
+  },
+  "SNOW": {
+    "impliedMove": "±10.77%",
+    "impliedUpdatedAt": 1779540928639,
+    "lastMove": -9.15,
+    "avg4Move": 5.48,
+    "moves": [
+      -9.15,
+      0.82,
+      -8.27,
+      3.68
+    ],
+    "updatedAt": 1779541683523
+  },
+  "UHAL": {
+    "impliedMove": "±7.06%",
+    "impliedUpdatedAt": 1779540929429,
+    "lastMove": 0.28,
+    "avg4Move": 0.87,
+    "moves": [
+      0.28,
+      -0.16,
+      1.21,
+      1.82
+    ],
+    "updatedAt": 1779541680316
+  },
+  "ANF": {
+    "impliedMove": "±12.28%",
+    "impliedUpdatedAt": 1779754420802,
+    "lastMove": -1.12,
+    "avg4Move": 2.55,
+    "moves": [
+      -1.12,
+      -3.31,
+      -5.17,
+      -0.58
+    ],
+    "updatedAt": 1779541695828
+  },
+  "API": {
+    "impliedMove": "±29.42%",
+    "impliedUpdatedAt": 1779754421380
+  },
+  "APPS": {
+    "impliedMove": "±21.48%",
+    "impliedUpdatedAt": 1779754421682,
+    "lastMove": -4.4,
+    "avg4Move": 2.83,
+    "moves": [
+      -4.4,
+      2.03,
+      -1.19,
+      3.68
+    ],
+    "updatedAt": 1779541699103
+  },
+  "BOX": {
+    "impliedMove": "±10.70%",
+    "impliedUpdatedAt": 1779754422282,
+    "lastMove": -6.14,
+    "avg4Move": 2.24,
+    "moves": [
+      -6.14,
+      0.44,
+      -1.59,
+      -0.77
+    ],
+    "updatedAt": 1779541696388
+  },
+  "CSW": {
+    "impliedMove": "±6.91%",
+    "impliedUpdatedAt": 1779754422863,
+    "lastMove": 0.51,
+    "avg4Move": 1.75,
+    "moves": [
+      0.51,
+      3.89,
+      1.09,
+      1.51
+    ],
+    "updatedAt": 1779541697095
+  },
+  "ITRN": {
+    "impliedMove": "±8.00%",
+    "impliedUpdatedAt": 1779755509706,
+    "lastMove": -1.14,
+    "avg4Move": 0.39,
+    "moves": [
+      -1.14,
+      -0.25,
+      0.15,
+      -0.03
+    ],
+    "updatedAt": 1779541694149
+  },
+  "M": {
+    "impliedMove": "±3.79%",
+    "impliedUpdatedAt": 1779755510347,
+    "lastMove": 0.19,
+    "avg4Move": 1.69,
+    "moves": [
+      0.19,
+      2.31,
+      -2.14,
+      2.1
+    ],
+    "updatedAt": 1779541694830
+  },
+  "MOD": {
+    "impliedMove": "±17.94%",
+    "impliedUpdatedAt": 1779755510667,
+    "lastMove": 5.47,
+    "avg4Move": 3.64,
+    "moves": [
+      5.47,
+      4.02,
+      -0.51,
+      4.57
+    ],
+    "updatedAt": 1779541697446
+  },
+  "NOAH": {
+    "impliedMove": "±11.89%",
+    "impliedUpdatedAt": 1779755511266
+  },
+  "PONY": {
+    "impliedMove": "±11.63%",
+    "impliedUpdatedAt": 1779755512998
+  },
+  "QFIN": {
+    "impliedMove": "±13.57%",
+    "impliedUpdatedAt": 1779755513301,
+    "lastMove": -1.14,
+    "avg4Move": 1.63,
+    "moves": [
+      -1.14,
+      3.16,
+      -0.85,
+      -1.38
+    ],
+    "updatedAt": 1779541693808
+  },
+  "SKY": {
+    "impliedMove": "±12.92%",
+    "impliedUpdatedAt": 1779755514247,
+    "lastMove": 0.49,
+    "avg4Move": 2.58,
+    "moves": [
+      0.49,
+      1.98,
+      5.59,
+      -2.27
+    ],
+    "updatedAt": 1779541697816
+  },
+  "SMTC": {
+    "impliedMove": "±21.70%",
+    "impliedUpdatedAt": 1779755514580,
+    "lastMove": -0.15,
+    "avg4Move": 1.61,
+    "moves": [
+      -0.15,
+      -0.9,
+      -1.88,
+      3.49
+    ],
+    "updatedAt": 1779541695147
+  },
+  "VNET": {
+    "impliedMove": "±17.37%",
+    "impliedUpdatedAt": 1779755515543,
+    "lastMove": 7.68,
+    "avg4Move": 4.98,
+    "moves": [
+      7.68,
+      4.16,
+      -4.2,
+      -3.9
+    ],
+    "updatedAt": 1779541692362
+  },
+  "VSAT": {
+    "impliedMove": "±16.15%",
+    "impliedUpdatedAt": 1779755515875,
+    "lastMove": 9.2,
+    "avg4Move": 4.07,
+    "moves": [
+      9.2,
+      0.07,
+      1.44,
+      -5.57
+    ],
+    "updatedAt": 1779541698449
+  },
+  "ZS": {
+    "impliedMove": "±11.29%",
+    "impliedUpdatedAt": 1779755516826,
+    "lastMove": -6.26,
+    "avg4Move": 2.51,
+    "moves": [
+      -6.26,
+      1.55,
+      -1.85,
+      0.39
+    ],
+    "updatedAt": 1779541698137
+  },
+  "DLNG": {
+    "impliedMove": "±1.32%",
+    "impliedUpdatedAt": 1779667217987,
+    "lastMove": 1.47,
+    "avg4Move": 1.7,
+    "moves": [
+      1.47,
+      3.69,
+      -0.26,
+      1.39
+    ],
+    "updatedAt": 1779541702314
+  },
+  "DRTS": {
+    "impliedMove": "±18.29%",
+    "impliedUpdatedAt": 1779540942932
+  },
+  "EH": {
+    "impliedMove": "±14.78%",
+    "impliedUpdatedAt": 1779667218289,
+    "lastMove": 9.56,
+    "avg4Move": 4.78,
+    "moves": [
+      9.56,
+      1.51,
+      -3,
+      -5.03
+    ],
+    "updatedAt": 1779541703088
+  },
+  "IMPP": {
+    "impliedMove": "±7.03%",
+    "impliedUpdatedAt": 1779540945300
+  },
+  "JOYY": {
+    "impliedMove": "±9.68%",
+    "impliedUpdatedAt": 1779667221034,
+    "lastMove": -0.03,
+    "avg4Move": 0.37,
+    "moves": [
+      -0.03,
+      0.89,
+      0.24,
+      0.33
+    ],
+    "updatedAt": 1779541703730
+  },
+  "NAT": {
+    "impliedMove": "±10.86%",
+    "impliedUpdatedAt": 1779667221904,
+    "lastMove": -2.03,
+    "avg4Move": 2.57,
+    "moves": [
+      -2.03,
+      6.69,
+      -0.76,
+      0.81
+    ],
+    "updatedAt": 1779541705287
+  },
+  "PDD": {
+    "impliedMove": "±5.58%",
+    "impliedUpdatedAt": 1779667222209,
+    "lastMove": 2.08,
+    "avg4Move": 1.95,
+    "moves": [
+      2.08,
+      1.69,
+      0.79,
+      3.24
+    ],
+    "updatedAt": 1779541704626
+  },
+  "SHIP": {
+    "impliedMove": "±8.71%",
+    "impliedUpdatedAt": 1779667222788,
+    "lastMove": -1.19,
+    "avg4Move": 1.66,
+    "moves": [
+      -1.19,
+      3.87,
+      -0.63,
+      0.94
+    ],
+    "updatedAt": 1779541704069
+  },
+  "TRNS": {
+    "impliedMove": "±5.02%",
+    "impliedUpdatedAt": 1779755515189,
+    "lastMove": 0.76,
+    "avg4Move": 1.08,
+    "moves": [
+      0.76,
+      -1.89,
+      1.29,
+      -0.39
+    ],
+    "updatedAt": 1779541698778
+  },
+  "UVV": {
+    "impliedMove": "±4.79%",
+    "impliedUpdatedAt": 1779667223679
+  },
+  "AVD": {
+    "impliedMove": "±11.49%",
+    "impliedUpdatedAt": 1779667500559
+  },
+  "AVO": {
+    "impliedMove": "±11.05%",
+    "impliedUpdatedAt": 1779667500851
+  },
+  "CMCO": {
+    "impliedMove": "±11.66%",
+    "impliedUpdatedAt": 1779667503021
+  },
+  "DOCU": {
+    "impliedMove": "±4.91%",
+    "impliedUpdatedAt": 1779667503621
+  },
+  "DOMO": {
+    "impliedMove": "±32.78%",
+    "impliedUpdatedAt": 1779667503917
+  },
+  "FCEL": {
+    "impliedMove": "±16.14%",
+    "impliedUpdatedAt": 1779667504522
+  },
+  "GHM": {
+    "impliedMove": "±17.46%",
+    "impliedUpdatedAt": 1779667504824
+  },
+  "IDT": {
+    "impliedMove": "±9.08%",
+    "impliedUpdatedAt": 1779667505726
+  },
+  "IOT": {
+    "impliedMove": "±5.65%",
+    "impliedUpdatedAt": 1779667506320
+  },
+  "NX": {
+    "impliedMove": "±19.15%",
+    "impliedUpdatedAt": 1779667507189
+  },
+  "PL": {
+    "impliedMove": "±8.28%",
+    "impliedUpdatedAt": 1779667507801
+  },
+  "PLCE": {
+    "impliedMove": "±18.75%",
+    "impliedUpdatedAt": 1779667508124
+  },
+  "RBRK": {
+    "impliedMove": "±6.88%",
+    "impliedUpdatedAt": 1779667508439
+  },
+  "TTAN": {
+    "impliedMove": "±14.67%",
+    "impliedUpdatedAt": 1779667509314
+  },
+  "TTC": {
+    "impliedMove": "±5.74%",
+    "impliedUpdatedAt": 1779667509619
+  },
+  "WLTH": {
+    "impliedMove": "±12.14%",
+    "impliedUpdatedAt": 1779667510194
+  },
+  "AI": {
+    "impliedMove": "±5.49%",
+    "impliedUpdatedAt": 1779667510794
+  },
+  "CHPT": {
+    "impliedMove": "±6.42%",
+    "impliedUpdatedAt": 1779667511745
+  },
+  "CXM": {
+    "impliedMove": "±12.90%",
+    "impliedUpdatedAt": 1779667512352
+  },
+  "DLTH": {
+    "impliedMove": "±21.13%",
+    "impliedUpdatedAt": 1779667512639
+  },
+  "DSL": {
+    "impliedMove": "±20.08%",
+    "impliedUpdatedAt": 1779667512930
+  },
+  "KEN": {
+    "impliedMove": "±8.00%",
+    "impliedUpdatedAt": 1779667514222
+  },
+  "LE": {
+    "impliedMove": "±11.65%",
+    "impliedUpdatedAt": 1779667514519
+  },
+  "MMED": {
+    "impliedMove": "±14.89%",
+    "impliedUpdatedAt": 1779667514808
+  },
+  "NTSK": {
+    "impliedMove": "±18.23%",
+    "impliedUpdatedAt": 1779667515119
+  },
+  "WOOF": {
+    "impliedMove": "±16.68%",
+    "impliedUpdatedAt": 1779667516008
+  },
+  "ZUMZ": {
+    "impliedMove": "±15.19%",
+    "impliedUpdatedAt": 1779667516601
+  },
+  "CTRN": {
+    "impliedMove": "±33.91%",
+    "impliedUpdatedAt": 1779667516892
+  },
+  "DCI": {
+    "impliedMove": "±7.31%",
+    "impliedUpdatedAt": 1779667517188
+  },
+  "FIVE": {
+    "impliedMove": "±10.30%",
+    "impliedUpdatedAt": 1779667517487
+  },
+  "GOTU": {
+    "impliedMove": "±20.14%",
+    "impliedUpdatedAt": 1779667518056
+  },
+  "GTLB": {
+    "impliedMove": "±6.07%",
+    "impliedUpdatedAt": 1779667518384
+  },
+  "JFIN": {
+    "impliedMove": "±22.64%",
+    "impliedUpdatedAt": 1779667518955
+  },
+  "MOMO": {
+    "impliedMove": "±7.64%",
+    "impliedUpdatedAt": 1779667519521
+  },
+  "ODD": {
+    "impliedMove": "±7.59%",
+    "impliedUpdatedAt": 1779667519823
+  },
+  "PVH": {
+    "impliedMove": "±17.40%",
+    "impliedUpdatedAt": 1779667520395
+  },
+  "SIG": {
+    "impliedMove": "±4.63%",
+    "impliedUpdatedAt": 1779667521182
+  },
+  "TLYS": {
+    "impliedMove": "±30.75%",
+    "impliedUpdatedAt": 1779667521757
+  },
+  "VSCO": {
+    "impliedMove": "±16.45%",
+    "impliedUpdatedAt": 1779667522353
+  },
+  "CRDO": {
+    "impliedMove": "±9.11%",
+    "impliedUpdatedAt": 1779667523966
+  },
+  "ENGN": {
+    "impliedMove": "±31.62%",
+    "impliedUpdatedAt": 1779667524536
+  },
+  "FERG": {
+    "impliedMove": "±6.78%",
+    "impliedUpdatedAt": 1779667524830
+  },
+  "OLLI": {
+    "impliedMove": "±10.85%",
+    "impliedUpdatedAt": 1779667526828
+  },
+  "SAIC": {
+    "impliedMove": "±9.26%",
+    "impliedUpdatedAt": 1779667527686
+  },
+  "HURC": {
+    "lastMove": -2.37,
+    "avg4Move": 2.42,
+    "moves": [
+      -2.37,
+      -1.69,
+      -4.63,
+      -0.98
+    ],
+    "updatedAt": 1779541664220
+  },
+  "KNOP": {
+    "lastMove": -0.77,
+    "avg4Move": 2.56,
+    "moves": [
+      -0.77,
+      -0.45,
+      0,
+      9.03
+    ],
+    "updatedAt": 1779541664573
+  },
+  "PKE": {
+    "lastMove": 1.63,
+    "avg4Move": 1.01,
+    "moves": [
+      1.63,
+      -1.31,
+      -0.39,
+      -0.71
+    ],
+    "updatedAt": 1779541666243
+  },
+  "NTRB": {
+    "lastMove": -2.77,
+    "avg4Move": 5.32,
+    "moves": [
+      -2.77,
+      -7.58,
+      2.5,
+      -8.43
+    ],
+    "updatedAt": 1779541668531
+  },
+  "DXLG": {
+    "lastMove": -2.82,
+    "avg4Move": 3.48,
+    "moves": [
+      -2.82,
+      -6,
+      -3.08,
+      2.02
+    ],
+    "updatedAt": 1779541669556
+  },
+  "PODC": {
+    "lastMove": -4.86,
+    "avg4Move": 4.8,
+    "moves": [
+      -4.86,
+      -0.6,
+      4.42,
+      9.32
+    ],
+    "updatedAt": 1779541673776
+  },
+  "SPMC": {
+    "lastMove": -0.29,
+    "avg4Move": 0.96,
+    "moves": [
+      -0.29,
+      0.06,
+      -0.67,
+      2.81
+    ],
+    "updatedAt": 1779541680966
+  },
+  "NTRP": {
+    "lastMove": -2.02,
+    "avg4Move": 9.17,
+    "moves": [
+      -2.02,
+      8.76,
+      11.09,
+      -14.82
+    ],
+    "updatedAt": 1779541681283
+  },
+  "MLAB": {
+    "lastMove": 1.18,
+    "avg4Move": 2.76,
+    "moves": [
+      1.18,
+      5.16,
+      3.7,
+      -0.99
+    ],
+    "updatedAt": 1779541685928
+  },
+  "EM": {
+    "lastMove": 1.94,
+    "avg4Move": 1.44,
+    "moves": [
+      1.94,
+      0.95
+    ],
+    "updatedAt": 1779541686244
+  },
+  "LOOP": {
+    "lastMove": -4.5,
+    "avg4Move": 6.09,
+    "moves": [
+      -4.5,
+      2.6,
+      -6.72,
+      -10.53
+    ],
+    "updatedAt": 1779541686877
+  },
+  "CURR": {
+    "lastMove": -0.6,
+    "avg4Move": 11.55,
+    "moves": [
+      -0.6,
+      28.83,
+      3.97,
+      -12.78
+    ],
+    "updatedAt": 1779541692041
+  },
+  "CRGO": {
+    "lastMove": -2.19,
+    "avg4Move": 3.51,
+    "moves": [
+      -2.19,
+      6.06,
+      -4.53,
+      1.26
+    ],
+    "updatedAt": 1779541693144
+  },
+  "ANIX": {
+    "lastMove": 3.4,
+    "avg4Move": 1.32,
+    "moves": [
+      3.4,
+      0.24,
+      -1.63,
+      0
+    ],
+    "updatedAt": 1779541693476
+  },
+  "OOMA": {
+    "lastMove": -3.85,
+    "avg4Move": 3.25,
+    "moves": [
+      -3.85,
+      5.61,
+      -2.9,
+      -0.65
+    ],
+    "updatedAt": 1779541694470,
+    "impliedMove": "±10.05%",
+    "impliedUpdatedAt": 1779755512064
+  },
+  "EIC": {
+    "lastMove": 1.38,
+    "avg4Move": 0.75,
+    "moves": [
+      1.38,
+      -0.44,
+      -0.74,
+      0.44
+    ],
+    "updatedAt": 1779541695479
+  },
+  "ENLV": {
+    "lastMove": 7.4,
+    "avg4Move": 2.61,
+    "moves": [
+      7.4,
+      -0.96,
+      0,
+      -2.06
+    ],
+    "updatedAt": 1779541701971
+  },
+  "FUFU": {
+    "lastMove": 6.06,
+    "avg4Move": 3.29,
+    "moves": [
+      6.06,
+      -5.07,
+      0.93,
+      -1.09
+    ],
+    "updatedAt": 1779541703403
+  },
+  "CRMT": {
+    "lastMove": -1.61,
+    "avg4Move": 2.21,
+    "moves": [
+      -1.61,
+      -1.35,
+      -5,
+      0.89
+    ],
+    "updatedAt": 1779541704937
+  },
+  "FINV": {
+    "impliedMove": "±16.09%",
+    "impliedUpdatedAt": 1779667219540
+  },
+  "ADBE": {
+    "impliedMove": "±3.47%",
+    "impliedUpdatedAt": 1779667498281
+  },
+  "CASY": {
+    "impliedMove": "±7.77%",
+    "impliedUpdatedAt": 1779667498591
+  },
+  "SJM": {
+    "impliedMove": "±5.86%",
+    "impliedUpdatedAt": 1779667498900
+  },
+  "CPB": {
+    "impliedMove": "±2.89%",
+    "impliedUpdatedAt": 1779667499206
+  },
+  "TOUR": {
+    "impliedMove": "±5.07%",
+    "impliedUpdatedAt": 1779667500066
+  },
+  "SPWH": {
+    "impliedMove": "±85.66%",
+    "impliedUpdatedAt": 1779667521471
+  },
+  "LOVE": {
+    "impliedMove": "±11.62%",
+    "impliedUpdatedAt": 1779667531308
+  },
+  "PPIH": {
+    "impliedMove": "±13.09%",
+    "impliedUpdatedAt": 1779667533349
+  },
+  "AGX": {
+    "impliedMove": "±16.54%",
+    "impliedUpdatedAt": 1779667534541
+  },
+  "CHWY": {
+    "impliedMove": "±4.51%",
+    "impliedUpdatedAt": 1779667535133
+  },
+  "CNM": {
+    "impliedMove": "±9.30%",
+    "impliedUpdatedAt": 1779667535444
+  },
+  "DAKT": {
+    "impliedMove": "±9.89%",
+    "impliedUpdatedAt": 1779667535744
+  },
+  "LAKE": {
+    "impliedMove": "±17.85%",
+    "impliedUpdatedAt": 1779667537936
+  },
+  "RH": {
+    "impliedMove": "±6.12%",
+    "impliedUpdatedAt": 1779667539392
+  },
+  "SFIX": {
+    "impliedMove": "±27.57%",
+    "impliedUpdatedAt": 1779667539688
+  },
+  "THO": {
+    "impliedMove": "±11.08%",
+    "impliedUpdatedAt": 1779667540003
+  },
+  "VRA": {
+    "impliedMove": "±28.75%",
+    "impliedUpdatedAt": 1779667540299
+  },
+  "YRD": {
+    "impliedMove": "±58.44%",
+    "impliedUpdatedAt": 1779667540591
+  },
+  "ABM": {
+    "impliedMove": "±6.34%",
+    "impliedUpdatedAt": 1779667540880
+  },
+  "BARK": {
+    "impliedMove": "±30.69%",
+    "impliedUpdatedAt": 1779667541374
+  },
+  "CGNT": {
+    "impliedMove": "±13.30%",
+    "impliedUpdatedAt": 1779667541676
+  },
+  "GIII": {
+    "impliedMove": "±12.22%",
+    "impliedUpdatedAt": 1779667541970
+  },
+  "LMNR": {
+    "impliedMove": "±12.63%",
+    "impliedUpdatedAt": 1779667543002
+  },
+  "OXM": {
+    "impliedMove": "±11.67%",
+    "impliedUpdatedAt": 1779667543295
+  },
+  "SAIL": {
+    "impliedMove": "±15.65%",
+    "impliedUpdatedAt": 1779667543594
+  },
+  "UNFI": {
+    "impliedMove": "±11.24%",
+    "impliedUpdatedAt": 1779667544477
+  },
+  "YEXT": {
+    "impliedMove": "±18.94%",
+    "impliedUpdatedAt": 1779667545402
+  },
+  "ASO": {
+    "impliedMove": "±3.75%",
+    "impliedUpdatedAt": 1779667546291
+  },
+  "CBRL": {
+    "impliedMove": "±12.62%",
+    "impliedUpdatedAt": 1779667546882
+  },
+  "CMTL": {
+    "impliedMove": "±15.97%",
+    "impliedUpdatedAt": 1779667547462
+  },
+  "DBI": {
+    "impliedMove": "±26.94%",
+    "impliedUpdatedAt": 1779667548060
+  },
+  "GME": {
+    "impliedMove": "±3.25%",
+    "impliedUpdatedAt": 1779667548656
+  },
+  "MTN": {
+    "impliedMove": "±9.39%",
+    "impliedUpdatedAt": 1779667550326
+  },
+  "PLAY": {
+    "impliedMove": "±20.47%",
+    "impliedUpdatedAt": 1779667551200
+  },
+  "VFS": {
+    "impliedMove": "±19.05%",
+    "impliedUpdatedAt": 1779667552265
+  },
+  "AREC": {
+    "impliedMove": "±20.46%",
+    "impliedUpdatedAt": 1779754421981
+  },
+  "YSG": {
+    "impliedMove": "±16.41%",
+    "impliedUpdatedAt": 1779755516170
   }
 }

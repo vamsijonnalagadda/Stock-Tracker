@@ -684,6 +684,106 @@
     }
     .active-sort-btn.active { color: #cbd5e1; }
 
+    .opportunities-wrap {
+      width: 100%;
+      display: grid;
+      gap: 10px;
+    }
+    .opportunities-subtabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .opportunities-subtab {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid #1e3250;
+      color: #94a3b8;
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .opportunities-subtab:hover { border-color: #38bdf8; color: #e0f2fe; }
+    .opportunities-subtab.active {
+      background: rgba(56,189,248,0.15);
+      border-color: #38bdf8;
+      color: #e0f2fe;
+    }
+    .opportunities-grid {
+      width: 100%;
+      overflow-x: auto;
+      flex: 1 1 100%;
+    }
+    .opportunities-grid-rows {
+      max-height: 340px;
+      overflow-y: auto;
+      margin-top: 8px;
+      padding-right: 6px;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+    .opportunities-grid-header,
+    .opportunities-grid-row {
+      display: grid;
+      grid-template-columns: 68px 92px 116px 60px minmax(220px, 2fr) minmax(240px, 3fr);
+      gap: 8px;
+      align-items: center;
+      padding: 4px 6px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+    }
+    .opportunities-grid-header {
+      color: #64748b;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 2px;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 5px;
+    }
+    .opportunities-grid-row {
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background .12s, border-color .12s;
+      margin-bottom: 1px;
+      min-height: 32px;
+    }
+    .opportunities-grid-row:hover {
+      background: rgba(56,189,248,0.07);
+      border-color: #22435f;
+    }
+    .opp-action-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      width: fit-content;
+      border: 1px solid transparent;
+    }
+    .opp-action-pill.buy {
+      background: rgba(52, 211, 153, 0.12);
+      color: #6ee7b7;
+      border-color: rgba(52, 211, 153, 0.4);
+    }
+    .opp-action-pill.sell {
+      background: rgba(248, 113, 113, 0.12);
+      color: #fca5a5;
+      border-color: rgba(248, 113, 113, 0.4);
+    }
+    .opp-reason { color: #dbeafe; font-weight: 700; }
+    .opp-details { color: #93a9c6; font-size: 0.73rem; line-height: 1.35; }
+    .opp-meta { color: #93a9c6; font-weight: 700; }
+    .opp-symbol { color: #dbeafe; font-weight: 800; }
+
     @keyframes headline-scroll {
       from { transform: translateX(0); }
       to { transform: translateX(-100%); }
@@ -748,6 +848,7 @@
     <div class="social-trending-head">
       <button class="social-trending-title market-group-btn" id="socialToggleTitle" type="button">Trending in Social <span class="social-chevron">&#x25BE;</span></button>
       <button class="social-trending-title market-group-btn" id="earningsToggleTitle" type="button">Earnings <span class="social-chevron">&#x25BE;</span></button>
+      <button class="social-trending-title market-group-btn" id="opportunitiesToggleTitle" type="button">Opportunities <span class="social-chevron">&#x25BE;</span></button>
       <button class="social-trending-title market-group-btn" id="activeOptionsToggleTitle" type="button">Most Active Options <span class="social-chevron">&#x25BE;</span></button>
     </div>
     <div id="insightsStripContent" class="social-trending-list">
@@ -793,6 +894,11 @@
   let _activeOptionsSortKey = 'optionVolume';
   let _activeOptionsSortDir = 'desc';
   let _activeOptionsUnavailable = false;
+  let _opportunitiesTab = 'stocks';
+  let _opportunitiesByTab = { stocks: [], etfs: [], sectors: [] };
+  let _opportunitiesUpdatedAt = { stocks: 0, etfs: 0, sectors: 0 };
+  let _opportunitiesSortKey = 'action';
+  let _opportunitiesSortDir = 'asc';
 
   function setLoading(s) {
     inFlight = s;
@@ -1304,6 +1410,12 @@
       return;
     }
 
+    if (_insightsStripMode === 'opportunities') {
+      container.innerHTML = opportunitiesStripHtml(_opportunitiesTab, _opportunitiesByTab[_opportunitiesTab] || []);
+      wireOpportunitiesButtons();
+      return;
+    }
+
     if (_trendingStripUnavailable && _trendingStripSymbols.length === 0) {
       container.innerHTML = '<span class="dimtext">Unavailable</span>';
       return;
@@ -1317,14 +1429,16 @@
     const strip = document.getElementById('insightsStrip');
     const socialBtn = document.getElementById('socialToggleTitle');
     const earningsBtn = document.getElementById('earningsToggleTitle');
+    const opportunitiesBtn = document.getElementById('opportunitiesToggleTitle');
     const activeOptionsBtn = document.getElementById('activeOptionsToggleTitle');
-    if (!strip || !socialBtn || !earningsBtn || !activeOptionsBtn) return;
+    if (!strip || !socialBtn || !earningsBtn || !activeOptionsBtn || !opportunitiesBtn) return;
 
     if (_insightsStripMode === nextMode) {
       _insightsStripMode = null;
       strip.classList.add('hidden');
       socialBtn.classList.remove('active');
       earningsBtn.classList.remove('active');
+      opportunitiesBtn.classList.remove('active');
       activeOptionsBtn.classList.remove('active');
       return;
     }
@@ -1333,6 +1447,7 @@
     strip.classList.remove('hidden');
     socialBtn.classList.toggle('active', nextMode === 'trending');
     earningsBtn.classList.toggle('active', nextMode === 'earnings');
+    opportunitiesBtn.classList.toggle('active', nextMode === 'opportunities');
     activeOptionsBtn.classList.toggle('active', nextMode === 'activeOptions');
     renderInsightsStripContent();
   }
@@ -1340,6 +1455,7 @@
   function wireInsightsStripButtons() {
     const socialBtn = document.getElementById('socialToggleTitle');
     const earningsBtn = document.getElementById('earningsToggleTitle');
+    const opportunitiesBtn = document.getElementById('opportunitiesToggleTitle');
     const activeOptionsBtn = document.getElementById('activeOptionsToggleTitle');
     if (socialBtn) {
       socialBtn.onclick = () => setInsightsStripMode('trending');
@@ -1363,6 +1479,190 @@
         }
         setInsightsStripMode('activeOptions');
       };
+    }
+    if (opportunitiesBtn) {
+      opportunitiesBtn.onclick = async () => {
+        const wasOpen = _insightsStripMode === 'opportunities';
+        setInsightsStripMode('opportunities');
+        if (wasOpen || _insightsStripMode !== 'opportunities') return;
+        if (!Array.isArray(_opportunitiesByTab[_opportunitiesTab]) || _opportunitiesByTab[_opportunitiesTab].length === 0) {
+          const container = document.getElementById('insightsStripContent');
+          if (container) container.innerHTML = '<span class="dimtext">Loading opportunities…</span>';
+          await loadOpportunities(_opportunitiesTab);
+        }
+      };
+    }
+  }
+
+  function opportunitiesStripHtml(activeTab, rows) {
+    const tabs = [
+      { id: 'stocks', label: 'Stocks' },
+      { id: 'etfs', label: 'ETFs' },
+      { id: 'sectors', label: 'Sectors' }
+    ];
+
+    const tabHtml = tabs.map((t) => {
+      const cls = `opportunities-subtab${t.id === activeTab ? ' active' : ''}`;
+      return `<button type="button" class="${cls}" data-opptab="${escapeHtml(t.id)}">${escapeHtml(t.label)}</button>`;
+    }).join('');
+
+    const rowVal = (row, key) => {
+      if (key === 'action') return String(row?.action || '');
+      if (key === 'ticker') return String(row?.ticker || '');
+      if (key === 'price') {
+        const n = Number(row?.currentPrice);
+        return Number.isFinite(n) ? n : null;
+      }
+      if (key === 'ivRank') {
+        const n = Number(row?.ivRank);
+        return Number.isFinite(n) ? n : null;
+      }
+      if (key === 'rsi') {
+        const n = Number(row?.rsi);
+        return Number.isFinite(n) ? n : null;
+      }
+      return null;
+    };
+
+    const compareValues = (a, b) => {
+      if (a == null && b == null) return 0;
+      if (a == null) return 1;
+      if (b == null) return -1;
+      if (typeof a === 'string' || typeof b === 'string') return String(a || '').localeCompare(String(b || ''));
+      return a - b;
+    };
+
+    const sorted = (Array.isArray(rows) ? rows.slice() : []).sort((a, b) => {
+      let av = rowVal(a, _opportunitiesSortKey);
+      let bv = rowVal(b, _opportunitiesSortKey);
+
+      if (_opportunitiesSortKey === 'action') {
+        const rank = (v) => {
+          const x = String(v || '');
+          if (x === 'Buy') return 0;
+          if (x === 'Sell') return 1;
+          return 2;
+        };
+        av = rank(av);
+        bv = rank(bv);
+      }
+
+      let cmp = compareValues(av, bv);
+      if (cmp === 0) cmp = String(a?.ticker || '').localeCompare(String(b?.ticker || ''));
+      return _opportunitiesSortDir === 'asc' ? cmp : -cmp;
+    });
+
+    if (sorted.length === 0) {
+      return `<div class="opportunities-wrap"><div class="opportunities-subtabs">${tabHtml}</div><span class="dimtext">No buy/sell opportunities detected for ${escapeHtml(activeTab)} right now.</span></div>`;
+    }
+
+    const sortArrow = (key) => {
+      if (_opportunitiesSortKey !== key) return '';
+      return _opportunitiesSortDir === 'asc' ? ' ▲' : ' ▼';
+    };
+    const sortBtn = (key, label) => {
+      const active = _opportunitiesSortKey === key ? ' active' : '';
+      return `<button type="button" class="active-sort-btn${active}" data-oppsort="${key}">${label}${sortArrow(key)}</button>`;
+    };
+
+    const header = '<div class="opportunities-grid-header">'
+      + `<span>${sortBtn('action', 'Action')}</span>`
+      + `<span>${sortBtn('ticker', 'Ticker')}</span>`
+      + `<span>${sortBtn('ivRank', 'Price / IVR')}</span>`
+      + `<span>${sortBtn('rsi', 'RSI')}</span>`
+      + '<span>Reason</span>'
+      + '<span>Details</span>'
+      + '</div>';
+
+    const rowsHtml = sorted.map((r) => {
+      const action = String(r?.action || 'Hold');
+      const actionCls = action.toLowerCase() === 'buy' ? 'buy' : 'sell';
+      const price = Number.isFinite(Number(r?.currentPrice)) ? Number(r.currentPrice).toFixed(2) : 'N/A';
+      const iv = Number.isFinite(Number(r?.ivRank)) ? `${Number(r.ivRank).toFixed(1)}%` : 'N/A';
+      const ivAbs = Number.isFinite(Number(r?.impliedVolatilityPct)) ? `${Number(r.impliedVolatilityPct).toFixed(1)}%` : 'N/A';
+      const rsi = Number.isFinite(Number(r?.rsi)) ? Number(r.rsi).toFixed(1) : 'N/A';
+      const symbol = String(r?.ticker || '').toUpperCase();
+      const reason = String(r?.primaryReason || '');
+      const details = String(r?.technicalDetails || '');
+
+      return '<div class="opportunities-grid-row" data-opp-symbol="'+escapeHtml(symbol)+'">'
+        + '<span><span class="opp-action-pill '+actionCls+'">'+escapeHtml(action)+'</span></span>'
+        + '<span class="opp-symbol">'+escapeHtml(symbol || 'N/A')+'</span>'
+        + '<span class="opp-meta">$'+escapeHtml(price)+' · IVR '+escapeHtml(iv)+' · IV '+escapeHtml(ivAbs)+'</span>'
+        + '<span class="opp-meta">'+escapeHtml(rsi)+'</span>'
+        + '<span class="opp-reason">'+escapeHtml(reason)+'</span>'
+        + '<span class="opp-details">'+escapeHtml(details)+'</span>'
+        + '</div>';
+    }).join('');
+
+    const visibleRows = 10;
+    const rowHeightPx = 34;
+    const rowsContainerStyle = sorted.length > visibleRows
+      ? ` style="max-height:${visibleRows * rowHeightPx}px"`
+      : '';
+
+    return '<div class="opportunities-wrap">'
+      + '<div class="opportunities-subtabs">'+tabHtml+'</div>'
+      + '<div class="opportunities-grid">'+header+'<div class="opportunities-grid-rows"'+rowsContainerStyle+'>'+rowsHtml+'</div></div>'
+      + '</div>';
+  }
+
+  function wireOpportunitiesButtons() {
+    document.querySelectorAll('[data-opptab]').forEach((btn) => {
+      btn.onclick = async (e) => {
+        e.stopPropagation();
+        const next = btn.getAttribute('data-opptab');
+        if (!next) return;
+        _opportunitiesTab = next;
+        if (!Array.isArray(_opportunitiesByTab[next]) || _opportunitiesByTab[next].length === 0) {
+          await loadOpportunities(next);
+        }
+        renderInsightsStripContent();
+      };
+    });
+
+    document.querySelectorAll('[data-opp-symbol]').forEach((row) => {
+      row.onclick = () => {
+        const sym = row.getAttribute('data-opp-symbol');
+        if (!sym) return;
+        tickerInput.value = sym;
+        doSearch();
+        try { setInsightsStripMode('opportunities'); } catch (_) {}
+      };
+    });
+
+    document.querySelectorAll('[data-oppsort]').forEach((btn) => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        const nextKey = btn.getAttribute('data-oppsort');
+        if (!nextKey) return;
+        if (_opportunitiesSortKey === nextKey) {
+          _opportunitiesSortDir = _opportunitiesSortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          _opportunitiesSortKey = nextKey;
+          _opportunitiesSortDir = 'asc';
+        }
+        renderInsightsStripContent();
+      };
+    });
+  }
+
+  async function loadOpportunities(tab = 'stocks') {
+    const normalized = ['stocks', 'etfs', 'sectors'].includes(String(tab || '').toLowerCase())
+      ? String(tab).toLowerCase()
+      : 'stocks';
+    try {
+      const res = await fetch('/api/opportunities?assetType=' + encodeURIComponent(normalized));
+      const data = await res.json();
+      if (data && !data.error && Array.isArray(data.items)) {
+        _opportunitiesByTab[normalized] = data.items;
+        _opportunitiesUpdatedAt[normalized] = Number(data.updatedAt) || Date.now();
+        if (_insightsStripMode === 'opportunities' && _opportunitiesTab === normalized) {
+          renderInsightsStripContent();
+        }
+      }
+    } catch (_) {
+      // keep existing values if request fails
     }
   }
 
@@ -2837,6 +3137,11 @@
   setInterval(loadEarningsWeek, 30 * 60 * 1000);
   loadActiveOptions();
   setInterval(loadActiveOptions, 60 * 60 * 1000);
+  setInterval(() => {
+    if (_insightsStripMode === 'opportunities') {
+      loadOpportunities(_opportunitiesTab).catch(() => {});
+    }
+  }, 10 * 60 * 1000);
   // Auto-refresh ticker data every 5 minutes if a symbol is loaded
   setInterval(async () => {
     if (!_currentTicker || inFlight) return;

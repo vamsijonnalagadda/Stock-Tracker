@@ -9,10 +9,11 @@ services:
       - ./data:/app/data
     environment:
       - ALPHA_VANTAGE_API_KEY=CP1YA2HV0JE2MH2K
-      - FINNHUB_API_KEY=${FINNHUB_API_KEY:-d7ifq0pr01qn2qats3a0d7ifq0pr01qn2qats3ag}
+      - FINNHUB_API_KEY=${FINNHUB_API_KEY:-d85p4nhr01qitd933c7gd85p4nhr01qitd933c80}
       - FINNHUB_WEBHOOK_SECRET=${FINNHUB_WEBHOOK_SECRET:-d7d3gk1r01qv03eu7vf0}
       - FMP_API_KEY=${FMP_API_KEY:-1YS8X52IM8uRZMv1w9Pok6jX0tJJ2JF0}
       - EODHD_API_KEY=${EODHD_API_KEY:-demo}
+      - COSMOS_CONNECTION_STRING=${COSMOS_CONNECTION_STRING:-}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:4000/"]

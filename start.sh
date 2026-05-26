@@ -15,6 +15,7 @@ for i in $(seq 1 20); do
 done
 
 # Start Node.js API server (foreground — keeps container alive)
+# COSMOS_CONNECTION_STRING is passed via env; set it in your shell or docker-compose
 NODE_VER=$(node -v 2>/dev/null || true)
 if [ -z "$NODE_VER" ]; then
   echo "ERROR: node not found in PATH. Require Node 22+ to run server."

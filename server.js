@@ -13,6 +13,7 @@ import fs from 'fs/promises';
 import { getSentiment, sentimentEmoji, deviationPercent, chooseMasterMetric } from './sector/sentiment.js';
 import { buildOptionsRecommendationScorecard } from './engines/optionsRecommendationEngine.js';
 import { buildInvestorRecommendationScorecard } from './engines/investorRecommendationEngine.js';
+import * as cosmos from './db/cosmosClient.js';
 
 const app = express();
 app.use(cors());
@@ -59,7 +60,7 @@ const TRENDING_JSON_PATH = './data/trending.json';
 const EARNINGS_WEEK_JSON_PATH = './data/earnings_week.json';
 const EARNINGS_MOVES_JSON_PATH = './data/earnings_moves.json';
 const EARNINGS_NEXT_JSON_PATH = './data/earnings_next.json';
-const DEFAULT_FINNHUB_KEY = 'd7d3gk1r01qv03eu7vf0';
+const DEFAULT_FINNHUB_KEY = 'd85p4nhr01qitd933c7gd85p4nhr01qitd933c80';
 
 const EARNINGS_CENTRAL_TZ = 'America/Chicago';
 const EARNINGS_FRIDAY_REFRESH_HOUR_CT = Number(process.env.EARNINGS_FRIDAY_REFRESH_HOUR_CT || 19); // 7 PM CST/CDT
@@ -101,6 +102,14 @@ let earningsRefreshState = {
 
 function safe(value) {
   return value == null ? null : Number(value);
+}
+
+// Persist the stock historical map to local JSON + Cosmos (fire-and-forget for Cosmos).
+async function persistHistoricalMap(map) {
+  try {
+    await fs.writeFile('./data/stock_historical.json', JSON.stringify(map, null, 2), 'utf8');
+  } catch (_) {}
+  if (cosmos.isCosmosEnabled()) cosmos.saveStockHistorical(map).catch(() => {});
 }
 
 function firstPositiveFinite(...values) {
@@ -786,7 +795,7 @@ async function fetchAlphaVantageOverview(ticker) {
 
 async function fetchFinnhubMetrics(ticker) {
   // Note: Free API key available from https://finnhub.io
-  const apiKey = process.env.FINNHUB_API_KEY || 'demo'; // Replace 'demo' with your actual key
+  const apiKey = getFinnhubKey();
   const url = `${FINNHUB_API}/stock/metric?symbol=${encodeURIComponent(ticker)}&metric=all&token=${apiKey}`;
   const res = await fetch(url);
   const body = await res.json();
@@ -2227,7 +2236,7 @@ app.get('/api/compare/:symbol', async (req, res) => {
               expiresAt
             };
             try {
-              await fs.writeFile('./data/stock_historical.json', JSON.stringify(historicalMap, null, 2), 'utf8');
+              await persistHistoricalMap(historicalMap);
             } catch (_) {}
           }
         }
@@ -2350,7 +2359,7 @@ app.get('/api/compare/:symbol', async (req, res) => {
               expiresAt
             };
             try {
-              await fs.writeFile('./data/stock_historical.json', JSON.stringify(historicalMap, null, 2), 'utf8');
+              await persistHistoricalMap(historicalMap);
             } catch (_) {}
           }
         }
@@ -2390,7 +2399,7 @@ app.get('/api/compare/:symbol', async (req, res) => {
                   expiresAt
                 };
                 try {
-                  await fs.writeFile('./data/stock_historical.json', JSON.stringify(historicalMap, null, 2), 'utf8');
+                  await persistHistoricalMap(historicalMap);
                 } catch (writeErr) {
                   // ignore write failures (best-effort)
                 }
@@ -2875,6 +2884,16 @@ function normalizeTrendingSnapshot(snapshot) {
 }
 
 async function loadTrendingSnapshotFromDisk() {
+  // Try Cosmos first, fall back to local JSON file.
+  if (cosmos.isCosmosEnabled()) {
+    try {
+      const doc = await cosmos.loadTrending();
+      if (doc && Array.isArray(doc.symbols)) {
+        trendingCache = normalizeTrendingSnapshot(doc);
+        return trendingCache;
+      }
+    } catch (_) {}
+  }
   try {
     const raw = await fs.readFile(TRENDING_JSON_PATH, 'utf8');
     const parsed = JSON.parse(raw);
@@ -2950,6 +2969,7 @@ async function updateTrendingCache() {
     try {
       const snapshot = await buildTrendingSnapshot();
       await fs.writeFile(TRENDING_JSON_PATH, JSON.stringify(snapshot, null, 2), 'utf8');
+      if (cosmos.isCosmosEnabled()) cosmos.saveTrending(snapshot).catch(() => {});
       trendingCache = snapshot;
       console.log(`Trending snapshot updated (${snapshot.symbols.length} symbols) at ${snapshot.fetchedAt}`);
       return snapshot;
@@ -3546,33 +3566,76 @@ function toHourCode(raw) {
 }
 
 async function loadEarningsCachesFromDisk() {
-  try {
-    const rawWeek = await fs.readFile(EARNINGS_WEEK_JSON_PATH, 'utf8');
-    const parsedWeek = JSON.parse(rawWeek);
-    if (parsedWeek && typeof parsedWeek.days === 'object') {
-      weeklyEarningsCache = {
-        updatedAt: Number(parsedWeek.updatedAt) || 0,
-        weekStart: parsedWeek.weekStart || null,
-        days: parsedWeek.days || {}
-      };
+  // ── earnings_week ──────────────────────────────────────────────────────────
+  let loadedWeek = false;
+  if (cosmos.isCosmosEnabled()) {
+    try {
+      const doc = await cosmos.loadEarningsWeek();
+      if (doc && typeof doc.days === 'object') {
+        weeklyEarningsCache = { updatedAt: Number(doc.updatedAt) || 0, weekStart: doc.weekStart || null, days: doc.days };
+        loadedWeek = true;
+        console.log('[Cosmos] Loaded earnings_week');
+      }
+    } catch (_) {}
+  }
+  if (!loadedWeek) {
+    try {
+      const rawWeek = await fs.readFile(EARNINGS_WEEK_JSON_PATH, 'utf8');
+      const parsedWeek = JSON.parse(rawWeek);
+      if (parsedWeek && typeof parsedWeek.days === 'object') {
+        weeklyEarningsCache = {
+          updatedAt: Number(parsedWeek.updatedAt) || 0,
+          weekStart: parsedWeek.weekStart || null,
+          days: parsedWeek.days || {}
+        };
+      }
+    } catch (_) {
+      weeklyEarningsCache = { updatedAt: 0, weekStart: null, days: {} };
     }
-  } catch (_) {
-    weeklyEarningsCache = { updatedAt: 0, weekStart: null, days: {} };
   }
 
-  try {
-    const rawMoves = await fs.readFile(EARNINGS_MOVES_JSON_PATH, 'utf8');
-    const parsedMoves = JSON.parse(rawMoves);
-    earningsMovesCache = parsedMoves && typeof parsedMoves === 'object' ? parsedMoves : {};
-  } catch (_) {
-    earningsMovesCache = {};
+  // ── earnings_moves ─────────────────────────────────────────────────────────
+  let loadedMoves = false;
+  if (cosmos.isCosmosEnabled()) {
+    try {
+      const moves = await cosmos.loadEarningsMoves();
+      if (moves && typeof moves === 'object') {
+        earningsMovesCache = moves;
+        loadedMoves = true;
+        console.log('[Cosmos] Loaded earnings_moves');
+      }
+    } catch (_) {}
   }
-  try {
-    const rawNext = await fs.readFile(EARNINGS_NEXT_JSON_PATH, 'utf8');
-    const parsedNext = JSON.parse(rawNext);
-    if (parsedNext && typeof parsedNext.days === 'object') nextWeekEarningsCache = parsedNext;
-  } catch (_) {
-    // ignore
+  if (!loadedMoves) {
+    try {
+      const rawMoves = await fs.readFile(EARNINGS_MOVES_JSON_PATH, 'utf8');
+      const parsedMoves = JSON.parse(rawMoves);
+      earningsMovesCache = parsedMoves && typeof parsedMoves === 'object' ? parsedMoves : {};
+    } catch (_) {
+      earningsMovesCache = {};
+    }
+  }
+
+  // ── earnings_next ──────────────────────────────────────────────────────────
+  let loadedNext = false;
+  if (cosmos.isCosmosEnabled()) {
+    try {
+      const doc = await cosmos.loadEarningsNext();
+      if (doc && typeof doc.days === 'object') {
+        nextWeekEarningsCache = doc;
+        loadedNext = true;
+        console.log('[Cosmos] Loaded earnings_next');
+      }
+    } catch (_) {}
+  }
+  if (!loadedNext) {
+    try {
+      const rawNext = await fs.readFile(EARNINGS_NEXT_JSON_PATH, 'utf8');
+      const parsedNext = JSON.parse(rawNext);
+      if (parsedNext && typeof parsedNext.days === 'object') nextWeekEarningsCache = parsedNext;
+    } catch (_) {
+      // ignore
+    }
   }
 }
 
@@ -3596,16 +3659,19 @@ async function saveEarningsCachesToDisk() {
     if (!skipWrite) {
       await fs.writeFile(EARNINGS_WEEK_JSON_PATH, JSON.stringify(weeklyEarningsCache, null, 2), 'utf8');
     }
+    if (cosmos.isCosmosEnabled()) cosmos.saveEarningsWeek(weeklyEarningsCache).catch(() => {});
   } catch (err) {
     console.error('[EarningsSync] Failed writing earnings_week.json:', err?.message || err);
   }
   try {
     await fs.writeFile(EARNINGS_MOVES_JSON_PATH, JSON.stringify(earningsMovesCache, null, 2), 'utf8');
+    if (cosmos.isCosmosEnabled()) cosmos.saveEarningsMoves(earningsMovesCache).catch(() => {});
   } catch (err) {
     console.error('[EarningsSync] Failed writing earnings_moves.json:', err?.message || err);
   }
   try {
     await fs.writeFile(EARNINGS_NEXT_JSON_PATH, JSON.stringify(nextWeekEarningsCache, null, 2), 'utf8');
+    if (cosmos.isCosmosEnabled()) cosmos.saveEarningsNext(nextWeekEarningsCache).catch(() => {});
   } catch (err) {
     // best effort
   }
@@ -3961,20 +4027,47 @@ async function enrichCompanyNamesForDays(byDay, options = {}) {
   const maxSymbols = Math.max(0, Number(options.maxSymbols) || 80);
   const maxDurationMs = Math.max(500, Number(options.maxDurationMs) || 6000);
   const started = Date.now();
-  const allSymbols = Array.from(new Set(
-    Object.values(byDay || {}).flat().map((r) => String(r?.symbol || '').toUpperCase()).filter(Boolean)
-  )).slice(0, maxSymbols);
+  const rows = Object.values(byDay || {}).flat().filter(Boolean);
+  const sp500Symbols = Array.from(new Set(
+    rows
+      .filter((r) => !!r?.isSp500)
+      .map((r) => String(r?.symbol || '').toUpperCase())
+      .filter(Boolean)
+  ));
+  const nonSpSymbols = Array.from(new Set(
+    rows
+      .filter((r) => !r?.isSp500)
+      .map((r) => String(r?.symbol || '').toUpperCase())
+      .filter(Boolean)
+  ));
+
+  // Always prioritize S&P symbols first. Remaining budget is used for non-S&P.
+  const remainingBudget = Math.max(0, maxSymbols - sp500Symbols.length);
+  const allSymbols = [...sp500Symbols, ...nonSpSymbols.slice(0, remainingBudget)];
+  const sp500Set = new Set(sp500Symbols);
+
+  const isTickerLike = (name, sym) => {
+    const a = String(name || '').trim().toUpperCase();
+    const b = String(sym || '').trim().toUpperCase();
+    return !!a && !!b && a === b;
+  };
 
   for (const sym of allSymbols) {
-    if (Date.now() - started > maxDurationMs) break;
+    // Keep processing S&P names even when time budget is exceeded.
+    if (Date.now() - started > maxDurationMs && !sp500Set.has(sym)) break;
     try {
       const yahooSym = normalizeSymbolForYahoo(sym);
-      const q = await withTimeout(yahooFinanceClient.quote(yahooSym), 5000, 'yf-quote-name');
+      const q = await withTimeout(yahooFinanceClient.quote(yahooSym), 7000, 'yf-quote-name');
       const name = q?.shortName || q?.longName || null;
       const short = sanitizeCompanyName(name, sym);
       Object.keys(byDay || {}).forEach((d) => {
         (byDay[d] || []).forEach((row) => {
-          if (String(row.symbol || '').toUpperCase() === sym) row.companyName = short;
+          if (String(row.symbol || '').toUpperCase() !== sym) return;
+          // Only overwrite when name is meaningful, or current value is empty/ticker-like.
+          const current = String(row.companyName || '').trim();
+          if (!current || isTickerLike(current, sym) || (!isTickerLike(short, sym) && short)) {
+            row.companyName = short;
+          }
         });
       });
       await new Promise((r) => setTimeout(r, 40));
@@ -3989,6 +4082,30 @@ async function enrichCompanyNamesForDays(byDay, options = {}) {
       if (!row.companyName) row.companyName = sanitizeCompanyName(null, String(row.symbol || '').toUpperCase());
     });
   });
+}
+
+function countSp500TickerLikeNames(days) {
+  let count = 0;
+  Object.keys(days || {}).forEach((d) => {
+    (days[d] || []).forEach((row) => {
+      if (!row?.isSp500) return;
+      const sym = String(row?.symbol || '').trim().toUpperCase();
+      const name = String(row?.companyName || '').trim().toUpperCase();
+      if (sym && name && sym === name) count += 1;
+    });
+  });
+  return count;
+}
+
+async function ensureReadableSp500CompanyNames(days, reason = 'request') {
+  const missingTickerLike = countSp500TickerLikeNames(days);
+  if (missingTickerLike <= 0) return 0;
+  try {
+    await enrichCompanyNamesForDays(days, { maxSymbols: 140, maxDurationMs: 12000 });
+    return Math.max(0, missingTickerLike - countSp500TickerLikeNames(days));
+  } catch (_) {
+    return 0;
+  }
 }
 
 async function buildEarningsDaysFromRows(rawRows, options = {}) {
@@ -4388,6 +4505,13 @@ app.get('/api/earnings/week', async (_req, res) => {
       await saveEarningsCachesToDisk();
     }
   } catch (_) {}
+  try {
+    const renamed = await ensureReadableSp500CompanyNames(weeklyEarningsCache.days || {}, 'week-request');
+    if (renamed > 0) {
+      weeklyEarningsCache.updatedAt = Date.now();
+      await saveEarningsCachesToDisk();
+    }
+  } catch (_) {}
   // Ensure every row has a companyName (best-effort fallback to symbol) so UI sorting works.
   try {
     Object.keys(weeklyEarningsCache.days || {}).forEach((d) => {
@@ -4468,6 +4592,13 @@ app.get('/api/earnings/next-week', async (_req, res) => {
           await saveEarningsCachesToDisk();
         }
       } catch (_) {}
+      try {
+        const renamed = await ensureReadableSp500CompanyNames(nextWeekEarningsCache.days || {}, 'next-week-request-cached');
+        if (renamed > 0) {
+          nextWeekEarningsCache.updatedAt = Date.now();
+          await saveEarningsCachesToDisk();
+        }
+      } catch (_) {}
       return res.json({ updatedAt: nextWeekEarningsCache.updatedAt, weekStart: nextWeekEarningsCache.weekStart, days: nextWeekEarningsCache.days });
     }
 
@@ -4478,6 +4609,10 @@ app.get('/api/earnings/next-week', async (_req, res) => {
         const parsedDisk = JSON.parse(rawDisk);
         if (parsedDisk && typeof parsedDisk.days === 'object' && parsedDisk.weekStart === nextWeekStartIso && Object.keys(parsedDisk.days || {}).length > 0) {
           nextWeekEarningsCache = { updatedAt: Date.now(), weekStart: parsedDisk.weekStart, days: parsedDisk.days };
+          try {
+            const renamed = await ensureReadableSp500CompanyNames(nextWeekEarningsCache.days || {}, 'next-week-request-disk');
+            if (renamed > 0) nextWeekEarningsCache.updatedAt = Date.now();
+          } catch (_) {}
           return res.json({ updatedAt: nextWeekEarningsCache.updatedAt, weekStart: nextWeekEarningsCache.weekStart, days: nextWeekEarningsCache.days });
         }
       } catch (_) {
@@ -4796,6 +4931,8 @@ function isoDateOnly(ts) {
 function normalizeOptionContract(contract, symbol, type, expirationDate) {
   if (!contract) return null;
   const strike = safe(contract.strike);
+   // Filter out unrealistic strikes (penny stocks < $0.10)
+   if (!Number.isFinite(strike) || strike < 0.1) return null;
   const volume = safe(contract.volume);
   const lastPrice = safe(contract.lastPrice ?? contract.last ?? contract.price);
   const openInterest = safe(contract.openInterest);
@@ -4849,62 +4986,99 @@ function formatOptionsPayload(symbol, chain, quotePrice, sourceStatus, options =
 }
 
 async function loadActiveOptionsFromDisk() {
-  try {
-    const raw = await fs.readFile(ACTIVE_OPTIONS_JSON_PATH, 'utf8');
-    const parsed = JSON.parse(raw);
-    if (parsed && Array.isArray(parsed.items)) {
+  let loaded = false;
+  if (cosmos.isCosmosEnabled()) {
+    try {
+      const doc = await cosmos.loadActiveOptions();
+      if (doc && Array.isArray(doc.items)) {
+        activeOptionsCache = {
+          updatedAt: Number(doc.updatedAt) || 0,
+          expiresAt: Number(doc.expiresAt) || 0,
+          items: doc.items,
+          baseSymbols: Array.isArray(doc.baseSymbols) ? doc.baseSymbols : [],
+          sourceStatus: doc.sourceStatus || { alphaVantage: 'degraded', yahooFinance: 'degraded' }
+        };
+        loaded = true;
+      }
+    } catch (_) {}
+  }
+  if (!loaded) {
+    try {
+      const raw = await fs.readFile(ACTIVE_OPTIONS_JSON_PATH, 'utf8');
+      const parsed = JSON.parse(raw);
+      if (parsed && Array.isArray(parsed.items)) {
+        activeOptionsCache = {
+          updatedAt: Number(parsed.updatedAt) || 0,
+          expiresAt: Number(parsed.expiresAt) || 0,
+          items: parsed.items,
+          baseSymbols: Array.isArray(parsed.baseSymbols) ? parsed.baseSymbols : [],
+          sourceStatus: parsed.sourceStatus || { alphaVantage: 'degraded', yahooFinance: 'degraded' }
+        };
+      }
+    } catch (_) {
       activeOptionsCache = {
-        updatedAt: Number(parsed.updatedAt) || 0,
-        expiresAt: Number(parsed.expiresAt) || 0,
-        items: parsed.items,
-        baseSymbols: Array.isArray(parsed.baseSymbols) ? parsed.baseSymbols : [],
-        sourceStatus: parsed.sourceStatus || { alphaVantage: 'degraded', yahooFinance: 'degraded' }
+        updatedAt: 0,
+        expiresAt: 0,
+        items: [],
+        baseSymbols: [],
+        sourceStatus: { alphaVantage: 'degraded', yahooFinance: 'degraded' }
       };
     }
-  } catch (_) {
-    activeOptionsCache = {
-      updatedAt: 0,
-      expiresAt: 0,
-      items: [],
-      baseSymbols: [],
-      sourceStatus: { alphaVantage: 'degraded', yahooFinance: 'degraded' }
-    };
   }
 }
 
 async function saveActiveOptionsToDisk() {
   try {
     await fs.writeFile(ACTIVE_OPTIONS_JSON_PATH, JSON.stringify(activeOptionsCache, null, 2), 'utf8');
+    if (cosmos.isCosmosEnabled()) cosmos.saveActiveOptions(activeOptionsCache).catch(() => {});
   } catch (err) {
     console.error('[OptionsActive] Save error:', err.message || err);
   }
 }
 
 async function loadActiveOptionsTodayFromDisk() {
-  try {
-    const raw = await fs.readFile(ACTIVE_OPTIONS_TODAY_JSON_PATH, 'utf8');
-    const parsed = JSON.parse(raw);
-    if (parsed && Array.isArray(parsed.items)) {
+  let loaded = false;
+  if (cosmos.isCosmosEnabled()) {
+    try {
+      const doc = await cosmos.loadActiveOptionsToday();
+      if (doc && Array.isArray(doc.items)) {
+        activeOptionsTodayCache = {
+          updatedAt: Number(doc.updatedAt) || 0,
+          expiresAt: Number(doc.expiresAt) || 0,
+          items: doc.items,
+          sourceStatus: doc.sourceStatus || { alphaVantage: 'degraded' }
+        };
+        loaded = true;
+      }
+    } catch (_) {}
+  }
+  if (!loaded) {
+    try {
+      const raw = await fs.readFile(ACTIVE_OPTIONS_TODAY_JSON_PATH, 'utf8');
+      const parsed = JSON.parse(raw);
+      if (parsed && Array.isArray(parsed.items)) {
+        activeOptionsTodayCache = {
+          updatedAt: Number(parsed.updatedAt) || 0,
+          expiresAt: Number(parsed.expiresAt) || 0,
+          items: parsed.items,
+          sourceStatus: parsed.sourceStatus || { alphaVantage: 'degraded' }
+        };
+      }
+    } catch (_) {
       activeOptionsTodayCache = {
-        updatedAt: Number(parsed.updatedAt) || 0,
-        expiresAt: Number(parsed.expiresAt) || 0,
-        items: parsed.items,
-        sourceStatus: parsed.sourceStatus || { alphaVantage: 'degraded' }
+        updatedAt: 0,
+        expiresAt: 0,
+        items: [],
+        sourceStatus: { alphaVantage: 'degraded' }
       };
     }
-  } catch (_) {
-    activeOptionsTodayCache = {
-      updatedAt: 0,
-      expiresAt: 0,
-      items: [],
-      sourceStatus: { alphaVantage: 'degraded' }
-    };
   }
 }
 
 async function saveActiveOptionsTodayToDisk() {
   try {
     await fs.writeFile(ACTIVE_OPTIONS_TODAY_JSON_PATH, JSON.stringify(activeOptionsTodayCache, null, 2), 'utf8');
+    if (cosmos.isCosmosEnabled()) cosmos.saveActiveOptionsToday(activeOptionsTodayCache).catch(() => {});
   } catch (err) {
     console.error('[OptionsActiveToday] Save error:', err.message || err);
   }
@@ -5100,18 +5274,31 @@ async function refreshActiveOptionsToday() {
 }
 
 async function loadTickerOptionsFromDisk() {
-  try {
-    const raw = await fs.readFile(TICKER_OPTIONS_JSON_PATH, 'utf8');
-    const parsed = JSON.parse(raw);
-    tickerOptionsCache = (parsed && typeof parsed === 'object') ? parsed : {};
-  } catch (_) {
-    tickerOptionsCache = {};
+  let loaded = false;
+  if (cosmos.isCosmosEnabled()) {
+    try {
+      const map = await cosmos.loadTickerOptions();
+      if (map && typeof map === 'object') {
+        tickerOptionsCache = map;
+        loaded = true;
+      }
+    } catch (_) {}
+  }
+  if (!loaded) {
+    try {
+      const raw = await fs.readFile(TICKER_OPTIONS_JSON_PATH, 'utf8');
+      const parsed = JSON.parse(raw);
+      tickerOptionsCache = (parsed && typeof parsed === 'object') ? parsed : {};
+    } catch (_) {
+      tickerOptionsCache = {};
+    }
   }
 }
 
 async function saveTickerOptionsToDisk() {
   try {
     await fs.writeFile(TICKER_OPTIONS_JSON_PATH, JSON.stringify(tickerOptionsCache, null, 2), 'utf8');
+    if (cosmos.isCosmosEnabled()) cosmos.saveTickerOptions(tickerOptionsCache).catch(() => {});
   } catch (err) {
     console.error('[OptionsTicker] Save error:', err.message || err);
   }
@@ -5212,6 +5399,11 @@ async function fetchRecommendationContractsSnapshot(symbol, options = {}) {
     for (const c of calls) {
       const base = normalizeOptionContract(c, normalized, 'CALL', expirationDate);
       if (!base) continue;
+       // Filter out strikes that are unreasonably far from quote price (e.g., >500% away)
+       if (Number.isFinite(quotePrice) && Number.isFinite(base.strike)) {
+         const distPct = Math.abs(base.strike - quotePrice) / quotePrice * 100;
+         if (distPct > 500) continue; // Skip strikes that are >500% away (likely corrupted data)
+       }
       const key = String(base.contract || `call_${expirationDate}_${base.strike}`);
       if (seen.has(key)) continue;
       seen.add(key);
@@ -5221,6 +5413,11 @@ async function fetchRecommendationContractsSnapshot(symbol, options = {}) {
     for (const p of puts) {
       const base = normalizeOptionContract(p, normalized, 'PUT', expirationDate);
       if (!base) continue;
+       // Filter out strikes that are unreasonably far from quote price (e.g., >500% away)
+       if (Number.isFinite(quotePrice) && Number.isFinite(base.strike)) {
+         const distPct = Math.abs(base.strike - quotePrice) / quotePrice * 100;
+         if (distPct > 500) continue; // Skip strikes that are >500% away (likely corrupted data)
+       }
       const key = String(base.contract || `put_${expirationDate}_${base.strike}`);
       if (seen.has(key)) continue;
       seen.add(key);
@@ -5398,6 +5595,500 @@ async function refreshActiveOptions() {
   await saveActiveOptionsToDisk();
   return getActiveOptionsSnapshot();
 }
+
+const OPPORTUNITIES_CACHE_TTL_MS = Number(process.env.OPPORTUNITIES_CACHE_TTL_MS || (5 * 60 * 1000));
+const OPPORTUNITIES_MIN_STOCK_MARKET_CAP = 2_000_000_000;
+const OPPORTUNITIES_STOCK_FALLBACK = ['AAPL', 'MSFT', 'NVDA', 'AMZN', 'META', 'GOOGL', 'TSLA'];
+// Keep broad market/style ETFs in the ETF tab.
+// Sector SPDRs are intentionally reserved for the Sectors tab.
+const OPPORTUNITIES_ETF_POOL = ['SPY', 'QQQ', 'IWM', 'DIA', 'VTI', 'VOO', 'VEA', 'EFA', 'EEM', 'TLT'];
+const OPPORTUNITIES_SECTOR_POOL = [
+  { symbol: 'XLK', name: 'Technology' },
+  { symbol: 'XLF', name: 'Financials' },
+  { symbol: 'XLE', name: 'Energy' },
+  { symbol: 'XLV', name: 'Health Care' },
+  { symbol: 'XLI', name: 'Industrials' },
+  { symbol: 'XLP', name: 'Consumer Staples' },
+  { symbol: 'XLY', name: 'Consumer Discretionary' },
+  { symbol: 'XLU', name: 'Utilities' },
+  { symbol: 'XLB', name: 'Materials' },
+  { symbol: 'XLRE', name: 'Real Estate' },
+  { symbol: 'XLC', name: 'Communication Services' }
+];
+const OPPORTUNITIES_LEVERAGED_OR_INVERSE_ETFS = new Set([
+  'TQQQ', 'SQQQ', 'UPRO', 'SPXU', 'SOXL', 'SOXS', 'TECL', 'TECS',
+  'LABU', 'LABD', 'FAS', 'FAZ', 'TNA', 'TZA', 'UDOW', 'SDOW',
+  'SPXL', 'SPXS', 'TMF', 'TMV', 'NUGT', 'DUST', 'BOIL', 'KOLD',
+  'TSLL', 'TSLQ', 'NVDL', 'NVDQ', 'QID', 'SDS', 'SSO', 'DXD'
+]);
+const OPPORTUNITIES_NON_COMMON_PRODUCTS = new Set([
+  'BITO', 'GBTC', 'ETHE', 'SLV', 'GLD', 'USO', 'UNG', 'UUP', 'FXI'
+]);
+const OPPORTUNITIES_NON_EQUITY_QUOTE_TYPES = new Set([
+  'ETF', 'ETN', 'MUTUALFUND', 'MONEYMARKET', 'INDEX', 'FUTURE',
+  'CRYPTOCURRENCY', 'CURRENCY', 'OPTION'
+]);
+
+const opportunitiesCache = {
+  stocks: { updatedAt: 0, expiresAt: 0, items: [] },
+  etfs: { updatedAt: 0, expiresAt: 0, items: [] },
+  sectors: { updatedAt: 0, expiresAt: 0, items: [] }
+};
+
+function normalizeOpportunityAssetType(raw) {
+  const v = String(raw || '').toLowerCase();
+  if (v === 'stocks' || v === 'stock') return 'stocks';
+  if (v === 'etfs' || v === 'etf') return 'etfs';
+  if (v === 'sectors' || v === 'sector') return 'sectors';
+  return 'stocks';
+}
+
+function average(values) {
+  const vals = Array.isArray(values) ? values.map((v) => Number(v)).filter((v) => Number.isFinite(v)) : [];
+  if (!vals.length) return null;
+  return vals.reduce((s, v) => s + v, 0) / vals.length;
+}
+
+function clampNumber(n, min, max) {
+  if (!Number.isFinite(n)) return null;
+  return Math.max(min, Math.min(max, n));
+}
+
+function getOpportunityStockPool() {
+  const out = [];
+  const seen = new Set();
+
+  const etfAndSectorUniverse = new Set([
+    ...OPPORTUNITIES_ETF_POOL,
+    ...OPPORTUNITIES_SECTOR_POOL.map((x) => x.symbol)
+  ]);
+
+  const isEligibleStockSymbol = (sym) => {
+    if (!sym) return false;
+    if (etfAndSectorUniverse.has(sym)) return false;
+    if (OPPORTUNITIES_LEVERAGED_OR_INVERSE_ETFS.has(sym)) return false;
+    if (OPPORTUNITIES_NON_COMMON_PRODUCTS.has(sym)) return false;
+    return true;
+  };
+
+  const pushSym = (s) => {
+    const sym = normalizeActiveTicker(s);
+    if (!sym || seen.has(sym) || !isEligibleStockSymbol(sym)) return;
+    seen.add(sym);
+    out.push(sym);
+  };
+
+  (Array.isArray(activeOptionsTodayCache?.items) ? activeOptionsTodayCache.items : [])
+    .forEach((r) => pushSym(r?.ticker || r?.symbol));
+  (Array.isArray(trendingCache?.symbols) ? trendingCache.symbols : [])
+    .forEach((r) => pushSym(r?.symbol));
+  OPPORTUNITIES_STOCK_FALLBACK.forEach((s) => pushSym(s));
+
+  return out.slice(0, 12);
+}
+
+function getOpportunityUniverse(assetType) {
+  if (assetType === 'stocks') {
+    return getOpportunityStockPool().map((symbol) => ({ symbol, assetType: 'Stock', companyName: symbol }));
+  }
+  if (assetType === 'etfs') {
+    return OPPORTUNITIES_ETF_POOL.map((symbol) => ({ symbol, assetType: 'ETF', companyName: symbol }));
+  }
+  return OPPORTUNITIES_SECTOR_POOL.map((s) => ({ symbol: s.symbol, assetType: 'Sector', companyName: s.name }));
+}
+
+function buildIvRankFromChain(chain, spotPrice) {
+  const calls = Array.isArray(chain?.calls) ? chain.calls : [];
+  const puts = Array.isArray(chain?.puts) ? chain.puts : [];
+  const contracts = [...calls, ...puts];
+  const ivVals = contracts
+    .map((c) => safe(c?.impliedVolatility))
+    .filter((v) => Number.isFinite(v) && v > 0);
+  if (!ivVals.length) return { ivRank: null, impliedVolatilityPct: null, ivDataQuality: 'missing' };
+
+  const minIv = Math.min(...ivVals);
+  const maxIv = Math.max(...ivVals);
+  const spot = safe(spotPrice);
+  let atmIv = average(ivVals);
+
+  if (Number.isFinite(spot)) {
+    const ranked = contracts
+      .map((c) => ({ strike: safe(c?.strike), iv: safe(c?.impliedVolatility) }))
+      .filter((x) => Number.isFinite(x.strike) && Number.isFinite(x.iv) && x.iv > 0)
+      .sort((a, b) => Math.abs(a.strike - spot) - Math.abs(b.strike - spot));
+    if (ranked.length) {
+      atmIv = ranked[0].iv;
+    }
+  }
+
+  if (!Number.isFinite(atmIv) || !Number.isFinite(minIv) || !Number.isFinite(maxIv)) {
+    return { ivRank: null, impliedVolatilityPct: null, ivDataQuality: 'missing' };
+  }
+
+  const impliedVolatilityPct = atmIv * 100;
+  // Treat extremely small absolute IV as invalid feed artifact for scanner logic.
+  // This prevents "IV 0.0%" rows from generating options strategy guidance.
+  if (impliedVolatilityPct <= 0.5) {
+    return { ivRank: null, impliedVolatilityPct: null, ivDataQuality: 'invalid_zero_like' };
+  }
+
+  const ivRange = maxIv - minIv;
+  if (ivRange < 0.02) {
+    return {
+      ivRank: null,
+      impliedVolatilityPct,
+      ivDataQuality: 'compressed_range'
+    };
+  }
+
+  return {
+    ivRank: clampNumber(((atmIv - minIv) / ivRange) * 100, 0, 100),
+    impliedVolatilityPct,
+    ivDataQuality: 'ok'
+  };
+}
+
+async function buildOpportunityMetrics(asset, spyReturn20) {
+  const symbol = String(asset?.symbol || '').toUpperCase();
+  const yahooSymbol = normalizeSymbolForYahoo(symbol);
+  const [quote, chartPayload, optionsSnap] = await Promise.all([
+    withTimeout(yahooFinanceClient.quote(yahooSymbol), 8000, 'opportunities quote').catch(() => null),
+    withTimeout(
+      yahooFinanceClient.chart(yahooSymbol, {
+        period1: addDaysIso(isoDateLocal(new Date()), -300),
+        period2: isoDateLocal(new Date()),
+        interval: '1d'
+      }),
+      12000,
+      'opportunities chart'
+    ).catch(() => null),
+    fetchNearestOptionsSnapshot(symbol).catch(() => null)
+  ]);
+
+  const closes = Array.isArray(chartPayload?.quotes)
+    ? chartPayload.quotes.map((q) => safe(q?.close)).filter((v) => Number.isFinite(v) && v > 0)
+    : [];
+
+  const price = safe(quote?.regularMarketPrice)
+    ?? safe(quote?.postMarketPrice)
+    ?? safe(quote?.previousClose)
+    ?? safe(optionsSnap?.quotePrice)
+    ?? null;
+
+  const sma50 = average(closes.slice(-50));
+  const sma200 = average(closes.slice(-200));
+  const rsi = computeRsi(closes, 14);
+  const low20 = closes.length >= 20 ? Math.min(...closes.slice(-20)) : null;
+  const high20 = closes.length >= 20 ? Math.max(...closes.slice(-20)) : null;
+  const return20 = closes.length >= 21
+    ? (((closes[closes.length - 1] - closes[closes.length - 21]) / closes[closes.length - 21]) * 100)
+    : null;
+  const relStrength20 = Number.isFinite(return20) && Number.isFinite(spyReturn20)
+    ? (return20 - spyReturn20)
+    : null;
+
+  const isNearSupport = Number.isFinite(price) && Number.isFinite(low20) ? price <= low20 * 1.03 : false;
+  const isNearResistance = Number.isFinite(price) && Number.isFinite(high20) ? price >= high20 * 0.97 : false;
+  const m200Trend = Number.isFinite(price) && Number.isFinite(sma200) && price >= sma200 ? 'Bullish' : 'Bearish';
+  const ivSnapshot = buildIvRankFromChain(optionsSnap?.chain, price);
+  const ivRank = ivSnapshot?.ivRank;
+  const optionsDataReliable = ivSnapshot?.ivDataQuality === 'ok' && Number.isFinite(ivSnapshot?.impliedVolatilityPct);
+  const executionVehicle = optionsDataReliable
+    ? 'Options + Equity'
+    : 'Pure Equity Only (No Options Data Available)';
+
+  if (asset?.assetType === 'Stock' && !optionsDataReliable) {
+    console.warn(`[Opportunities] ${symbol}: options IV data unavailable (${ivSnapshot?.ivDataQuality || 'missing'})`);
+  }
+
+  return {
+    ticker: symbol,
+    companyName: sanitizeCompanyName(quote?.shortName, asset?.companyName || symbol) || symbol,
+    assetType: asset?.assetType || 'Stock',
+    quoteType: String(quote?.quoteType || '').toUpperCase(),
+    marketCap: safe(quote?.marketCap),
+    currentPrice: price,
+    ivRank,
+    impliedVolatilityPct: ivSnapshot?.impliedVolatilityPct ?? null,
+    ivDataQuality: ivSnapshot?.ivDataQuality || 'missing',
+    executionVehicle,
+    rsi,
+    volume: safe(quote?.regularMarketVolume),
+    isNearSupport,
+    isNearResistance,
+    m200Trend,
+    sma50,
+    sma200,
+    return20,
+    relativeStrength20: relStrength20
+  };
+}
+
+function buildOpportunityFromMetrics(m) {
+  const ivRankTxt = Number.isFinite(m.ivRank) ? `${m.ivRank.toFixed(1)}%` : 'N/A';
+  const ivAbsTxt = Number.isFinite(m.impliedVolatilityPct) ? `${m.impliedVolatilityPct.toFixed(1)}%` : 'N/A';
+  const rsiTxt = Number.isFinite(m.rsi) ? m.rsi.toFixed(1) : 'N/A';
+  const relTxt = Number.isFinite(m.relativeStrength20) ? `${m.relativeStrength20 >= 0 ? '+' : ''}${m.relativeStrength20.toFixed(1)}%` : 'N/A';
+  const noOptionsData = String(m.executionVehicle || '').startsWith('Pure Equity Only');
+  const lowIvForPremiumSell = Number.isFinite(m.ivRank) && m.ivRank < 15;
+  const highIvForPremiumSell = Number.isFinite(m.ivRank) && m.ivRank >= 50;
+  const sellStructureText = noOptionsData
+    ? 'Use equity-only risk actions (trim, hedge, or directional shares) because options data is unavailable.'
+    : (lowIvForPremiumSell
+      ? 'Favor short-delta debit structures (for example Bear Put Spreads) or equity trim/short instead of short-premium trades while volatility is compressed.'
+      : (highIvForPremiumSell
+        ? 'Favor credit-based, short-vega structures (for example credit spreads) while volatility is rich.'
+        : 'Use directional, defined-risk structures; avoid aggressive short-premium sizing when volatility is not elevated.'));
+
+  const ivDataNote = m.ivDataQuality && m.ivDataQuality !== 'ok'
+    ? ' Option-IV data quality is degraded; treat volatility-dependent setups cautiously.'
+    : '';
+
+  // Sector-first rotation rules.
+  if (m.assetType === 'Sector' && Number.isFinite(m.relativeStrength20)) {
+    if (m.relativeStrength20 >= 2 && Number.isFinite(m.rsi) && m.rsi < 72) {
+      return {
+        ...m,
+        action: 'Buy',
+        primaryReason: 'Relative strength rotation in favor of this sector',
+        technicalDetails: `20D relative strength vs SPY is ${relTxt} with RSI ${rsiTxt}. Rotation and trend structure support long exposure.`
+      };
+    }
+    if (m.relativeStrength20 <= -2 && Number.isFinite(m.rsi) && m.rsi <= 45) {
+      return {
+        ...m,
+        action: 'Sell',
+        primaryReason: 'Capital rotation away from this sector',
+        technicalDetails: `20D relative strength vs SPY is ${relTxt} and RSI is ${rsiTxt}. IVR ${ivRankTxt}, ATM IV ${ivAbsTxt}. Risk of continued underperformance is elevated. ${sellStructureText}${ivDataNote}`
+      };
+    }
+  }
+
+  if (Number.isFinite(m.ivRank) && m.ivRank >= 70 && m.isNearResistance) {
+    const label = m.assetType === 'Stock'
+      ? 'Elevated IV at overhead resistance'
+      : (m.assetType === 'ETF' ? 'High IV with macro resistance overhead' : 'High IV at sector ceiling');
+    return {
+      ...m,
+      action: 'Sell',
+      primaryReason: label,
+      technicalDetails: `IV Rank is ${ivRankTxt} and ATM IV is ${ivAbsTxt}; price is pressing resistance. ${sellStructureText}${ivDataNote}`
+    };
+  }
+
+  if (Number.isFinite(m.ivRank) && m.ivRank < 20 && m.isNearSupport && m.m200Trend === 'Bullish') {
+    const label = m.assetType === 'Stock'
+      ? 'Bullish support test with cheap option premiums'
+      : (m.assetType === 'ETF' ? 'Institutional support with compressed volatility' : 'Sector support with low volatility regime');
+    return {
+      ...m,
+      action: 'Buy',
+      primaryReason: label,
+      technicalDetails: noOptionsData
+        ? `Trend is ${m.m200Trend} and price is near support, but options IV data is unavailable. Prefer pure-equity accumulation with defined stop risk.${ivDataNote}`
+        : `IV Rank is ${ivRankTxt}, ATM IV is ${ivAbsTxt}, trend is ${m.m200Trend}, and price is near support. Favor debit-based/long-vega bullish entries while volatility is compressed.${ivDataNote}`
+    };
+  }
+
+  if (Number.isFinite(m.rsi) && m.rsi >= 75) {
+    return {
+      ...m,
+      action: 'Sell',
+      primaryReason: 'Extreme overbought momentum extension',
+      technicalDetails: `RSI is ${rsiTxt}, suggesting stretched momentum. IVR ${ivRankTxt}, ATM IV ${ivAbsTxt}. Mean-reversion probability is elevated. ${sellStructureText}${ivDataNote}`
+    };
+  }
+
+  if (Number.isFinite(m.rsi) && m.rsi <= 30 && m.m200Trend === 'Bullish') {
+    return {
+      ...m,
+      action: 'Buy',
+      primaryReason: 'Oversold pullback inside bullish trend',
+      technicalDetails: noOptionsData
+        ? `RSI is ${rsiTxt} while the 200D trend remains ${m.m200Trend}. Options data is unavailable; use pure-equity re-entry with defined stop risk.${ivDataNote}`
+        : `RSI is ${rsiTxt} while the 200D trend remains ${m.m200Trend}. Pullback offers risk-defined re-entry opportunity.`
+    };
+  }
+
+  return {
+    ...m,
+    action: 'Hold',
+    primaryReason: 'No high-conviction trigger',
+    technicalDetails: 'Current metrics do not meet strict buy/sell rule thresholds.'
+  };
+}
+
+function buildStockFallbackOpportunity(m) {
+  if (!m || m.assetType !== 'Stock') return null;
+  const rsi = Number(m.rsi);
+  const rel = Number(m.relativeStrength20);
+  const iv = Number(m.ivRank);
+  const ivAbs = Number(m.impliedVolatilityPct);
+  const noOptionsData = String(m.executionVehicle || '').startsWith('Pure Equity Only');
+  const trendBull = String(m.m200Trend || '') === 'Bullish';
+  const trendBear = String(m.m200Trend || '') === 'Bearish';
+
+  const buyBias =
+    (Number.isFinite(rsi) ? (50 - rsi) : 0) +
+    (trendBull ? 8 : 0) +
+    (Number.isFinite(rel) ? (Math.max(-6, Math.min(6, rel)) * 1.5) : 0);
+
+  const sellBias =
+    (Number.isFinite(rsi) ? (rsi - 50) : 0) +
+    (trendBear ? 8 : 0) +
+    (Number.isFinite(rel) ? (Math.max(-6, Math.min(6, -rel)) * 1.5) : 0);
+
+  const isBuy = buyBias >= sellBias;
+  const action = isBuy ? 'Buy' : 'Sell';
+  const ivTxt = Number.isFinite(iv) ? `${iv.toFixed(1)}%` : 'N/A';
+  const ivAbsTxt = Number.isFinite(ivAbs) ? `${ivAbs.toFixed(1)}%` : 'N/A';
+  const rsiTxt = Number.isFinite(rsi) ? rsi.toFixed(1) : 'N/A';
+  const relTxt = Number.isFinite(rel) ? `${rel >= 0 ? '+' : ''}${rel.toFixed(1)}%` : 'N/A';
+
+  if (isBuy) {
+    return {
+      ...m,
+      action,
+      primaryReason: 'Momentum/trend composite buy setup',
+      technicalDetails: noOptionsData
+        ? `Fallback signal: RSI ${rsiTxt}, 20D relative strength vs SPY ${relTxt}, trend ${m.m200Trend || 'N/A'}. Options data unavailable; use pure-equity, defined-risk entries.`
+        : `Fallback signal: RSI ${rsiTxt}, 20D relative strength vs SPY ${relTxt}, trend ${m.m200Trend || 'N/A'}, IV Rank ${ivTxt}, ATM IV ${ivAbsTxt}. Favor debit-based, defined-risk entries.`,
+      _fallbackScore: buyBias
+    };
+  }
+
+  const lowIv = Number.isFinite(iv) && iv < 15;
+  const sellGuidance = lowIv
+    ? 'Prefer short-delta debit structures or equity trim/short over short-premium when volatility is compressed.'
+    : 'Premium-selling setups can be considered when volatility is sufficiently rich.';
+
+  return {
+    ...m,
+    action,
+    primaryReason: 'Momentum/trend composite sell setup',
+    technicalDetails: noOptionsData
+      ? `Fallback signal: RSI ${rsiTxt}, 20D relative strength vs SPY ${relTxt}, trend ${m.m200Trend || 'N/A'}. Options data unavailable; use pure-equity trim/hedge logic.`
+      : `Fallback signal: RSI ${rsiTxt}, 20D relative strength vs SPY ${relTxt}, trend ${m.m200Trend || 'N/A'}, IV Rank ${ivTxt}, ATM IV ${ivAbsTxt}. ${sellGuidance}`,
+    _fallbackScore: sellBias
+  };
+}
+
+app.get('/api/opportunities', async (req, res) => {
+  const assetType = normalizeOpportunityAssetType(req.query.assetType || req.query.type || 'stocks');
+  const limit = Math.max(5, Math.min(60, Number(req.query.limit) || 30));
+
+  const cached = opportunitiesCache[assetType];
+  if (cached && cached.expiresAt > Date.now() && Array.isArray(cached.items) && cached.items.length > 0) {
+    return res.json({
+      assetType,
+      updatedAt: cached.updatedAt,
+      fromCache: true,
+      items: cached.items.slice(0, limit)
+    });
+  }
+
+  try {
+    const universe = getOpportunityUniverse(assetType);
+    if (!universe.length) {
+      return res.json({ assetType, updatedAt: Date.now(), fromCache: false, items: [] });
+    }
+
+    const spyBase = await buildOpportunityMetrics({ symbol: 'SPY', companyName: 'SPY', assetType: 'ETF' }, null)
+      .catch(() => null);
+    const spyReturn20 = Number.isFinite(spyBase?.return20) ? spyBase.return20 : null;
+
+    const settled = await Promise.allSettled(
+      universe.map((asset) => buildOpportunityMetrics(asset, spyReturn20))
+    );
+
+    let allMetrics = settled
+      .map((r) => (r.status === 'fulfilled' ? r.value : null))
+      .filter(Boolean);
+
+    if (assetType === 'stocks') {
+      allMetrics = allMetrics.filter((m) => {
+        const sym = String(m?.ticker || '').toUpperCase();
+        const qt = String(m?.quoteType || '').toUpperCase();
+        const marketCap = Number(m?.marketCap);
+        if (OPPORTUNITIES_NON_COMMON_PRODUCTS.has(sym)) return false;
+        if (qt && OPPORTUNITIES_NON_EQUITY_QUOTE_TYPES.has(qt)) return false;
+        if (!Number.isFinite(marketCap) || marketCap < OPPORTUNITIES_MIN_STOCK_MARKET_CAP) return false;
+        return true;
+      });
+    }
+
+    const evaluated = allMetrics
+      .map((m) => buildOpportunityFromMetrics(m))
+      .filter((x) => x && (x.action === 'Buy' || x.action === 'Sell'))
+      .sort((a, b) => {
+        const aIv = Number.isFinite(a.ivRank) ? a.ivRank : -1;
+        const bIv = Number.isFinite(b.ivRank) ? b.ivRank : -1;
+        if (bIv !== aIv) return bIv - aIv;
+        return (Number(b.volume) || 0) - (Number(a.volume) || 0);
+      });
+
+    // Stocks can be sparse with strict triggers; backfill with top composite signals.
+    if (assetType === 'stocks' && evaluated.length < 5) {
+      const seen = new Set(evaluated.map((x) => String(x.ticker || '').toUpperCase()));
+      const coreStocks = new Set(OPPORTUNITIES_STOCK_FALLBACK.map((s) => String(s).toUpperCase()));
+      const fallback = allMetrics
+        .filter((m) => !seen.has(String(m.ticker || '').toUpperCase()))
+        .map((m) => buildStockFallbackOpportunity(m))
+        .filter(Boolean)
+        .sort((a, b) => {
+          const aBase = Number(a._fallbackScore) || 0;
+          const bBase = Number(b._fallbackScore) || 0;
+          const aBoost = coreStocks.has(String(a.ticker || '').toUpperCase()) ? 4 : 0;
+          const bBoost = coreStocks.has(String(b.ticker || '').toUpperCase()) ? 4 : 0;
+          return (bBase + bBoost) - (aBase + aBoost);
+        })
+        .slice(0, 5 - evaluated.length)
+        .map((x) => {
+          const out = { ...x };
+          delete out._fallbackScore;
+          return out;
+        });
+      evaluated.push(...fallback);
+    }
+
+    const items = evaluated.slice(0, limit).map((o) => ({
+      ticker: o.ticker,
+      companyName: o.companyName,
+      action: o.action,
+      primaryReason: o.primaryReason,
+      technicalDetails: o.technicalDetails,
+      currentPrice: o.currentPrice,
+      marketCap: o.marketCap,
+      ivRank: o.ivRank,
+      impliedVolatilityPct: o.impliedVolatilityPct,
+      ivDataQuality: o.ivDataQuality,
+      executionVehicle: o.executionVehicle,
+      rsi: o.rsi,
+      assetType: o.assetType,
+      m200Trend: o.m200Trend,
+      relativeStrength20: o.relativeStrength20
+    }));
+
+    opportunitiesCache[assetType] = {
+      updatedAt: Date.now(),
+      expiresAt: Date.now() + OPPORTUNITIES_CACHE_TTL_MS,
+      items
+    };
+
+    return res.json({
+      assetType,
+      updatedAt: opportunitiesCache[assetType].updatedAt,
+      fromCache: false,
+      items
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: 'Unable to build opportunities',
+      assetType,
+      details: err?.message || String(err)
+    });
+  }
+});
 
 app.get('/api/options/active', async (_req, res) => {
   const cached = getActiveOptionsSnapshot();
@@ -5898,6 +6589,7 @@ app.listen(PORT, () => {
   console.log(`Stock tracker API listening on http://localhost:${PORT}`);
   (async () => {
     try {
+      await cosmos.initCosmos();
       await loadEarningsCachesFromDisk();
       await ensureEarningsUpdatesIfDue('startup');
       setInterval(() => ensureEarningsUpdatesIfDue('job').catch(() => {}), 15 * 60 * 1000);

@@ -27,6 +27,24 @@ function calculateIVRank(currentIV, historicalIVs) {
   return Math.max(0, Math.min(100, round(rank, 1)));
 }
 
+function selectStructuralChain(chain, spotPrice) {
+  const list = Array.isArray(chain) ? chain : [];
+  const spot = toNum(spotPrice);
+  if (!Number.isFinite(spot) || spot <= 0) return list;
+
+  // Anchor structural levels to strikes near spot so deep-tail strikes do
+  // not dominate max-pain/wall calculations.
+  const nearSpot = list.filter((c) => {
+    const strike = toNum(c?.strike);
+    if (!Number.isFinite(strike)) return false;
+    if (strike < spot * 0.8 || strike > spot * 1.2) return false;
+    return true;
+  });
+
+  // Fall back to the original chain if the filtered universe is too small.
+  return nearSpot.length >= 12 ? nearSpot : list;
+}
+
 function calculateMaxPain(chain) {
   const strikes = Array.from(new Set(chain.map((c) => toNum(c.strike)).filter((v) => Number.isFinite(v)))).sort((a, b) => a - b);
   if (strikes.length === 0) return null;
@@ -679,8 +697,8 @@ function buildTradeSelectionProfile({ overallVerdict, spotPrice, maxPain, gammaF
     targetType: null,
     minDte: 7,
     maxDte: 45,
-    minVolume: 10,
-    minOpenInterest: 100,
+    minVolume: 1,
+    minOpenInterest: 10,
     minPremium: null,
     minChanceOfProfit: null,
     positionIntent: 'long',
@@ -1218,8 +1236,9 @@ function generateTopTrades({ chain, overallVerdict, spotPrice, maxPain, gammaFli
     const strike = toNum(contract.strike);
     if (!profile.strikeMatch(strike, type)) return false;
 
-    if ((toNum(contract.volume) || 0) < profile.minVolume) return false;
-    if ((toNum(contract.openInterest) || 0) < profile.minOpenInterest) return false;
+    const volume = Math.max(0, toNum(contract.volume) || 0);
+    const openInterest = Math.max(0, toNum(contract.openInterest) || 0);
+    if (volume < profile.minVolume && openInterest < profile.minOpenInterest) return false;
 
     if (Number.isFinite(profile.minPremium)) {
       const bid = toNum(contract.bid);
@@ -1330,8 +1349,9 @@ function generateTopTrades({ chain, overallVerdict, spotPrice, maxPain, gammaFli
       if (profile.targetType && type !== profile.targetType) return false;
       const dte = daysToExpiration(contract.expiration || contract.expirationDate);
       if (!Number.isFinite(dte) || dte < relaxedMinDte || dte > relaxedMaxDte) return false;
-      if ((toNum(contract.volume) || 0) < 5) return false;
-      if ((toNum(contract.openInterest) || 0) < 50) return false;
+      const volume = Math.max(0, toNum(contract.volume) || 0);
+      const openInterest = Math.max(0, toNum(contract.openInterest) || 0);
+      if (volume < 1 && openInterest < 10) return false;
 
       const strike = toNum(contract.strike);
       if (profile.positionIntent === 'long' && profile.targetType === 'call') {
@@ -1462,7 +1482,7 @@ function generateRecommendations({ chain, verdict, maxPain, gammaFlip, callWall,
     const dte = daysToExpiration(c.expiration || c.expirationDate);
     const strike = toNum(c.strike);
     if (!Number.isFinite(strike) || !Number.isFinite(dte) || dte < 14 || dte > 300) continue;
-    if ((toNum(c.openInterest) || 0) < 50 || (toNum(c.volume) || 0) < 5) continue;
+    if ((toNum(c.openInterest) || 0) < 10 && (toNum(c.volume) || 0) < 1) continue;
 
     if (side === 'call' && type === 'call') {
       if (Number.isFinite(maxPain) && strike < maxPain * 0.92) continue;
@@ -1540,8 +1560,9 @@ export function buildOptionsRecommendationScorecard({ symbol, spotPrice, contrac
     const sorted = [...vals].sort((a, b) => a - b);
     return sorted[Math.floor(sorted.length / 2)];
   })();
-  const maxPain = calculateMaxPain(chain);
-  const { callWall, putWall } = findWalls(chain, spotPrice);
+  const structuralChain = selectStructuralChain(chain, spotPrice);
+  const maxPain = calculateMaxPain(structuralChain);
+  const { callWall, putWall } = findWalls(structuralChain, spotPrice);
   const gammaFlip = estimateGammaFlip(chain, spotPrice);
   const flow = buildFlowTells(chain);
   const triad = triadVerdict({ spotPrice, gammaFlip, maxPain, callWall, putWall, flow });
